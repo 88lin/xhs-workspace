@@ -26,7 +26,8 @@
 ### 安装插件
 
 ```bash
-claude /plugin install chenxiachan/xhs-claude-skills
+/plugin marketplace add chenxiachan/xhs-claude-skills
+/plugin install rednote-to-obsidian@chenxiachan-xhs-claude-skills
 ```
 
 ### 首次使用

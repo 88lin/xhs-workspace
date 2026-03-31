@@ -26,7 +26,8 @@ A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin that extr
 ### Install the plugin
 
 ```bash
-claude /plugin install chenxiachan/xhs-claude-skills
+/plugin marketplace add chenxiachan/xhs-claude-skills
+/plugin install rednote-to-obsidian@chenxiachan-xhs-claude-skills
 ```
 
 ### First use
