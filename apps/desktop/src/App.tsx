@@ -2131,7 +2131,7 @@ export default function App() {
 
   const handleClearVisibleArchive = async () => {
     if (!visibleOutputArchive.length) {
-      setNotice({ tone: 'warning', text: 'No archived drafts match the current filter.');
+      setNotice({ tone: 'warning', text: 'No archived drafts match the current filter.' });
       return;
     }
 
@@ -2199,7 +2199,7 @@ export default function App() {
 
   const handleCopyLogDirectory = async () => {
     if (!debugStatus.logDirectory) {
-      setNotice({ tone: 'warning', text: 'No log directory is available yet.');
+      setNotice({ tone: 'warning', text: 'No log directory is available yet.' });
       return;
     }
 
