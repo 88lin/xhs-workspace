@@ -2075,22 +2075,27 @@ fn parse_redclaw_scheduled_task_input(payload: &Value, default_enabled: bool) ->
         _ => return Err("Unsupported scheduled task mode".to_string()),
     }
 
+    let scheduled_interval_minutes = match mode.as_str() {
+        "interval" => interval_minutes,
+        _ => None,
+    };
+    let scheduled_time = match mode.as_str() {
+        "daily" | "weekly" => time,
+        _ => None,
+    };
+    let scheduled_weekdays = if mode == "weekly" { weekdays } else { Vec::new() };
+    let scheduled_run_at = if mode == "once" { run_at } else { None };
+
     Ok(RedClawScheduledTaskInput {
         name,
         enabled: payload_bool(payload, "enabled").unwrap_or(default_enabled),
         mode,
         prompt,
         project_id: payload_string(payload, "projectId"),
-        interval_minutes: match mode.as_str() {
-            "interval" => interval_minutes,
-            _ => None,
-        },
-        time: match mode.as_str() {
-            "daily" | "weekly" => time,
-            _ => None,
-        },
-        weekdays: if mode == "weekly" { weekdays } else { Vec::new() },
-        run_at: if mode == "once" { run_at } else { None },
+        interval_minutes: scheduled_interval_minutes,
+        time: scheduled_time,
+        weekdays: scheduled_weekdays,
+        run_at: scheduled_run_at,
         max_retries: payload_u32(payload, "maxRetries").unwrap_or(0),
         retry_delay_minutes: payload_u32(payload, "retryDelayMinutes").unwrap_or(30).max(1),
     })
@@ -2593,7 +2598,7 @@ fn execute_redclaw_runner_heartbeat(state: &State<'_, AppState>) -> Result<Optio
 }
 
 fn should_redclaw_runner_execute_without_window(app: &AppHandle, state: &State<'_, AppState>) -> Result<bool, String> {
-    if !app.windows().is_empty() {
+    if !app.webview_windows().is_empty() {
         return Ok(true);
     }
 

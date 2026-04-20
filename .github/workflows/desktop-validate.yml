@@ -12,6 +12,7 @@ on:
       - '.github/workflows/desktop-bundle.yml'
       - 'apps/desktop/**'
       - 'packages/**'
+      - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
   pull_request:
     paths:
@@ -19,6 +20,7 @@ on:
       - '.github/workflows/desktop-bundle.yml'
       - 'apps/desktop/**'
       - 'packages/**'
+      - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
 
 concurrency:
@@ -49,7 +51,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          cache-dependency-path: apps/desktop/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Validate desktop release metadata
         working-directory: apps/desktop
