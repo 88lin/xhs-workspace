@@ -1,6 +1,6 @@
 [package]
 name = "xhs_studio"
-version = "0.1.0"
+version = "0.1.1"
 description = "Rust host for the XHS Atelier desktop app"
 authors = ["茉灵智库"]
 edition = "2021"

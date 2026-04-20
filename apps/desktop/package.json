@@ -1,7 +1,7 @@
 {
   "name": "xhs-atelier-desktop",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tauri desktop app for XHS Atelier",
   "homepage": "https://github.com/88lin/xhs-workspace",
   "author": "茉灵智库",
