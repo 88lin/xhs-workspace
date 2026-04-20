@@ -170,8 +170,14 @@ jobs:
         run: pnpm tauri icon ./public/Box.png --output ./src-tauri/icons
 
       - name: Build desktop bundle
+        if: runner.os != 'Windows'
         working-directory: apps/desktop
         run: pnpm tauri build
+
+      - name: Build Windows NSIS bundle
+        if: runner.os == 'Windows'
+        working-directory: apps/desktop
+        run: pnpm tauri build --bundles nsis
 
       - name: Generate bundle manifest and checksums
         working-directory: apps/desktop
