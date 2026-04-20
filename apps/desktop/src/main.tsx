@@ -56,7 +56,8 @@ class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryStat
             <div className="fatal-kicker">桌面端错误</div>
             <h1>界面启动失败</h1>
             <p>
-              这是前端渲染层出现的异常，当前不会清空你的本地数据或设置。请先尝试重新加载；如果仍然失败，再根据下方错误详情继续排查。
+              这是前端渲染层出现的异常，当前不会清空你的本地数据或设置。请先尝试重新加载；如果仍然失败，
+              再根据下方错误详情继续排查。
             </p>
 
             <div className="fatal-actions">

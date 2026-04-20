@@ -1238,10 +1238,10 @@
         </div>
         <div class="xhs-panel-result">
           <div class="placeholder">${hasData || !needsCollect
-            ? '点击上方按钮，AI 将分析文字 + 图片内容'
+            ? '点击上方按钮，分析助手会结合文字和图片给出结果'
             : '👆 先点击「开始采集」获取数据，再进行分析'}</div>
         </div>
-        <div class="xhs-panel-footer"><span class="xhs-footer-stats"></span>🖼 多模态分析 · Powered by ${AI_MODEL}</div>
+        <div class="xhs-panel-footer"><span class="xhs-footer-stats"></span>🖼 多模态分析 · 当前模型：${AI_MODEL}</div>
       `;
 
       statusBarEl = panel.querySelector('.xhs-status-bar');
@@ -1306,7 +1306,7 @@
               const loadingEl = resultEl.querySelector('.loading');
               if (loadingEl) loadingEl.textContent = `🎬 正在截取视频帧 (${done}/${total})`;
             });
-            resultEl.innerHTML = `<div class="loading">🤖 AI 正在分析 ${base64Images.length} 帧画面 + 文字...</div>`;
+            resultEl.innerHTML = `<div class="loading">🤖 分析助手正在分析 ${base64Images.length} 帧画面和正文...</div>`;
           } else {
             const imgUrls = getImageUrls(latestCtx.type);
             if (imgUrls.length > 0) {
@@ -1315,9 +1315,9 @@
                 const loadingEl = resultEl.querySelector('.loading');
                 if (loadingEl) loadingEl.textContent = `📸 正在加载图片 (${done}/${total})`;
               });
-              resultEl.innerHTML = `<div class="loading">🤖 AI 正在分析 ${base64Images.length} 张图片 + 文字...</div>`;
+              resultEl.innerHTML = `<div class="loading">🤖 分析助手正在分析 ${base64Images.length} 张图片和正文...</div>`;
             } else {
-              resultEl.innerHTML = '<div class="loading">🤖 AI 正在分析中...</div>';
+              resultEl.innerHTML = '<div class="loading">🤖 分析助手正在处理中...</div>';
             }
           }
 
@@ -1413,7 +1413,7 @@
                 // 显示加载状态
                 const loadingDiv = document.createElement('div');
                 loadingDiv.className = 'xhs-conversation-message xhs-ai-message';
-                loadingDiv.innerHTML = '<strong>AI：</strong><span class="loading">思考中...</span>';
+                loadingDiv.innerHTML = '<strong>分析助手：</strong><span class="loading">思考中...</span>';
                 conversationHistory.appendChild(loadingDiv);
 
                 // 滚动到底部
@@ -1449,7 +1449,7 @@
                 });
 
                 // 更新显示
-                loadingDiv.innerHTML = `<strong>AI：</strong><div class="xhs-ai-response">${renderMarkdown(aiResponse)}</div>`;
+                loadingDiv.innerHTML = `<strong>分析助手：</strong><div class="xhs-ai-response">${renderMarkdown(aiResponse)}</div>`;
 
                 // 滚动到新内容的第一句话位置
                 setTimeout(() => {

@@ -2,9 +2,9 @@ let statsRefreshTimer = null;
 
 const EXPORT_LABELS = {
   atelier: 'XHS Atelier 导入包',
-  json: 'JSON',
-  jsonl: 'JSONL',
-  markdown: 'Markdown',
+  json: 'JSON 数据',
+  jsonl: 'JSONL 逐行数据',
+  markdown: 'Markdown 文档',
   training: '训练数据',
 };
 
@@ -426,7 +426,7 @@ function showBatchAnalyzePanel() {
         <div class="history-panel batch-panel">
           <div class="history-header">
             <span>批量分析</span>
-            <button class="history-close">x</button>
+            <button class="history-close">关闭</button>
           </div>
           <div class="batch-prompt-select">
             <label for="batchPromptKey">分析模板</label>
@@ -541,7 +541,7 @@ function executeBatchAnalysis(posts, promptKey, prompt) {
       }
 
       if (response?.error === 'NO_API_KEY') {
-        showToast('请先在设置中配置 API Key。');
+        showToast('请先在设置中配置接口密钥。');
       } else if (response?.ok) {
         showToast('批量分析已开始，可稍后在历史记录中查看结果。');
       }
@@ -558,7 +558,7 @@ function triggerAutoAnalysis() {
     if (response?.ok) {
       showToast('自动分析已开始。');
     } else if (response?.error === 'NO_API_KEY') {
-      showToast('请先在设置中配置 API Key。');
+      showToast('请先在设置中配置接口密钥。');
     } else if (response?.error === 'NO_DATA') {
       showToast('当前没有可供分析的采集数据。');
     }
@@ -584,7 +584,7 @@ function showAnalysisHistory() {
       <div class="history-panel">
         <div class="history-header">
           <span>分析历史</span>
-          <button class="history-close">x</button>
+          <button class="history-close">关闭</button>
         </div>
         <div class="history-list">
           ${
@@ -651,6 +651,10 @@ function showAnalysisHistory() {
           const item = button.closest('.history-item');
           if (item) {
             item.remove();
+          }
+          const historyList = overlay.querySelector('.history-list');
+          if (historyList && !historyList.querySelector('.history-item')) {
+            historyList.innerHTML = '<div class="history-empty">还没有保存的分析记录。</div>';
           }
           showToast('已删除。');
         });

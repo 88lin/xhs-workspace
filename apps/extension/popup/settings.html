@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>采集器设置 - XHS Atelier</title>
+  <title>XHS Atelier 采集器设置</title>
   <link rel="stylesheet" href="settings.css">
 </head>
 <body>
@@ -18,9 +18,9 @@
       <section class="setting-section">
         <h2 class="section-title">
           <span class="icon">AI</span>
-          AI 模型配置
+          智能模型配置
         </h2>
-        <p class="section-desc">配置浏览器侧分析所使用的模型服务、API Key 与接口地址。</p>
+        <p class="section-desc">配置浏览器侧分析所使用的模型服务、接口密钥与接口地址。</p>
 
         <div class="setting-item-full">
           <label for="apiProvider">
@@ -49,11 +49,11 @@
         <div class="setting-item-full">
           <label for="apiKey">
             <span class="step-badge">步骤 2</span>
-            <span class="label-text">API Key</span>
+            <span class="label-text">接口密钥</span>
             <span class="label-hint" id="apiKeyHint">用于当前选中的模型服务</span>
           </label>
           <div class="field-actions">
-            <input type="password" id="apiKey" placeholder="粘贴你的 API Key" class="input-full input-grow" disabled>
+            <input type="password" id="apiKey" placeholder="粘贴你的接口密钥" class="input-full input-grow" disabled>
             <button class="btn-toggle-password" id="btnTogglePassword" type="button" disabled>显示</button>
             <button class="btn-test-api" id="btnTestAPI" type="button" disabled>测试连接</button>
           </div>
@@ -89,9 +89,9 @@
         <div class="api-hint">
           <p><strong>说明</strong></p>
           <ul id="apiHintList">
-            <li>API Key 只保存在浏览器本地同步存储中。</li>
+            <li>接口密钥只保存在浏览器本地同步存储中。</li>
             <li>OpenRouter 是切换多种模型最省事的入口。</li>
-            <li><a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">前往 OpenRouter 获取 API Key</a></li>
+            <li><a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">前往 OpenRouter 获取接口密钥</a></li>
           </ul>
         </div>
       </section>

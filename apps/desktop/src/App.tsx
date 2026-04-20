@@ -325,8 +325,26 @@ const BUILD_STEPS = [
   '将桌面端改动推送到 GitHub 仓库',
   '等待 `desktop-validate` 工作流通过',
   '创建 `desktop-v*` 标签或发布版本',
-  '在 GitHub Releases 下载安装包',
+  '在 GitHub 发布页下载安装包',
 ];
+const REDCLAW_FOLLOW_UP_PRESETS = [
+  {
+    label: '强化开头',
+    prompt: '保留原有核心角度，把开头改得更抓人，第一屏就说明读者为什么要继续看下去。',
+  },
+  {
+    label: '压缩重复',
+    prompt: '删除重复表达和空话，保留核心信息，让整篇稿件更紧凑更利落。',
+  },
+  {
+    label: '提升转化',
+    prompt: '保留正文结构，把结尾 CTA 改得更明确，增加收藏、评论或私信的行动引导。',
+  },
+  {
+    label: '口语润色',
+    prompt: '把表达改得更自然口语，但不要牺牲专业度和信息密度。',
+  },
+] as const;
 
 const VIEW_META: Record<StudioView, { title: string; summary: string }> = {
   overview: {
@@ -409,7 +427,7 @@ const getAppSettingsSaveIssues = (value: AppSettings) => {
     }
   }
   if (!normalized.aiApiKey) {
-    issues.push('请填写 RedClaw API Key。');
+    issues.push('请填写 RedClaw 接口密钥。');
   }
 
   return issues;
@@ -694,6 +712,52 @@ const buildBrief = (subject: SubjectRecord, categoryName: string) =>
     .filter(Boolean)
     .join('\n');
 
+const buildManuscriptTemplate = (subject: SubjectRecord, categoryName: string) => {
+  const normalizedCategory = categoryName || '未分类';
+  const attributeLines = subject.attributes.length
+    ? subject.attributes.map((item) => `- ${item.key}: ${item.value}`)
+    : ['- 目标人群：', '- 预期动作：', '- 关键证据：'];
+  const tagLine = subject.tags.length ? subject.tags.map((item) => `#${item}`).join(' ') : '#小红书创作';
+
+  return [
+    `# ${subject.name}`,
+    '',
+    '> 稿件状态：待完善',
+    `> 主题分类：${normalizedCategory}`,
+    '',
+    '## 一句话角度',
+    subject.description || '请先用一句话写清这篇内容最核心的观点、承诺或结果。',
+    '',
+    '## 标题备选',
+    '- ',
+    '- ',
+    '- ',
+    '',
+    '## 开头钩子',
+    '先用一个问题、反常识观察或具体场景开头，把读者拉进来。',
+    '',
+    '## 正文结构',
+    '### 1. 核心观点',
+    '- ',
+    '',
+    '### 2. 关键展开',
+    '- ',
+    '- ',
+    '- ',
+    '',
+    '### 3. 收尾 CTA',
+    '给出一个明确动作，引导收藏、评论、私信或下一步行为。',
+    '',
+    '## 参考信息',
+    `- 主题：${subject.name}`,
+    `- 分类：${normalizedCategory}`,
+    ...attributeLines,
+    '',
+    '## 推荐标签',
+    tagLine,
+  ].join('\n');
+};
+
 const formatMarkdownInline = (value: string) =>
   value
     .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
@@ -869,6 +933,20 @@ const buildContextId = (spaceName: string, subject: SubjectRecord, manuscriptPat
     .join('::')
     .replace(/[\\/ ]+/g, '-');
 
+const compactPath = (value: string, segmentCount = 4) => {
+  const normalized = String(value || '').trim().replace(/\\/g, '/');
+  if (!normalized) {
+    return '';
+  }
+
+  const parts = normalized.split('/').filter(Boolean);
+  if (parts.length <= segmentCount) {
+    return normalized;
+  }
+
+  return `.../${parts.slice(-segmentCount).join('/')}`;
+};
+
 const manuscriptParentPath = (path: string) => {
   const normalized = path.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
   const lastSlashIndex = normalized.lastIndexOf('/');
@@ -926,6 +1004,8 @@ export default function App() {
   const [sessionLinks, setSessionLinks] = useState<Record<string, string>>(() => readMap(SESSION_KEY));
   const [manuscriptPath, setManuscriptPath] = useState('');
   const [manuscriptContent, setManuscriptContent] = useState('');
+  const [savedManuscriptContent, setSavedManuscriptContent] = useState('');
+  const [manuscriptSyncedAt, setManuscriptSyncedAt] = useState<number | null>(null);
   const [redClawFollowUpPrompt, setRedClawFollowUpPrompt] = useState('');
   const [messages, setMessages] = useState<Array<ChatMessage & { displayContent?: string; display_content?: string }>>([]);
   const [runtimeState, setRuntimeState] = useState<RuntimeState>(EMPTY_RUNTIME);
@@ -941,9 +1021,10 @@ export default function App() {
   const subjectMap = new Map(subjects.map((item) => [item.id, item]));
   const subjectNameMap = new Map(subjects.map((item) => [item.id, item.name]));
   const activeSubject = editingNew ? null : subjects.find((item) => item.id === selectedId) || null;
+  const activeSubjectCategoryName = activeSubject ? categoryNameMap.get(activeSubject.categoryId || '') || '' : '';
   const linkedPath = activeSubject ? manuscriptLinks[activeSubject.id] || '' : '';
   const linkedSession = activeSubject ? sessionLinks[activeSubject.id] || '' : '';
-  const brief = activeSubject ? buildBrief(activeSubject, categoryNameMap.get(activeSubject.categoryId || '') || '') : '';
+  const brief = activeSubject ? buildBrief(activeSubject, activeSubjectCategoryName) : '';
   const visibleSubjects = subjects.filter((item) => {
     const query = search.trim().toLowerCase();
     if (!query) {
@@ -957,7 +1038,7 @@ export default function App() {
   const hasCompleteRedClawConfig = Boolean(normalizedSettings.aiModel && normalizedSettings.aiEndpoint && normalizedSettings.aiApiKey);
   const redClawReady = hasCompleteRedClawConfig && !settingsSaveIssues.length;
   const launchBlockers = [
-    !hasCompleteRedClawConfig ? '请先补全 RedClaw 模型、接口地址和 API Key。' : '',
+    !hasCompleteRedClawConfig ? '请先补全 RedClaw 模型、接口地址和接口密钥。' : '',
     ...settingsSaveIssues,
     !subjects.length ? '请至少创建一个主题，保证工作台有可复用的创作入口。' : '',
     (runnerStatus.contentPackSections || 0) <= 0 ? '内置内容包尚未加载完成，当前构建还不具备发布条件。' : '',
@@ -975,7 +1056,7 @@ export default function App() {
       title: 'RedClaw 直连配置',
       detail: redClawReady
         ? `${normalizedSettings.aiModel} - ${normalizedSettings.aiEndpoint}`
-        : '模型、接口地址和 API Key 仍需补全并验证。',
+        : '模型、接口地址和接口密钥仍需补全并验证。',
     },
     {
       id: 'ai-test',
@@ -1086,15 +1167,21 @@ export default function App() {
     draftStrategy?: DraftStrategy;
     manuscriptPath: string;
     referenceManuscriptPath?: string;
-  }) => {
+  }, options?: { compactPaths?: boolean; segmentCount?: number }) => {
+    const formatPath = (value?: string) => {
+      if (!value) {
+        return '';
+      }
+      return options?.compactPaths ? compactPath(value, options.segmentCount ?? 5) : value;
+    };
     const normalizedDraftStrategy = normalizeDraftStrategy(output.draftStrategy);
     if (normalizedDraftStrategy === 'rewrite') {
       return output.referenceManuscriptPath
-        ? `参考稿件：${output.referenceManuscriptPath}`
+        ? `参考稿件：${formatPath(output.referenceManuscriptPath)}`
         : '该草稿基于更早的稿件改写为一个新的分支版本。';
     }
     if (normalizedDraftStrategy === 'continue') {
-      return `覆盖目标：${output.referenceManuscriptPath || output.manuscriptPath}`;
+      return `覆盖目标：${formatPath(output.referenceManuscriptPath || output.manuscriptPath)}`;
     }
     return '该草稿为从零生成。';
   };
@@ -1129,7 +1216,18 @@ export default function App() {
   const activeSubjectLatestOutput = activeSubjectOutputArchive[0] || null;
   const activeSubjectRecoverableOutput = activeSubjectOutputArchive.find((item) => canReconnectOutputSession(item)) || null;
   const activeSubjectWorkingPath = manuscriptPath || linkedPath || '';
+  const compactActiveSubjectWorkingPath = compactPath(activeSubjectWorkingPath, 5);
   const hasActiveSubjectWorkingPath = Boolean(activeSubjectWorkingPath.trim());
+  const isManuscriptLoaded = Boolean(manuscriptPath.trim());
+  const isManuscriptDirty = Boolean(isManuscriptLoaded && manuscriptContent !== savedManuscriptContent);
+  const manuscriptWorkspaceDirectory = activeSubjectWorkingPath
+    ? compactPath(manuscriptParentPath(activeSubjectWorkingPath) || activeSubjectWorkingPath, 5)
+    : '';
+  const manuscriptSyncLabel = manuscriptSyncedAt
+    ? `最近同步 ${timeAgo(manuscriptSyncedAt)}`
+    : isManuscriptLoaded
+      ? '已载入当前稿件'
+      : '尚未载入稿件';
   const canSendRedClawFollowUp = Boolean(
     activeSubject && linkedSession && hasActiveSubjectWorkingPath && redClawReady && !runtimeState.isProcessing,
   );
@@ -1290,11 +1388,41 @@ export default function App() {
   const readManuscriptFile = async (path: string) =>
     (await window.ipcRenderer.invoke('manuscripts:read', { path })) as ManuscriptReadResult;
 
+  const persistManuscriptContent = async (path: string, content: string) => {
+    const result = (await window.ipcRenderer.invoke('manuscripts:save', {
+      path,
+      content,
+    })) as { success?: boolean; error?: string };
+
+    if (!result.success) {
+      throw new Error(result.error || '保存稿件失败。');
+    }
+  };
+
+  const saveManuscriptIfDirty = async (successText?: string) => {
+    if (!manuscriptPath || !isManuscriptDirty) {
+      return false;
+    }
+
+    await persistManuscriptContent(manuscriptPath, manuscriptContent);
+    setSavedManuscriptContent(manuscriptContent);
+    setManuscriptSyncedAt(Date.now());
+
+    if (successText) {
+      setNotice({ tone: 'success', text: successText });
+    }
+
+    return true;
+  };
+
   const loadManuscriptIntoStudio = async (path: string) => {
     const result = await readManuscriptFile(path);
     const normalizedPath = result.path || path;
+    const nextContent = result.content || '';
     setManuscriptPath(normalizedPath);
-    setManuscriptContent(result.content || '');
+    setManuscriptContent(nextContent);
+    setSavedManuscriptContent(nextContent);
+    setManuscriptSyncedAt(Date.now());
     return { ...result, path: normalizedPath };
   };
 
@@ -1395,7 +1523,7 @@ export default function App() {
   };
 
   const handleOpenGitHubReleases = async () =>
-    handleOpenExternalResource('open-releases', RELEASES_URL, '已打开 GitHub Releases。', 'GitHub Releases 页面');
+    handleOpenExternalResource('open-releases', RELEASES_URL, '已打开安装包发布页。', '安装包发布页');
 
   const handleOpenLaunchChecklist = async () =>
     handleOpenExternalResource(
@@ -1433,7 +1561,7 @@ export default function App() {
     );
 
   const handleOpenIssueTracker = async () =>
-    handleOpenExternalResource('open-issues', ISSUE_TRACKER_URL, '已打开 GitHub Issue 表单。', 'GitHub Issue 表单');
+    handleOpenExternalResource('open-issues', ISSUE_TRACKER_URL, '已打开问题反馈页面。', '问题反馈页面');
 
   const refreshAll = async () => {
     await runAction('refresh', async () => {
@@ -1621,7 +1749,7 @@ export default function App() {
       await load();
       setNotice({
         tone: 'success',
-        text: `工作区备份已恢复，现已载入 ${result.counts?.subjects || 0} 个主题和 ${result.counts?.captures || 0} 条采集记录。再次执行生成前，请重新填写 RedClaw API Key。`,
+        text: `工作区备份已恢复，现已载入 ${result.counts?.subjects || 0} 个主题和 ${result.counts?.captures || 0} 条采集记录。再次执行生成前，请重新填写 RedClaw 接口密钥。`,
       });
     });
   };
@@ -1970,23 +2098,25 @@ export default function App() {
 
     await runAction('manuscript', async () => {
       if (linkedPath) {
+        await saveManuscriptIfDirty('重新打开前已自动保存当前稿件。');
         await loadManuscriptIntoStudio(linkedPath);
+        setNotice({ tone: 'success', text: '当前稿件已载入编辑区。' });
         return;
       }
 
       const created = (await window.ipcRenderer.invoke('manuscripts:create-file', {
-        parentPath: 'xhs-atelier/creation-briefs',
-        name: `${activeSubject.name}-creation-brief`,
-        content: brief,
+        parentPath: 'xhs-atelier/redclaw-drafts',
+        name: activeSubject.name,
+        content: buildManuscriptTemplate(activeSubject, activeSubjectCategoryName),
       })) as { success?: boolean; error?: string; path?: string };
 
       if (!created.success || !created.path) {
-        throw new Error(created.error || '创建创作 Brief 失败。');
+        throw new Error(created.error || '创建稿件失败。');
       }
 
       rememberManuscript(activeSubject.id, created.path);
       await loadManuscriptIntoStudio(created.path);
-      setNotice({ tone: 'success', text: '创作 Brief 已写入 Manuscripts。' });
+      setNotice({ tone: 'success', text: '已创建新的稿件草稿。' });
     });
   };
 
@@ -1994,18 +2124,43 @@ export default function App() {
     if (!manuscriptPath) {
       return;
     }
+    if (!isManuscriptDirty) {
+      setNotice({ tone: 'info', text: '当前稿件没有新的改动。' });
+      return;
+    }
 
     await runAction('save-manuscript', async () => {
-      const result = (await window.ipcRenderer.invoke('manuscripts:save', {
-        path: manuscriptPath,
-        content: manuscriptContent,
-      })) as { success?: boolean; error?: string };
+      await persistManuscriptContent(manuscriptPath, manuscriptContent);
+      setSavedManuscriptContent(manuscriptContent);
+      setManuscriptSyncedAt(Date.now());
+      setNotice({ tone: 'success', text: '稿件已保存。' });
+    });
+  };
 
-      if (!result.success) {
-        throw new Error(result.error || '保存稿件失败。');
+  const handleOpenCurrentManuscriptExternally = async () => {
+    const sourcePath = manuscriptPath || linkedPath || '';
+    if (!sourcePath) {
+      setNotice({ tone: 'warning', text: '当前还没有可打开的稿件。' });
+      return;
+    }
+
+    await runAction('manuscript-external', async () => {
+      await saveManuscriptIfDirty('已先保存当前稿件。');
+      const result = await readManuscriptFile(sourcePath);
+      if (!result.absolutePath) {
+        throw new Error('当前没有可用的稿件绝对路径。');
       }
 
-      setNotice({ tone: 'success', text: '稿件已保存。' });
+      const openResult = (await window.ipcRenderer.openAppPath(result.absolutePath)) as {
+        success?: boolean;
+        error?: string;
+      };
+
+      if (!openResult.success) {
+        throw new Error(openResult.error || '在系统应用中打开稿件失败。');
+      }
+
+      setNotice({ tone: 'success', text: '已在系统应用中打开当前稿件。' });
     });
   };
 
@@ -2065,11 +2220,12 @@ export default function App() {
   }) => {
     if (!redClawReady) {
       setView('settings');
-      setNotice({ tone: 'warning', text: '请先在设置页补全 RedClaw 的模型、接口地址和 API Key。' });
+      setNotice({ tone: 'warning', text: '请先在设置页补全 RedClaw 的模型、接口地址和接口密钥。' });
       return;
     }
 
     await runAction(busyKey, async () => {
+      await saveManuscriptIfDirty(mode === 'rewrite' ? '改写前已自动保存当前稿件。' : '发送到 RedClaw 前已自动保存当前稿件。');
       const normalizedSourcePath = String(sourcePath || '').trim();
       const normalizedReferencePath = String(referencePath || sourcePath || '').trim();
       const normalizedSourceTitle = String(sourceTitle || subject.name).trim() || subject.name;
@@ -2233,6 +2389,7 @@ export default function App() {
     }
 
     await runAction(`${options.action === 'resume' ? 'output-resume' : 'output-open'}:${output.id}`, async () => {
+      await saveManuscriptIfDirty('切换稿件前已自动保存当前稿件。');
       setEditingNew(false);
       setSelectedId(subjectId);
       rememberManuscript(subjectId, output.manuscriptPath);
@@ -2415,16 +2572,30 @@ export default function App() {
     startTransition(() => setView('settings'));
   };
 
-  const startNewSubjectInLibrary = () => {
-    setEditingNew(true);
-    setSelectedId('');
-    startTransition(() => setView('library'));
+  const startNewSubjectInLibrary = async () => {
+    try {
+      await saveManuscriptIfDirty('切换到新建主题前已自动保存当前稿件。');
+      setEditingNew(true);
+      setSelectedId('');
+      startTransition(() => setView('library'));
+      return true;
+    } catch (error) {
+      setNotice({ tone: 'warning', text: String(error) });
+      return false;
+    }
   };
 
-  const openSubjectInLibrary = (subjectId: string) => {
-    setEditingNew(false);
-    setSelectedId(subjectId);
-    startTransition(() => setView('library'));
+  const openSubjectInLibrary = async (subjectId: string) => {
+    try {
+      await saveManuscriptIfDirty('切换主题前已自动保存当前稿件。');
+      setEditingNew(false);
+      setSelectedId(subjectId);
+      startTransition(() => setView('library'));
+      return true;
+    } catch (error) {
+      setNotice({ tone: 'warning', text: String(error) });
+      return false;
+    }
   };
 
   const openScheduledTaskInSettings = (task: ScheduledTaskRecord) => {
@@ -2493,6 +2664,7 @@ export default function App() {
     }
 
     await runAction('redclaw-follow-up', async () => {
+      await saveManuscriptIfDirty('发送后续指令前已自动保存当前稿件。');
       const packet = buildRedClawFollowUpPacket({
         subject: activeSubject,
         briefText: brief,
@@ -2817,8 +2989,12 @@ export default function App() {
                     {describeOutputMode(item.sourceKind)}
                   </span>
                 </div>
-                <div className="import-report-note">{item.manuscriptPath}</div>
-                <div className="import-report-note">{describeDraftStrategyDetail(item)}</div>
+                <div className="import-report-note workspace-path-note" title={item.manuscriptPath}>
+                  {compactPath(item.manuscriptPath, 5)}
+                </div>
+                <div className="import-report-note workspace-path-note" title={describeDraftStrategyDetail(item)}>
+                  {describeDraftStrategyDetail(item, { compactPaths: true, segmentCount: 5 })}
+                </div>
                 {item.summary ? <p>{item.summary}</p> : null}
                 <div className="automation-actions">
                   {canOpenOutputInStudio(item) ? (
@@ -3079,10 +3255,13 @@ export default function App() {
 
                         await load();
                         if (result.subject?.id) {
-                          setEditingNew(false);
-                          setSelectedId(result.subject.id);
+                          const switched = await openSubjectInLibrary(result.subject.id);
+                          if (!switched) {
+                            return;
+                          }
+                        } else {
+                          startTransition(() => setView('library'));
                         }
-                        startTransition(() => setView('library'));
                         setNotice({ tone: 'success', text: '收件箱条目已转为主题。' });
                       })
                     }
@@ -3101,7 +3280,7 @@ export default function App() {
     </section>
   );
   const libraryView = (
-    <section className="atelier-view">
+    <section className="atelier-view atelier-view-wide">
       <section className="library-grid">
         <section className="atelier-card">
           <div className="library-header">
@@ -3118,10 +3297,7 @@ export default function App() {
           <button
             type="button"
             className="secondary-action compact"
-            onClick={() => {
-              setEditingNew(true);
-              setSelectedId('');
-            }}
+            onClick={() => void startNewSubjectInLibrary()}
           >
             <Plus size={16} />
             新建主题
@@ -3137,10 +3313,7 @@ export default function App() {
                   <button
                     type="button"
                     className="subject-card-main"
-                    onClick={() => {
-                      setEditingNew(false);
-                      setSelectedId(item.id);
-                    }}
+                    onClick={() => void openSubjectInLibrary(item.id)}
                   >
                     <div className="subject-card-media">
                       {previewUrl(item) ? (
@@ -3246,418 +3419,543 @@ export default function App() {
       {activeSubject ? (
         <section className="atelier-card">
           <div className="section-tag">创作工作区</div>
-          <h3>创作 Brief / 稿件区 / RedClaw</h3>
-          <div className="workspace-guide-grid">
-            <article
-              className={`workspace-guide-card ${
-                !redClawReady || settingsConnectionStatus?.tone === 'warning'
-                  ? 'is-warning'
-                  : settingsConnectionStatus?.tone === 'success'
-                    ? 'is-ready'
-                    : 'is-info'
-              }`}
-            >
-              <div className="workspace-guide-top">
-                <div>
-                  <span className="subject-workspace-label">步骤 1</span>
-                  <h4>连接检查</h4>
-                </div>
-                <span
-                  className={`workspace-guide-status ${
-                    !redClawReady || settingsConnectionStatus?.tone === 'warning'
-                      ? 'is-warning'
-                      : settingsConnectionStatus?.tone === 'success'
-                        ? 'is-ready'
-                        : 'is-info'
-                  }`}
-                >
-                  {!redClawReady
-                    ? '待配置'
-                    : settingsConnectionStatus?.tone === 'success'
-                      ? '已验证'
-                      : settingsConnectionStatus?.tone === 'warning'
-                        ? '需重试'
-                        : '未测试'}
-                </span>
+          <div className="workspace-shell">
+            <div className="workspace-shell-head">
+              <div>
+                <h3>{activeSubject.name} 的创作工作台</h3>
+                <p className="workspace-shell-summary">
+                  这里把 Brief、稿件编辑和 RedClaw 会话放在同一个宽屏工作区里。桌面端会优先保护当前稿件，切换主题、
+                  恢复历史稿件、在系统中打开或发送到 RedClaw 前，都会先尝试保存当前内容。
+                </p>
               </div>
-              <p className="workspace-guide-summary">
-                {!redClawReady
-                  ? settingsSaveIssues[0] || '开始生成前，请先补全模型、接口地址和 API Key。'
-                  : settingsConnectionStatus?.tone === 'success'
-                    ? `${settingsConnectionStatus.model || normalizedSettings.aiModel} 已通过 ${
-                        settingsConnectionStatus.resolvedEndpoint || normalizedSettings.aiEndpoint
-                      } 连接就绪。`
-                    : settingsConnectionStatus?.tone === 'warning'
-                      ? settingsConnectionStatus.detail
-                      : '把主题送入 RedClaw 前，建议先跑一次真实连接测试。'}
-              </p>
-              <div className="subject-workspace-actions">
-                <button
-                  type="button"
-                  className="secondary-action compact"
-                  onClick={() => startTransition(() => setView('settings'))}
-                >
-                  <Settings2 size={16} />
-                  打开设置
-                </button>
-                {redClawReady ? (
-                  <button
-                    type="button"
-                    className="secondary-action compact"
-                    onClick={() => void handleTestRedClawConnection()}
-                  >
-                    {busy === 'settings-test' ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
-                    {settingsConnectionStatus?.tone === 'success' ? '重新测试连接' : '测试连接'}
-                  </button>
-                ) : null}
-              </div>
-            </article>
 
-            <article className={`workspace-guide-card ${hasActiveSubjectWorkingPath ? 'is-ready' : 'is-info'}`}>
-              <div className="workspace-guide-top">
-                <div>
-                  <span className="subject-workspace-label">步骤 2</span>
-                  <h4>稿件区</h4>
-                </div>
-                <span className={`workspace-guide-status ${hasActiveSubjectWorkingPath ? 'is-ready' : 'is-info'}`}>
-                  {hasActiveSubjectWorkingPath ? '已就绪' : '先创建'}
-                </span>
-              </div>
-              <p className="workspace-guide-summary">
-                {hasActiveSubjectWorkingPath
-                  ? `当前工作稿件：${activeSubjectWorkingPath}`
-                  : '先根据 Brief 创建稿件，这样桌面端才能保存编辑、重新打开草稿并继续派生改写版本。'}
-              </p>
-              <div className="subject-workspace-actions">
+              <div className="workspace-shell-actions">
                 <button type="button" className="secondary-action compact" onClick={() => void handleOpenOrCreateManuscript()}>
                   {busy === 'manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
                   {hasActiveSubjectWorkingPath ? '打开稿件' : '创建稿件'}
                 </button>
-                {manuscriptPath ? (
+                <button
+                  type="button"
+                  className="secondary-action compact"
+                  disabled={!isManuscriptLoaded}
+                  onClick={() => void handleSaveManuscript()}
+                >
+                  {busy === 'save-manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
+                  保存稿件
+                </button>
+                <button
+                  type="button"
+                  className="secondary-action compact"
+                  disabled={!hasActiveSubjectWorkingPath}
+                  onClick={() => void handleOpenCurrentManuscriptExternally()}
+                >
+                  {busy === 'manuscript-external' ? <Loader2 className="spin" size={16} /> : <ExternalLink size={16} />}
+                  系统打开
+                </button>
+                <button type="button" className="primary-action compact" onClick={() => void handleSendToRedClaw()}>
+                  {busy === 'redclaw' ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
+                  {linkedSession ? '继续 RedClaw' : '发送到 RedClaw'}
+                </button>
+              </div>
+            </div>
+
+            <div className="workspace-guide-grid">
+              <article
+                className={`workspace-guide-card ${
+                  !redClawReady || settingsConnectionStatus?.tone === 'warning'
+                    ? 'is-warning'
+                    : settingsConnectionStatus?.tone === 'success'
+                      ? 'is-ready'
+                      : 'is-info'
+                }`}
+              >
+                <div className="workspace-guide-top">
+                  <div>
+                    <span className="subject-workspace-label">步骤 1</span>
+                    <h4>连接检查</h4>
+                  </div>
+                  <span
+                    className={`workspace-guide-status ${
+                      !redClawReady || settingsConnectionStatus?.tone === 'warning'
+                        ? 'is-warning'
+                        : settingsConnectionStatus?.tone === 'success'
+                          ? 'is-ready'
+                          : 'is-info'
+                    }`}
+                  >
+                    {!redClawReady
+                      ? '待配置'
+                      : settingsConnectionStatus?.tone === 'success'
+                        ? '已验证'
+                        : settingsConnectionStatus?.tone === 'warning'
+                          ? '需重试'
+                          : '未测试'}
+                  </span>
+                </div>
+                <p className="workspace-guide-summary">
+                  {!redClawReady
+                    ? settingsSaveIssues[0] || '开始生成前，请先补全模型、接口地址和接口密钥。'
+                    : settingsConnectionStatus?.tone === 'success'
+                      ? `${settingsConnectionStatus.model || normalizedSettings.aiModel} 已通过 ${
+                          settingsConnectionStatus.resolvedEndpoint || normalizedSettings.aiEndpoint
+                        } 连接就绪。`
+                      : settingsConnectionStatus?.tone === 'warning'
+                        ? settingsConnectionStatus.detail
+                        : '把主题送入 RedClaw 前，建议先跑一次真实连接测试。'}
+                </p>
+                <div className="subject-workspace-actions">
                   <button
                     type="button"
                     className="secondary-action compact"
-                    onClick={() => void handleSaveManuscript()}
+                    onClick={() => startTransition(() => setView('settings'))}
                   >
-                    {busy === 'save-manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                    保存稿件
+                    <Settings2 size={16} />
+                    打开设置
                   </button>
-                ) : (
-                  <button type="button" className="secondary-action compact" onClick={() => void handleCopyBrief()}>
-                    <Copy size={16} />
-                    复制 Brief
-                  </button>
-                )}
-              </div>
-            </article>
-
-            <article
-              className={`workspace-guide-card ${
-                linkedSession ? 'is-ready' : activeSubjectRecoverableOutput ? 'is-warning' : 'is-info'
-              }`}
-            >
-              <div className="workspace-guide-top">
-                <div>
-                  <span className="subject-workspace-label">步骤 3</span>
-                  <h4>RedClaw 会话</h4>
+                  {redClawReady ? (
+                    <button
+                      type="button"
+                      className="secondary-action compact"
+                      onClick={() => void handleTestRedClawConnection()}
+                    >
+                      {busy === 'settings-test' ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
+                      {settingsConnectionStatus?.tone === 'success' ? '重新测试连接' : '测试连接'}
+                    </button>
+                  ) : null}
                 </div>
-                <span
-                  className={`workspace-guide-status ${
-                    linkedSession ? 'is-ready' : activeSubjectRecoverableOutput ? 'is-warning' : 'is-info'
-                  }`}
-                >
-                  {linkedSession ? '已关联' : activeSubjectRecoverableOutput ? '可恢复' : '未开始'}
-                </span>
-              </div>
-              <p className="workspace-guide-summary">
-                {linkedSession
-                  ? runtimeState.isProcessing
-                    ? '当前会话正在生成中。你可以刷新运行状态查看最新上下文，也可以继续编辑当前稿件。'
-                    : '当前主题已经关联到 RedClaw 会话，你可以随时继续当前草稿，或另起一个改写分支。'
-                  : activeSubjectRecoverableOutput
-                    ? `检测到来自 ${outputDisplayTitle(activeSubjectRecoverableOutput)} 的可恢复会话，可以直接接回，无需从头开始。`
-                    : activeSubjectLatestOutput
-                      ? '这个主题已经有草稿，但当前没有活跃会话。你可以打开最新草稿，或者基于当前稿件重新发起一轮。'
-                      : hasActiveSubjectWorkingPath
-                        ? '当前还没有 RedClaw 会话。把稿件发送给 RedClaw 后，就会创建第一条实时写作会话。'
-                        : '请先创建稿件，再送到 RedClaw 开始实时写作流程。'}
-              </p>
-              <div className="subject-workspace-actions">
-                {linkedSession ? (
-                  <>
+              </article>
+
+              <article className={`workspace-guide-card ${hasActiveSubjectWorkingPath ? 'is-ready' : 'is-info'}`}>
+                <div className="workspace-guide-top">
+                  <div>
+                    <span className="subject-workspace-label">步骤 2</span>
+                    <h4>稿件区</h4>
+                  </div>
+                  <span className={`workspace-guide-status ${hasActiveSubjectWorkingPath ? 'is-ready' : 'is-info'}`}>
+                    {hasActiveSubjectWorkingPath ? '已就绪' : '先创建'}
+                  </span>
+                </div>
+                <p className="workspace-guide-summary">
+                  {hasActiveSubjectWorkingPath
+                    ? '当前主题已经关联到可编辑稿件，适合继续打磨、保存和分支改写。'
+                    : '先根据 Brief 创建稿件，这样桌面端才能保存编辑、重新打开草稿并继续派生改写版本。'}
+                </p>
+                {hasActiveSubjectWorkingPath ? (
+                  <div className="import-report-note workspace-path-note" title={activeSubjectWorkingPath}>
+                    {compactActiveSubjectWorkingPath}
+                  </div>
+                ) : null}
+                <div className="subject-workspace-actions">
+                  <button type="button" className="secondary-action compact" onClick={() => void handleOpenOrCreateManuscript()}>
+                    {busy === 'manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
+                    {hasActiveSubjectWorkingPath ? '重新载入稿件' : '创建稿件'}
+                  </button>
+                  {hasActiveSubjectWorkingPath ? (
+                    <button
+                      type="button"
+                      className="secondary-action compact"
+                      onClick={() => void copyTextToClipboard(activeSubjectWorkingPath, '稿件路径已复制。')}
+                    >
+                      <Copy size={16} />
+                      复制稿件路径
+                    </button>
+                  ) : (
+                    <button type="button" className="secondary-action compact" onClick={() => void handleCopyBrief()}>
+                      <Copy size={16} />
+                      复制 Brief
+                    </button>
+                  )}
+                </div>
+              </article>
+
+              <article
+                className={`workspace-guide-card ${
+                  linkedSession ? 'is-ready' : activeSubjectRecoverableOutput ? 'is-warning' : 'is-info'
+                }`}
+              >
+                <div className="workspace-guide-top">
+                  <div>
+                    <span className="subject-workspace-label">步骤 3</span>
+                    <h4>RedClaw 会话</h4>
+                  </div>
+                  <span
+                    className={`workspace-guide-status ${
+                      linkedSession ? 'is-ready' : activeSubjectRecoverableOutput ? 'is-warning' : 'is-info'
+                    }`}
+                  >
+                    {linkedSession ? '已关联' : activeSubjectRecoverableOutput ? '可恢复' : '未开始'}
+                  </span>
+                </div>
+                <p className="workspace-guide-summary">
+                  {linkedSession
+                    ? runtimeState.isProcessing
+                      ? '当前会话正在生成中。你可以刷新运行状态查看最新上下文，也可以继续编辑当前稿件。'
+                      : '当前主题已经关联到 RedClaw 会话，你可以随时继续当前草稿，或另起一个改写分支。'
+                    : activeSubjectRecoverableOutput
+                      ? `检测到来自 ${outputDisplayTitle(activeSubjectRecoverableOutput)} 的可恢复会话，可以直接接回，无需从头开始。`
+                      : activeSubjectLatestOutput
+                        ? '这个主题已经有草稿，但当前没有活跃会话。你可以打开最新草稿，或者基于当前稿件重新发起一轮。'
+                        : hasActiveSubjectWorkingPath
+                          ? '当前还没有 RedClaw 会话。把稿件发送给 RedClaw 后，就会创建第一条实时写作会话。'
+                          : '请先创建稿件，再送到 RedClaw 开始实时写作流程。'}
+                </p>
+                <div className="subject-workspace-actions">
+                  {linkedSession ? (
+                    <>
+                      <button type="button" className="primary-action compact" onClick={() => void handleSendToRedClaw()}>
+                        {busy === 'redclaw' ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
+                        在 RedClaw 中继续
+                      </button>
+                      <button
+                        type="button"
+                        className="secondary-action compact"
+                        onClick={() => void refreshSessionInsights(linkedSession)}
+                      >
+                        <RefreshCw size={16} />
+                        刷新状态
+                      </button>
+                    </>
+                  ) : activeSubjectRecoverableOutput ? (
+                    <>
+                      <button
+                        type="button"
+                        className="primary-action compact"
+                        onClick={() => void handleResumeArchivedOutputSession(activeSubjectRecoverableOutput)}
+                      >
+                        {busy === `output-resume:${activeSubjectRecoverableOutput.id}` ? (
+                          <Loader2 className="spin" size={16} />
+                        ) : (
+                          <Wand2 size={16} />
+                        )}
+                        恢复最近会话
+                      </button>
+                      <button
+                        type="button"
+                        className="secondary-action compact"
+                        onClick={() => void handleOpenArchivedOutputInStudio(activeSubjectRecoverableOutput)}
+                      >
+                        {busy === `output-open:${activeSubjectRecoverableOutput.id}` ? (
+                          <Loader2 className="spin" size={16} />
+                        ) : (
+                          <FolderOpen size={16} />
+                        )}
+                        打开最近草稿
+                      </button>
+                    </>
+                  ) : hasActiveSubjectWorkingPath ? (
                     <button type="button" className="primary-action compact" onClick={() => void handleSendToRedClaw()}>
                       {busy === 'redclaw' ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                      在 RedClaw 中继续
+                      打开 RedClaw
+                    </button>
+                  ) : (
+                    <button type="button" className="secondary-action compact" onClick={() => void handleOpenOrCreateManuscript()}>
+                      {busy === 'manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
+                      先创建稿件
+                    </button>
+                  )}
+                </div>
+              </article>
+            </div>
+
+            <div className="subject-workspace-grid">
+              <div className="subject-workspace-card">
+                <div className="subject-workspace-head">
+                  <div>
+                    <span className="subject-workspace-label">创作 Brief</span>
+                    <strong>{activeSubject.name}</strong>
+                  </div>
+                  <div className="subject-workspace-actions">
+                    <button type="button" className="secondary-action compact" onClick={() => void handleCopyBrief()}>
+                      <Copy size={16} />
+                      复制 Brief
+                    </button>
+                    <button type="button" className="secondary-action compact" onClick={() => void handleOpenOrCreateManuscript()}>
+                      {busy === 'manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
+                      {linkedPath ? '打开稿件' : '创建稿件'}
+                    </button>
+                  </div>
+                </div>
+                <div className="workspace-brief-meta">
+                  <span>{activeSubjectCategoryName || '未分类'}</span>
+                  <span>{activeSubject.tags.length ? `标签 ${activeSubject.tags.length}` : '暂无标签'}</span>
+                  <span>{activeSubject.attributes.length ? `字段 ${activeSubject.attributes.length}` : '未补充结构化字段'}</span>
+                </div>
+                <div className="markdown-preview-pane workspace-brief-pane">
+                  <div className="workspace-preview-paper">
+                    {renderMarkdownPreview(brief, '当前主题还没有可预览的创作 Brief。')}
+                  </div>
+                </div>
+              </div>
+
+              <div className="subject-workspace-card workspace-priority-card">
+                <div className="subject-workspace-head">
+                  <div>
+                    <span className="subject-workspace-label">稿件区</span>
+                    <strong>{hasActiveSubjectWorkingPath ? '当前工作稿件' : '尚未创建稿件'}</strong>
+                  </div>
+                  <div className="subject-workspace-actions">
+                    <button
+                      type="button"
+                      className="secondary-action compact"
+                      disabled={!isManuscriptLoaded}
+                      onClick={() => void handleSaveManuscript()}
+                    >
+                      {busy === 'save-manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
+                      保存稿件
                     </button>
                     <button
                       type="button"
                       className="secondary-action compact"
+                      disabled={!hasActiveSubjectWorkingPath}
+                      onClick={() => void handleOpenCurrentManuscriptExternally()}
+                    >
+                      {busy === 'manuscript-external' ? <Loader2 className="spin" size={16} /> : <ExternalLink size={16} />}
+                      系统打开
+                    </button>
+                    <button
+                      type="button"
+                      className="secondary-action compact"
+                      disabled={!hasActiveSubjectWorkingPath}
+                      onClick={() => void copyTextToClipboard(activeSubjectWorkingPath, '稿件路径已复制。')}
+                    >
+                      <Copy size={16} />
+                      复制路径
+                    </button>
+                    <button
+                      type="button"
+                      className="secondary-action compact"
+                      disabled={!hasActiveSubjectWorkingPath}
+                      onClick={() => void handleRewriteCurrentManuscript()}
+                    >
+                      {busy === 'redclaw-rewrite' ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
+                      改写为新草稿
+                    </button>
+                  </div>
+                </div>
+
+                <div className="workspace-editor-meta">
+                  <span className={`workspace-meta-chip ${hasActiveSubjectWorkingPath ? 'is-ready' : 'is-warning'}`}>
+                    {hasActiveSubjectWorkingPath ? '稿件已关联' : '还未创建稿件'}
+                  </span>
+                  {hasActiveSubjectWorkingPath ? (
+                    <span className={`workspace-meta-chip ${isManuscriptDirty ? 'is-warning' : 'is-ready'}`}>
+                      {isManuscriptDirty ? '有未保存修改' : '稿件已保存'}
+                    </span>
+                  ) : null}
+                  {hasActiveSubjectWorkingPath ? <span>快捷保存 Ctrl/Cmd + S</span> : null}
+                  <span>{manuscriptSyncLabel}</span>
+                  {manuscriptWorkspaceDirectory ? <span title={activeSubjectWorkingPath}>{manuscriptWorkspaceDirectory}</span> : null}
+                </div>
+
+                <p className="workspace-editor-note">
+                  编辑区会优先给正文留出足够宽度，适合大屏连续写作；预览区放在下方，用来检查段落节奏、标题层级和 CTA 是否顺手。
+                </p>
+
+                {hasActiveSubjectWorkingPath ? (
+                  <>
+                    <div className="import-report-note workspace-path-note" title={activeSubjectWorkingPath}>
+                      {compactActiveSubjectWorkingPath}
+                    </div>
+                    <div className="workspace-editor-stack">
+                      <div className="markdown-preview-column">
+                        <span className="subject-workspace-label">正文编辑区</span>
+                        <textarea
+                          className="subject-workspace-editor workspace-editor-textarea"
+                          value={manuscriptContent}
+                          onChange={(event) => setManuscriptContent(event.target.value)}
+                          placeholder="从这里开始继续完善你的正文。"
+                        />
+                      </div>
+
+                      <div className="markdown-preview-column">
+                        <div className="workspace-preview-head">
+                          <div>
+                            <span className="subject-workspace-label">格式预览</span>
+                            <strong>按发布阅读效果检查版式</strong>
+                          </div>
+                          <div className="workspace-preview-tip">
+                            这里用于检查段落长短、标题层级和列表节奏，不会压缩上方编辑区的宽度。
+                          </div>
+                        </div>
+                        <div className="markdown-preview-pane workspace-preview-pane">
+                          <div className="workspace-preview-paper">
+                            {renderMarkdownPreview(manuscriptContent, '稿件内容为空，暂时没有可预览内容。')}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="workspace-editor-empty">
+                    <strong>先创建一份可编辑稿件</strong>
+                    <p>创建后会直接生成一份正文模板，并进入宽屏编辑模式。你可以先改正文，再发给 RedClaw 做续写或改写。</p>
+                    <div className="subject-workspace-actions">
+                      <button type="button" className="primary-action compact" onClick={() => void handleOpenOrCreateManuscript()}>
+                        {busy === 'manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
+                        创建稿件
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="subject-workspace-grid">
+              <div className="subject-workspace-card runtime-panel">
+                <div className="subject-workspace-head">
+                  <div>
+                    <span className="subject-workspace-label">运行状态</span>
+                    <strong>{linkedSession || '未关联会话'}</strong>
+                  </div>
+                  <div className="subject-workspace-actions">
+                    <button
+                      type="button"
+                      className="secondary-action compact"
+                      disabled={!linkedSession}
                       onClick={() => void refreshSessionInsights(linkedSession)}
                     >
                       <RefreshCw size={16} />
                       刷新状态
                     </button>
-                  </>
-                ) : activeSubjectRecoverableOutput ? (
-                  <>
+                  </div>
+                </div>
+
+                <div className="runtime-summary">
+                  <div className={`runtime-chip ${!linkedSession ? 'is-warning' : runtimeState.isProcessing ? 'is-live' : 'is-idle'}`}>
+                    {!linkedSession ? '未连接' : runtimeState.isProcessing ? '生成中' : '空闲'}
+                  </div>
+                  <div className="runtime-summary-text">
+                    {!linkedSession
+                      ? activeSubjectRecoverableOutput
+                        ? '当前没有活跃会话，可以从上方流程区恢复最近一次可接续的会话。'
+                        : '当前还没有活跃会话，请先把稿件发到 RedClaw。'
+                      : runtimeState.partialResponse || '当前还没有流式输出。'}
+                  </div>
+                </div>
+
+                <div className="runtime-meter">
+                  <span style={{ width: `${compactPercent}%` }} />
+                </div>
+
+                <div className="runtime-grid">
+                  <div className="runtime-stat">
+                    <span>上下文</span>
+                    <strong>{contextUsage.contextType || 'xhs-atelier:redclaw-entry'}</strong>
+                  </div>
+                  <div className="runtime-stat">
+                    <span>消息数</span>
+                    <strong>{contextUsage.messageCount || 0}</strong>
+                  </div>
+                  <div className="runtime-stat">
+                    <span>预估令牌</span>
+                    <strong>{contextUsage.estimatedTotalTokens || 0}</strong>
+                  </div>
+                  <div className="runtime-stat">
+                    <span>阈值</span>
+                    <strong>{contextUsage.compactThreshold || 24000}</strong>
+                  </div>
+                  <div className="runtime-stat">
+                    <span>内容包令牌</span>
+                    <strong>{contextUsage.embeddedPromptTokens || 0}</strong>
+                  </div>
+                  <div className="runtime-stat">
+                    <span>历史令牌</span>
+                    <strong>{contextUsage.activeHistoryTokens || 0}</strong>
+                  </div>
+                  <div className="runtime-stat">
+                    <span>更新时间</span>
+                    <strong>{runtimeState.updatedAt ? timeAgo(runtimeState.updatedAt) : '刚刚更新'}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div className="subject-workspace-card">
+                <div className="subject-workspace-head">
+                  <div>
+                    <span className="subject-workspace-label">RedClaw 会话</span>
+                    <strong>{linkedSession || '未关联会话'}</strong>
+                  </div>
+                </div>
+
+                <div className="subject-redclaw-log">
+                  {messages.length ? (
+                    messages.map((item) => (
+                      <article key={item.id} className={`subject-redclaw-message${item.role === 'user' ? ' is-user' : ''}`}>
+                        <div className="subject-redclaw-meta">
+                          <span>{item.role === 'user' ? '你' : 'RedClaw'}</span>
+                          <span>{timeAgo(item.created_at)}</span>
+                        </div>
+                        {item.displayContent || item.display_content ? (
+                          <div className="subject-redclaw-display">{item.displayContent || item.display_content}</div>
+                        ) : null}
+                        <div className="markdown-preview-pane is-compact">
+                          {renderMarkdownPreview(item.content, '暂无消息内容。')}
+                        </div>
+                      </article>
+                    ))
+                  ) : (
+                    <div className="subject-redclaw-empty">
+                      <strong>当前还没有对话记录</strong>
+                      <p>先把稿件发送给 RedClaw，后续就可以在这里继续续写、压缩、润色或派生改写版本。</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="subject-redclaw-composer">
+                  <div className="subject-workspace-head">
+                    <div>
+                      <span className="subject-workspace-label">后续指令</span>
+                      <strong>{linkedSession ? '继续当前会话' : '当前还未关联会话'}</strong>
+                    </div>
+                  </div>
+
+                  <div className="workspace-follow-up-presets">
+                    <div className="workspace-follow-up-label">常用补充指令</div>
+                    <div className="workspace-follow-up-chip-row">
+                      {REDCLAW_FOLLOW_UP_PRESETS.map((item) => (
+                        <button
+                          key={item.label}
+                          type="button"
+                          className="workspace-follow-up-chip"
+                          disabled={!linkedSession}
+                          onClick={() => setRedClawFollowUpPrompt(item.prompt)}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <textarea
+                    className="subject-redclaw-input"
+                    value={redClawFollowUpPrompt}
+                    onChange={(event) => setRedClawFollowUpPrompt(event.target.value)}
+                    placeholder="例如：开头更抓人，保留原结构，并把结尾 CTA 写得更有行动感。"
+                    disabled={!linkedSession}
+                  />
+                  <div className={`import-report-note${canSendRedClawFollowUp || !redClawFollowUpPrompt.trim() ? '' : ' is-warning'}`}>
+                    {redClawFollowUpHint}
+                  </div>
+                  <div className="subject-workspace-actions">
                     <button
                       type="button"
                       className="primary-action compact"
-                      onClick={() => void handleResumeArchivedOutputSession(activeSubjectRecoverableOutput)}
+                      disabled={!canSendRedClawFollowUp || !redClawFollowUpPrompt.trim()}
+                      onClick={() => void handleSendRedClawFollowUp()}
                     >
-                      {busy === `output-resume:${activeSubjectRecoverableOutput.id}` ? (
-                        <Loader2 className="spin" size={16} />
-                      ) : (
-                        <Wand2 size={16} />
-                      )}
-                      恢复最近会话
+                      {busy === 'redclaw-follow-up' ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
+                      发送指令
                     </button>
                     <button
                       type="button"
                       className="secondary-action compact"
-                      onClick={() => void handleOpenArchivedOutputInStudio(activeSubjectRecoverableOutput)}
+                      disabled={!redClawFollowUpPrompt}
+                      onClick={() => setRedClawFollowUpPrompt('')}
                     >
-                      {busy === `output-open:${activeSubjectRecoverableOutput.id}` ? (
-                        <Loader2 className="spin" size={16} />
-                      ) : (
-                        <FolderOpen size={16} />
-                      )}
-                      打开最近草稿
+                      <CircleDashed size={16} />
+                      清空
                     </button>
-                  </>
-                ) : hasActiveSubjectWorkingPath ? (
-                  <button type="button" className="primary-action compact" onClick={() => void handleSendToRedClaw()}>
-                    {busy === 'redclaw' ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                    打开 RedClaw
-                  </button>
-                ) : (
-                  <button type="button" className="secondary-action compact" onClick={() => void handleOpenOrCreateManuscript()}>
-                    {busy === 'manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                    先创建稿件
-                  </button>
-                )}
-              </div>
-            </article>
-          </div>
-
-          <div className="subject-workspace-grid">
-            <div className="subject-workspace-card">
-              <div className="subject-workspace-head">
-                <div>
-                  <span className="subject-workspace-label">创作 Brief</span>
-                  <strong>{activeSubject.name}</strong>
-                </div>
-                <div className="subject-workspace-actions">
-                  <button type="button" className="secondary-action compact" onClick={() => void handleCopyBrief()}>
-                    <Copy size={16} />
-                    复制 Brief
-                  </button>
-                  <button type="button" className="secondary-action compact" onClick={() => void handleOpenOrCreateManuscript()}>
-                    {busy === 'manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                    {linkedPath ? '打开稿件' : '创建稿件'}
-                  </button>
-                </div>
-              </div>
-              <div className="markdown-preview-pane">
-                {renderMarkdownPreview(brief, '当前主题还没有可预览的创作 Brief。')}
-              </div>
-            </div>
-
-            <div className="subject-workspace-card">
-              <div className="subject-workspace-head">
-                <div>
-                  <span className="subject-workspace-label">稿件区</span>
-                  <strong>{activeSubjectWorkingPath || '尚未创建稿件'}</strong>
-                </div>
-                <div className="subject-workspace-actions">
-                  <button
-                    type="button"
-                    className="secondary-action compact"
-                    disabled={!manuscriptPath}
-                    onClick={() => void handleSaveManuscript()}
-                  >
-                    {busy === 'save-manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                    保存稿件
-                  </button>
-                  <button
-                    type="button"
-                    className="secondary-action compact"
-                    disabled={!manuscriptPath && !linkedPath}
-                    onClick={() => void handleRewriteCurrentManuscript()}
-                  >
-                    {busy === 'redclaw-rewrite' ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
-                    改写为新草稿
-                  </button>
-                  <button type="button" className="primary-action compact" onClick={() => void handleSendToRedClaw()}>
-                    {busy === 'redclaw' ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                    发送到 RedClaw
-                  </button>
-                </div>
-              </div>
-              <div className="markdown-preview-split">
-                <div className="markdown-preview-column">
-                  <span className="subject-workspace-label">Markdown 编辑区</span>
-                  <textarea
-                    className="subject-workspace-editor"
-                    value={manuscriptContent}
-                    onChange={(event) => setManuscriptContent(event.target.value)}
-                  />
-                </div>
-                <div className="markdown-preview-column">
-                  <span className="subject-workspace-label">格式预览</span>
-                  <div className="markdown-preview-pane">
-                    {renderMarkdownPreview(manuscriptContent, '稿件内容为空，暂时没有可预览内容。')}
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="subject-workspace-grid">
-            <div className="subject-workspace-card runtime-panel">
-              <div className="subject-workspace-head">
-                <div>
-                  <span className="subject-workspace-label">运行状态</span>
-                  <strong>{linkedSession || '未关联会话'}</strong>
-                </div>
-                <div className="subject-workspace-actions">
-                  <button
-                    type="button"
-                    className="secondary-action compact"
-                    disabled={!linkedSession}
-                    onClick={() => void refreshSessionInsights(linkedSession)}
-                  >
-                    <RefreshCw size={16} />
-                    刷新状态
-                  </button>
-                </div>
-              </div>
-
-              <div className="runtime-summary">
-                <div className={`runtime-chip ${!linkedSession ? 'is-warning' : runtimeState.isProcessing ? 'is-live' : 'is-idle'}`}>
-                  {!linkedSession ? '未连接' : runtimeState.isProcessing ? '生成中' : '空闲'}
-                </div>
-                <div className="runtime-summary-text">
-                  {!linkedSession
-                    ? activeSubjectRecoverableOutput
-                      ? '当前没有活跃会话，可以从上方流程区恢复最近一次可接续的会话。'
-                      : '当前还没有活跃会话，请先把稿件发到 RedClaw。'
-                    : runtimeState.partialResponse || '当前还没有流式输出。'}
-                </div>
-              </div>
-
-              <div className="runtime-meter">
-                <span style={{ width: `${compactPercent}%` }} />
-              </div>
-
-                <div className="runtime-grid">
-                  <div className="runtime-stat">
-                  <span>上下文</span>
-                  <strong>{contextUsage.contextType || 'xhs-atelier:redclaw-entry'}</strong>
-                  </div>
-                  <div className="runtime-stat">
-                  <span>消息数</span>
-                  <strong>{contextUsage.messageCount || 0}</strong>
-                  </div>
-                  <div className="runtime-stat">
-                  <span>预估 Tokens</span>
-                  <strong>{contextUsage.estimatedTotalTokens || 0}</strong>
-                  </div>
-                  <div className="runtime-stat">
-                  <span>阈值</span>
-                  <strong>{contextUsage.compactThreshold || 24000}</strong>
-                  </div>
-                  <div className="runtime-stat">
-                  <span>内容包 Tokens</span>
-                  <strong>{contextUsage.embeddedPromptTokens || 0}</strong>
-                  </div>
-                  <div className="runtime-stat">
-                  <span>历史 Tokens</span>
-                  <strong>{contextUsage.activeHistoryTokens || 0}</strong>
-                  </div>
-                  <div className="runtime-stat">
-                  <span>更新时间</span>
-                  <strong>{runtimeState.updatedAt ? timeAgo(runtimeState.updatedAt) : '刚刚更新'}</strong>
-                  </div>
-                </div>
-            </div>
-
-            <div className="subject-workspace-card">
-              <div className="subject-workspace-head">
-                <div>
-                  <span className="subject-workspace-label">RedClaw 会话</span>
-                  <strong>{linkedSession || '未关联会话'}</strong>
-                </div>
-              </div>
-
-              <div className="subject-redclaw-log">
-                {messages.length ? (
-                  messages.map((item) => (
-                    <article key={item.id} className={`subject-redclaw-message${item.role === 'user' ? ' is-user' : ''}`}>
-                      <div className="subject-redclaw-meta">
-                        <span>{item.role === 'user' ? '你' : 'RedClaw'}</span>
-                        <span>{timeAgo(item.created_at)}</span>
-                      </div>
-                      {item.displayContent || item.display_content ? (
-                        <div className="subject-redclaw-display">{item.displayContent || item.display_content}</div>
-                      ) : null}
-                      <div className="markdown-preview-pane is-compact">
-                        {renderMarkdownPreview(item.content, '暂无消息内容。')}
-                      </div>
-                    </article>
-                  ))
-                ) : (
-                  <div className="import-report-note">创作 Brief 会持续保存在稿件区中；后续你也可以随时回到这里续写、改写或接着完善当前草稿。</div>
-                )}
-              </div>
-
-              <div className="subject-redclaw-composer">
-                <div className="subject-workspace-head">
-                  <div>
-                    <span className="subject-workspace-label">后续指令</span>
-                    <strong>{linkedSession ? '继续当前会话' : '当前还未关联会话'}</strong>
-                  </div>
-                </div>
-                <textarea
-                  className="subject-redclaw-input"
-                  value={redClawFollowUpPrompt}
-                  onChange={(event) => setRedClawFollowUpPrompt(event.target.value)}
-                  placeholder="例如：开头更抓人，保留原结构，并把结尾 CTA 写得更有行动感。"
-                  disabled={!linkedSession}
-                />
-                <div className={`import-report-note${canSendRedClawFollowUp || !redClawFollowUpPrompt.trim() ? '' : ' is-warning'}`}>
-                  {redClawFollowUpHint}
-                </div>
-                <div className="subject-workspace-actions">
-                  <button
-                    type="button"
-                    className="primary-action compact"
-                    disabled={!canSendRedClawFollowUp || !redClawFollowUpPrompt.trim()}
-                    onClick={() => void handleSendRedClawFollowUp()}
-                  >
-                    {busy === 'redclaw-follow-up' ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                    发送指令
-                  </button>
-                  <button
-                    type="button"
-                    className="secondary-action compact"
-                    disabled={!linkedSession}
-                    onClick={() =>
-                      setRedClawFollowUpPrompt('把开头写得更有钩子，去掉重复句，并在不改变核心角度的前提下把 CTA 写得更坚定。')
-                    }
-                  >
-                    <Sparkles size={16} />
-                    插入示例
-                  </button>
-                  <button
-                    type="button"
-                    className="secondary-action compact"
-                    disabled={!redClawFollowUpPrompt}
-                    onClick={() => setRedClawFollowUpPrompt('')}
-                  >
-                    <CircleDashed size={16} />
-                    清空
-                  </button>
                 </div>
               </div>
             </div>
@@ -3705,8 +4003,12 @@ export default function App() {
                         {describeOutputMode(item.sourceKind)}
                       </span>
                     </div>
-                    <div className="import-report-note">{item.manuscriptPath}</div>
-                    <div className="import-report-note">{describeDraftStrategyDetail(item)}</div>
+                    <div className="import-report-note workspace-path-note" title={item.manuscriptPath}>
+                      {compactPath(item.manuscriptPath, 5)}
+                    </div>
+                    <div className="import-report-note workspace-path-note" title={describeDraftStrategyDetail(item)}>
+                      {describeDraftStrategyDetail(item, { compactPaths: true, segmentCount: 5 })}
+                    </div>
                     {item.summary ? <p>{item.summary}</p> : null}
                     <div className="automation-actions">
                       {canOpenOutputInStudio(item) ? (
@@ -3796,7 +4098,7 @@ export default function App() {
       <section className="split-grid">
         <section className="atelier-card">
           <div className="section-tag">RedClaw</div>
-          <h3>AI 连接设置</h3>
+          <h3>智能连接设置</h3>
           <div className="settings-grid">
             <label>
               <span>接口类型</span>
@@ -3822,7 +4124,7 @@ export default function App() {
               />
             </label>
             <label>
-              <span>API Key</span>
+              <span>接口密钥</span>
               <input
                 type="password"
                 value={settings.aiApiKey}
@@ -3924,7 +4226,7 @@ export default function App() {
               onClick={() => void handleOpenGitHubReleases()}
             >
               {busy === 'open-releases' ? <Loader2 className="spin" size={15} /> : <ExternalLink size={15} />}
-              打开 GitHub Releases
+              打开安装包发布页
             </button>
             <button
               type="button"
@@ -3957,7 +4259,7 @@ export default function App() {
         <div className="section-tag">备份</div>
         <h3>工作区快照</h3>
         <div className="import-report-note">
-          在大规模导入、换机迁移或发布测试前，建议先创建一份 JSON 快照。快照会保存应用状态、自动化配置、归档历史，以及本地稿件和会话的关联关系；RedClaw API Key 与原始稿件/媒体文件不会被包含进去。
+          在大规模导入、换机迁移或发布测试前，建议先创建一份 JSON 快照。快照会保存应用状态、自动化配置、归档历史，以及本地稿件和会话的关联关系；RedClaw 接口密钥与原始稿件/媒体文件不会被包含进去。
         </div>
         <div className="info-grid launch-info-grid">
           <div className="info-item">
@@ -4551,7 +4853,7 @@ export default function App() {
                     <button
                       type="button"
                       className="primary-action compact"
-                      onClick={() => openSubjectInLibrary(subject.id)}
+                      onClick={() => void openSubjectInLibrary(subject.id)}
                     >
                       <LibraryBig size={16} />
                       打开主题
@@ -4842,8 +5144,12 @@ export default function App() {
                   </span>
                 </div>
 
-                <div className="import-report-note">{output.manuscriptPath}</div>
-                <div className="import-report-note">{describeDraftStrategyDetail(output)}</div>
+                <div className="import-report-note workspace-path-note" title={output.manuscriptPath}>
+                  {compactPath(output.manuscriptPath, 5)}
+                </div>
+                <div className="import-report-note workspace-path-note" title={describeDraftStrategyDetail(output)}>
+                  {describeDraftStrategyDetail(output, { compactPaths: true, segmentCount: 5 })}
+                </div>
                 {!canOpenOutputInStudio(output) ? (
                   <div className="import-report-note">
                     这份输出暂时还没有关联到已有主题，因此目前只能从外部应用中打开。
@@ -5019,7 +5325,14 @@ export default function App() {
                   </div>
                   <div className="task-editor-meta">
                     <span>最近输出</span>
-                    <strong>{editingScheduledOutput?.manuscriptPath || '暂无输出'}</strong>
+                    <strong
+                      className={editingScheduledOutput?.manuscriptPath ? 'workspace-path-note' : undefined}
+                      title={editingScheduledOutput?.manuscriptPath || undefined}
+                    >
+                      {editingScheduledOutput?.manuscriptPath
+                        ? compactPath(editingScheduledOutput.manuscriptPath, 5)
+                        : '暂无输出'}
+                    </strong>
                   </div>
                   <div className="task-editor-meta">
                     <span>重试策略</span>
@@ -5056,7 +5369,7 @@ export default function App() {
                     <button
                       type="button"
                       className="secondary-action compact"
-                      onClick={() => openSubjectInLibrary(scheduledEditorSubject.id)}
+                      onClick={() => void openSubjectInLibrary(scheduledEditorSubject.id)}
                     >
                       <FolderOpen size={16} />
                       打开主题
@@ -5296,9 +5609,18 @@ export default function App() {
                     <p>{task.prompt}</p>
                     {task.lastError ? <div className="import-report-note is-warning">{task.lastError}</div> : null}
                     {task.lastSavedManuscriptPath ? (
-                      <div className="import-report-note">最近输出：{task.lastSavedManuscriptPath}</div>
+                      <div className="import-report-note workspace-path-note" title={task.lastSavedManuscriptPath}>
+                        最近输出：{compactPath(task.lastSavedManuscriptPath, 5)}
+                      </div>
                     ) : null}
-                    {output ? <div className="import-report-note">{describeDraftStrategy(output.draftStrategy)} - {describeDraftStrategyDetail(output)}</div> : null}
+                    {output ? (
+                      <div
+                        className="import-report-note workspace-path-note"
+                        title={`${describeDraftStrategy(output.draftStrategy)} - ${describeDraftStrategyDetail(output)}`}
+                      >
+                        {describeDraftStrategy(output.draftStrategy)} - {describeDraftStrategyDetail(output, { compactPaths: true, segmentCount: 5 })}
+                      </div>
+                    ) : null}
                     <div className="automation-actions">
                       <button type="button" className="primary-action compact" onClick={() => void handleRunScheduledTask(task.id)}>
                         {busy === `scheduled-run:${task.id}` ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
@@ -5308,7 +5630,7 @@ export default function App() {
                         <button
                           type="button"
                           className="secondary-action compact"
-                          onClick={() => openSubjectInLibrary(linkedSubject.id)}
+                          onClick={() => void openSubjectInLibrary(linkedSubject.id)}
                         >
                           <LibraryBig size={16} />
                           打开主题
@@ -5463,7 +5785,14 @@ export default function App() {
                   </div>
                   <div className="task-editor-meta">
                     <span>最近输出</span>
-                    <strong>{editingLongCycleOutput?.manuscriptPath || '暂无输出'}</strong>
+                    <strong
+                      className={editingLongCycleOutput?.manuscriptPath ? 'workspace-path-note' : undefined}
+                      title={editingLongCycleOutput?.manuscriptPath || undefined}
+                    >
+                      {editingLongCycleOutput?.manuscriptPath
+                        ? compactPath(editingLongCycleOutput.manuscriptPath, 5)
+                        : '暂无输出'}
+                    </strong>
                   </div>
                 </div>
                 {editingLongCycleTask?.lastError ? (
@@ -5492,7 +5821,7 @@ export default function App() {
                     <button
                       type="button"
                       className="secondary-action compact"
-                      onClick={() => openSubjectInLibrary(longCycleEditorSubject.id)}
+                      onClick={() => void openSubjectInLibrary(longCycleEditorSubject.id)}
                     >
                       <FolderOpen size={16} />
                       打开主题
@@ -5678,9 +6007,18 @@ export default function App() {
                     <p>{task.objective}</p>
                     {task.lastError ? <div className="import-report-note is-warning">{task.lastError}</div> : null}
                     {task.lastSavedManuscriptPath ? (
-                      <div className="import-report-note">最近输出：{task.lastSavedManuscriptPath}</div>
+                      <div className="import-report-note workspace-path-note" title={task.lastSavedManuscriptPath}>
+                        最近输出：{compactPath(task.lastSavedManuscriptPath, 5)}
+                      </div>
                     ) : null}
-                    {output ? <div className="import-report-note">{describeDraftStrategy(output.draftStrategy)} - {describeDraftStrategyDetail(output)}</div> : null}
+                    {output ? (
+                      <div
+                        className="import-report-note workspace-path-note"
+                        title={`${describeDraftStrategy(output.draftStrategy)} - ${describeDraftStrategyDetail(output)}`}
+                      >
+                        {describeDraftStrategy(output.draftStrategy)} - {describeDraftStrategyDetail(output, { compactPaths: true, segmentCount: 5 })}
+                      </div>
+                    ) : null}
                     <div className="automation-actions">
                       <button type="button" className="primary-action compact" onClick={() => void handleRunLongCycleTask(task.id)}>
                         {busy === `long-cycle-run:${task.id}` ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
@@ -5690,7 +6028,7 @@ export default function App() {
                         <button
                           type="button"
                           className="secondary-action compact"
-                          onClick={() => openSubjectInLibrary(linkedSubject.id)}
+                          onClick={() => void openSubjectInLibrary(linkedSubject.id)}
                         >
                           <LibraryBig size={16} />
                           打开主题
@@ -5858,6 +6196,8 @@ export default function App() {
     if (!activeSubject) {
       setManuscriptPath('');
       setManuscriptContent('');
+      setSavedManuscriptContent('');
+      setManuscriptSyncedAt(null);
       setRedClawFollowUpPrompt('');
       setMessages([]);
       setRuntimeState(EMPTY_RUNTIME);
@@ -5869,17 +6209,50 @@ export default function App() {
     if (!path) {
       setManuscriptPath('');
       setManuscriptContent('');
+      setSavedManuscriptContent('');
+      setManuscriptSyncedAt(null);
       setRedClawFollowUpPrompt('');
       return;
     }
 
-    void readManuscriptFile(path)
-      .then((result) => {
-        setManuscriptPath(result.path || path);
-        setManuscriptContent(result.content || '');
-      })
-      .catch((error) => setNotice({ tone: 'warning', text: String(error) }));
+    void loadManuscriptIntoStudio(path).catch((error) => setNotice({ tone: 'warning', text: String(error) }));
   }, [activeSubject, manuscriptLinks]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (!isManuscriptDirty) {
+        return;
+      }
+
+      event.preventDefault();
+      event.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isManuscriptDirty]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== 's') {
+        return;
+      }
+
+      if (!manuscriptPath) {
+        return;
+      }
+
+      event.preventDefault();
+      if (busy === 'save-manuscript') {
+        return;
+      }
+
+      void handleSaveManuscript();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [busy, manuscriptPath, manuscriptContent, isManuscriptDirty]);
 
   useEffect(() => {
     if (!linkedSession) {

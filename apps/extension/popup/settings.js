@@ -21,9 +21,9 @@ const API_PROVIDERS = {
     endpoint: 'https://openrouter.ai/api/v1/chat/completions',
     keyPlaceholder: 'sk-or-v1-...',
     hint: [
-      'API Key 只保存在浏览器本地存储中。',
+      '接口密钥只保存在浏览器本地存储中。',
       '一个接口下可以切换多种模型。',
-      '前往 <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">OpenRouter</a> 获取 API Key。',
+      '前往 <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">OpenRouter</a> 获取接口密钥。',
     ],
     models: [
       ['google/gemini-2.0-flash-001', 'Gemini 2.0 Flash（推荐）'],
@@ -43,7 +43,7 @@ const API_PROVIDERS = {
     hint: [
       '直接使用 Anthropic 官方 Claude 接口。',
       '需要你拥有 Anthropic 账户。',
-      '前往 <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">Anthropic Console</a> 获取 API Key。',
+      '前往 <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">Anthropic Console</a> 获取接口密钥。',
     ],
     models: [
       ['claude-3-5-sonnet-20241022', 'Claude 3.5 Sonnet（推荐）'],
@@ -58,7 +58,7 @@ const API_PROVIDERS = {
     hint: [
       '直接使用 OpenAI 官方 GPT 接口。',
       '需要你拥有 OpenAI 账户。',
-      '前往 <a href="https://platform.openai.com/api-keys" target="_blank" rel="noreferrer">OpenAI Platform</a> 获取 API Key。',
+      '前往 <a href="https://platform.openai.com/api-keys" target="_blank" rel="noreferrer">OpenAI Platform</a> 获取接口密钥。',
     ],
     models: [
       ['gpt-4o', 'GPT-4o（推荐）'],
@@ -73,8 +73,8 @@ const API_PROVIDERS = {
     keyPlaceholder: 'AIza...',
     hint: [
       '直接使用 Google 官方 Gemini 接口。',
-      '需要 Google AI Studio 的 API Key。',
-      '前往 <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noreferrer">Google AI Studio</a> 获取 API Key。',
+      '需要 Google AI Studio 的接口密钥。',
+      '前往 <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noreferrer">Google AI Studio</a> 获取接口密钥。',
     ],
     models: [
       ['gemini-2.0-flash-exp', 'Gemini 2.0 Flash（推荐）'],
@@ -89,7 +89,7 @@ const API_PROVIDERS = {
     hint: [
       'DeepSeek 官方 API。',
       '仅支持文本分析，不支持图像分析。',
-      '前往 <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noreferrer">DeepSeek Platform</a> 获取 API Key。',
+      '前往 <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noreferrer">DeepSeek Platform</a> 获取接口密钥。',
     ],
     models: [
       ['deepseek-chat', 'DeepSeek Chat（推荐）'],
@@ -103,7 +103,7 @@ const API_PROVIDERS = {
     hint: [
       '阿里云通义千问接口。',
       'VL 模型支持多模态分析。',
-      '前往 <a href="https://help.aliyun.com/zh/model-studio/getting-started/first-api-call-to-qwen" target="_blank" rel="noreferrer">阿里云百炼</a> 获取 API Key。',
+      '前往 <a href="https://help.aliyun.com/zh/model-studio/getting-started/first-api-call-to-qwen" target="_blank" rel="noreferrer">阿里云百炼</a> 获取接口密钥。',
     ],
     models: [
       ['qwen-vl-max-latest', 'Qwen VL Max（多模态，推荐）'],
@@ -116,11 +116,11 @@ const API_PROVIDERS = {
   minimax: {
     name: 'MiniMax',
     endpoint: 'https://api.minimax.io/anthropic',
-    keyPlaceholder: '粘贴你的 API Key',
+    keyPlaceholder: '粘贴你的接口密钥',
     hint: [
       'MiniMax 官方 API。',
       '仅支持文本分析，不支持图像分析。',
-      '前往 <a href="https://platform.minimax.io" target="_blank" rel="noreferrer">MiniMax Platform</a> 获取 API Key。',
+      '前往 <a href="https://platform.minimax.io" target="_blank" rel="noreferrer">MiniMax Platform</a> 获取接口密钥。',
     ],
     models: [
       ['MiniMax-M2.7', 'MiniMax M2.7（推荐）'],
@@ -132,7 +132,7 @@ const API_PROVIDERS = {
   custom: {
     name: '自定义接口',
     endpoint: '',
-    keyPlaceholder: '粘贴你的 API Key',
+    keyPlaceholder: '粘贴你的接口密钥',
     hint: [
       '可接入任意兼容 OpenAI 协议的接口。',
       '请确认接口支持你预期的模型格式。',
@@ -214,7 +214,7 @@ function updateFormSteps() {
   el('customEndpoint').disabled = !(provider === 'custom' && apiKey);
 
   if (!apiKey) {
-    el('customModel').placeholder = '请先输入 API Key';
+    el('customModel').placeholder = '请先输入接口密钥';
   }
 }
 
@@ -283,7 +283,7 @@ async function loadSettings() {
     renderCustomPrompts(config.customPrompts || []);
     updateFormSteps();
   } catch (error) {
-    console.error('Failed to load settings:', error);
+    console.error('加载设置失败:', error);
     showToast('加载设置失败。');
   }
 }
@@ -316,7 +316,7 @@ async function saveSettings() {
     const resolvedModel = provider === 'custom' ? customModel : apiModel;
 
     if (!apiKey) {
-      showToast('请先填写 API Key。');
+      showToast('请先填写接口密钥。');
       el('apiKey').focus();
       return;
     }
@@ -399,7 +399,7 @@ async function saveSettings() {
     showToast('设置已保存。');
     setTimeout(showSuccessModal, 500);
   } catch (error) {
-    console.error('Failed to save settings:', error);
+    console.error('保存设置失败:', error);
     showToast('保存失败。');
   }
 }
@@ -509,7 +509,7 @@ async function testAPIConnection() {
   const testBtn = el('btnTestAPI');
   const resolvedModel = provider === 'custom' ? customModel : apiModel;
 
-  if (!apiKey) return showApiError('请先输入 API Key。');
+  if (!apiKey) return showApiError('请先输入接口密钥。');
   if (provider === 'custom' && !customEndpoint) return showApiError('请先填写自定义接口地址。');
   if (provider === 'custom' && !customModel) return showApiError('请先填写模型 ID。');
 
