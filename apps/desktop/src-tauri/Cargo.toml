@@ -1,7 +1,7 @@
 [package]
 name = "xhs_studio"
-version = "0.1.1"
-description = "Rust host for the XHS Atelier desktop app"
+version = "0.1.2"
+description = "XHS Atelier 桌面应用的 Rust 宿主程序"
 authors = ["茉灵智库"]
 edition = "2021"
 license = "MIT"

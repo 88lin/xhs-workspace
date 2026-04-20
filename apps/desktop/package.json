@@ -1,8 +1,8 @@
 {
   "name": "xhs-atelier-desktop",
   "private": true,
-  "version": "0.1.1",
-  "description": "Tauri desktop app for XHS Atelier",
+  "version": "0.1.2",
+  "description": "XHS Atelier 的小红书桌面创作工作台",
   "homepage": "https://github.com/88lin/xhs-workspace",
   "author": "茉灵智库",
   "license": "MIT",

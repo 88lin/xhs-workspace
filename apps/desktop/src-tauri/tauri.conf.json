@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "XHS Atelier",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "identifier": "com.xhsatelier.desktop",
   "build": {
     "beforeDevCommand": "pnpm dev",
@@ -30,8 +30,8 @@
     "category": "Productivity",
     "publisher": "茉灵智库",
     "homepage": "https://github.com/88lin/xhs-workspace",
-    "shortDescription": "A desktop studio for Xiaohongshu capture, library management, and RedClaw drafting.",
-    "longDescription": "XHS Atelier combines capture intake, subject organization, creation briefs, manuscripts, and RedClaw generation into one open-source Tauri desktop workspace.",
+    "shortDescription": "面向小红书采集、资料沉淀与 RedClaw 创作的一体化桌面工作台。",
+    "longDescription": "XHS Atelier 将内容采集、主题整理、创作 Brief、稿件编辑和 RedClaw 生成整合进同一个开源 Tauri 桌面工作流。",
     "license": "MIT",
     "licenseFile": "../../../LICENSE",
     "createUpdaterArtifacts": false,
