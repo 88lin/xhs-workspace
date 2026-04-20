@@ -18,14 +18,14 @@
     "tauri:build": "tauri build"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/api": "2.10.1",
     "lucide-react": "^0.300.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tippy.js": "^6.3.7"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.0.0",
+    "@tauri-apps/cli": "2.10.1",
     "@types/node": "^22.15.21",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
