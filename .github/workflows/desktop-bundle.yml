@@ -213,4 +213,9 @@ jobs:
           draft: false
           prerelease: false
           generate_release_notes: true
-          files: desktop-bundles/**/*
+          files: |
+            desktop-bundles/**/*.dmg
+            desktop-bundles/**/*.AppImage
+            desktop-bundles/**/*.deb
+            desktop-bundles/**/*.rpm
+            desktop-bundles/**/*.exe
