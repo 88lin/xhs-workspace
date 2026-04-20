@@ -1,141 +1,152 @@
 # 桌面端发布流程
 
-桌面端遵循一个固定规则：
+这份文档只说明一件事：
 
-- 不在本地为发布工作安装桌面端依赖
-- 不在本地为了发布校验执行 `pnpm build`
-- 不在本地为了发布打包执行 `pnpm tauri build`
-- 所有校验、打包和发布产物输出统一走 GitHub Actions
+- `XHS Atelier` 桌面端的正式安装包，以 GitHub Actions 产物为准，不以本地打包结果为准
 
-这样可以避免本地环境漂移，保证最终安装包来自同一条 CI 发布链路。
+## 固定原则
 
-## 版本元数据规则
+- 不把本地 `pnpm tauri build` 视为正式发布结果
+- 不把本地安装依赖和本地构建当成对外发布流程
+- 正式校验、正式打包、正式 Release 都在 GitHub Actions 中完成
 
-创建桌面端发布 tag 之前，下面三个文件里的版本号必须保持一致：
+## 发布前必须对齐的版本文件
+
+在创建桌面端发布 tag 之前，以下 3 个文件中的版本号必须完全一致：
 
 - `apps/desktop/package.json`
 - `apps/desktop/src-tauri/Cargo.toml`
 - `apps/desktop/src-tauri/tauri.conf.json`
 
-仓库现在会通过以下方式强制校验：
+仓库里已经提供了版本检查脚本：
 
 - 在 `apps/desktop/` 中执行 `pnpm release:check`
-- 分支推送和 PR 触发的 `desktop-validate`
-- 发布 tag 触发的 `desktop-bundle`
 
-桌面端发布 tag 必须和版本号严格对应：
-
-- 版本 `0.1.0` -> tag `desktop-v0.1.0`
-- 版本 `0.2.0-beta.1` -> tag `desktop-v0.2.0-beta.1`
-
-如果 tag 和仓库中的桌面端版本不一致，发布工作流会在开始打包前直接失败。
-
-## 当前工作流
+## 当前 GitHub Actions 工作流
 
 ### `desktop-validate`
 
-工作流文件：
+文件：
 
 - `.github/workflows/desktop-validate.yml`
 
-触发方式：
+触发条件：
 
-- 推送到 `main` / `master` / `develop`
-- `pull_request`
-- 手动触发 `workflow_dispatch`
+- 推送到 `main`
+- 推送到 `master`
+- 推送到 `develop`
+- 针对桌面端相关路径的 Pull Request
+- 手动触发
 
-当前职责：
+主要职责：
 
-- 在开始构建前校验桌面端版本元数据
-- 在 `apps/desktop/` 执行 `pnpm install --frozen-lockfile`
-- 执行前端 `pnpm typecheck`
-- 执行前端生产构建 `pnpm build:web`
-- 在 `apps/desktop/src-tauri/` 执行 `cargo fmt --all --check`
-- 在 Linux 上执行 `cargo check --all-targets`
-- 执行 `pnpm tauri build --ci --no-bundle`
-- 在 Linux / Windows / macOS 上补充 `cargo check --all-targets`
-- 只会在桌面端相关路径变更时自动触发
+- 先校验桌面端版本元数据
+- 安装桌面端依赖
+- 执行前端类型检查
+- 执行前端构建
+- 执行 Rust 格式检查
+- 执行 Tauri host 编译检查
+- 执行无 bundle 的 Tauri 构建检查
+- 在 Linux / macOS / Windows 上分别执行 host-check
+
+当前说明：
+
+- Rust 格式检查仍然保留
+- 但它现在是 advisory，不阻塞桌面端整条验证链
+- 其余步骤仍然是硬性校验项
 
 ### `desktop-bundle`
 
-工作流文件：
+文件：
 
 - `.github/workflows/desktop-bundle.yml`
 
-触发方式：
+触发条件：
 
 - 推送匹配 `desktop-v*` 的 tag
-- 手动触发 `workflow_dispatch`
+- 手动触发
 
-当前职责：
+主要职责：
 
-- 重新执行一轮发布前校验
-- 校验当前 tag 是否与仓库中的桌面端版本严格一致
-- 在 Linux / Windows / macOS 上构建 Tauri 安装包
-- 在 bundle 输出目录生成 `bundle-manifest.json` 和 `SHA256SUMS.txt`
-- 将带版本号的 bundle 产物上传到 GitHub Actions Artifacts
-- 对 `desktop-v*` tag 自动发布 GitHub Release
-- 使用 `XHS Atelier Desktop vX.Y.Z` 作为 release 名称
-- 通过 `.github/release.yml` 生成统一格式的 release notes
+- 再次校验版本和 tag 是否匹配
+- 安装桌面端依赖
+- 生成 Tauri 图标资源
+- 为 Linux / Windows / macOS 构建桌面端安装包
+- 生成 `bundle-manifest.json`
+- 生成 `SHA256SUMS.txt`
+- 自动发布 GitHub Release
 
-## 推荐发布步骤
+## 当前 Action 运行时说明
 
-1. 先把三个版本元数据文件更新到同一个版本号。
-2. 将桌面端改动推送到仓库。
+桌面端相关工作流已经切换到 Node 24 兼容运行方式：
+
+- 使用 `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true`
+- `actions/checkout` 已更新
+- `actions/setup-node` 已更新
+
+这样做的目的，是清掉 GitHub Actions 对 Node 20 JavaScript Action 弃用的警告，并提前适配后续运行时切换。
+
+## 发布 tag 规则
+
+桌面端发布 tag 必须和桌面端版本号严格对应：
+
+- 版本 `0.1.0` 对应 tag `desktop-v0.1.0`
+- 版本 `0.2.0-beta.1` 对应 tag `desktop-v0.2.0-beta.1`
+
+不要手写一个和版本号不一致的 tag。
+
+## 推荐发布顺序
+
+1. 修改桌面端版本号，并确保 3 个版本文件一致。
+2. 推送桌面端相关改动到仓库分支。
 3. 等待 `desktop-validate` 通过。
-4. 创建一份工作区快照；如果需要完整回滚点，再额外复制 workspace 和 export 文件夹。
-5. 创建版本 tag，例如 `desktop-v0.1.0`。
-6. 将 tag 推送到 GitHub。
+4. 确认桌面端界面、导入、写作和归档流程都没有明显阻塞项。
+5. 创建与版本号一致的 `desktop-v*` tag。
+6. 推送该 tag。
 7. 等待 `desktop-bundle` 完成。
-8. 从 GitHub Releases 下载安装包和 `SHA256SUMS.txt`。
-9. 在分发前校验你准备发布的安装包哈希值。
+8. 到 GitHub Releases 检查安装包、校验文件和说明是否齐全。
 
-示例命令：
+## 示例
+
+假设当前桌面端版本是 `0.1.0`：
 
 ```bash
 git tag desktop-v0.1.0
 git push origin desktop-v0.1.0
 ```
 
-可选的发布前本地检查命令：
+## 桌面端正式发布前建议人工确认的内容
 
-```bash
-cd apps/desktop
-pnpm release:check
-```
+- `Settings` 中 AI 连接测试能通过
+- `Capture` 能导入桥接包或本地文件
+- `Library` 能创建或编辑主题
+- `Creation Brief` 能正确承接主题信息
+- `Manuscripts` 能保存和重新打开草稿
+- RedClaw 能发起生成、继续和重写
+- `Archive` 能继续、恢复和清理历史输出
+- 自动化任务的基础开关和任务列表正常
 
-## 校验哈希
+## 备份说明
 
-下载安装包和 `SHA256SUMS.txt` 后，分发前先做一次哈希校验。
+桌面端工作区快照主要是元数据恢复点，默认不包含所有本地媒体文件。
 
-Windows PowerShell 示例：
+在以下场景前建议备份：
 
-```powershell
-Get-FileHash .\xhs-atelier-installer.msi -Algorithm SHA256
-```
+- 大规模导入前
+- 迁移机器前
+- 发布测试前
+- 重置工作区前
 
-macOS / Linux 示例：
+如果需要完整迁移，除了快照之外，还应同时保留：
 
-```bash
-sha256sum ./xhs-atelier-installer.AppImage
-```
+- 工作区目录
+- 导出目录
+- 与稿件相关的本地文件
 
-将命令输出的哈希值与 `SHA256SUMS.txt` 中对应条目进行比对。
+## 当前未纳入正式发布链路的内容
 
-## 工作区快照说明
+- 代码签名
+- macOS notarization
+- 自动更新通道
 
-桌面端工作区快照属于“元数据恢复点”，会刻意排除：
-
-- RedClaw API Key
-- 原始 manuscript 文件
-- 工作区旁边的本地媒体文件
-
-如果要做完整回滚或跨机器迁移，请将这份快照与 workspace、export 文件夹副本一起保存。
-
-## 当前边界
-
-- 当前已经覆盖校验、打包、产物上传和 GitHub Release 发布
-- 每次桌面端发布都会附带机器可读的 bundle 清单和 SHA-256 校验文件
-- 自动生成的 release notes 已统一接入 `.github/release.yml`
-- 代码签名、macOS notarization 与自动更新通道尚未配置
-- 如果 CI 失败，应优先修复仓库代码或 workflow，而不是回到本地手工打包
+这些后续可以补，但不影响当前 GitHub Actions 产物式发布模式。

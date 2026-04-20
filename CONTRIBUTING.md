@@ -6,7 +6,7 @@ This repository is evolving into an open-source Xiaohongshu creator workspace ce
 
 - `apps/desktop`: the primary Tauri desktop product
 - `apps/extension`: browser-side capture entry
-- `packages/content-ops`: content workflow assets
+- `packages/content-ops`: content workflow assets stored directly under `.xhsspec/`
 - `skills/`: legacy Claude/Codex skill entry points
 
 ## Before You Start

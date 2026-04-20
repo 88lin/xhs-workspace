@@ -15,6 +15,8 @@ Do not cut a `desktop-v*` release tag if any of these are still failing:
 - the desktop version is not aligned across `package.json`, `Cargo.toml`, and `tauri.conf.json`
 - GitHub Actions `desktop-validate` is failing
 
+If the only remaining signal is the advisory Rust formatting warning, treat it as a cleanup task, not as a release blocker.
+
 ## Recommended Order
 
 1. Complete the AI settings in the desktop app.

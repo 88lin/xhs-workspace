@@ -28,7 +28,7 @@ Older analysis documents in this repository may discuss earlier uncertainty arou
 
 - Source: `https://github.com/liyown/XHSSpec`
 - Imported scope:
-  - template repository assets -> `packages/content-ops/template-repo/`
+  - content operations assets -> `packages/content-ops/`
 - Purpose:
   - used as the content operations, prompt, strategy, and workflow template baseline
 

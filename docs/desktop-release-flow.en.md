@@ -50,11 +50,15 @@ What it currently does:
 - runs `pnpm install --frozen-lockfile` in `apps/desktop/`
 - runs frontend typecheck via `pnpm typecheck`
 - runs frontend production build via `pnpm build:web`
-- runs `cargo fmt --all --check` in `apps/desktop/src-tauri/`
+- keeps `cargo fmt --all --check` as an advisory check in `apps/desktop/src-tauri/`
 - runs Linux `cargo check --all-targets`
 - runs a Linux Tauri app build check via `pnpm tauri build --ci --no-bundle`
 - runs extra host checks on Linux / Windows / macOS with `cargo check --all-targets`
 - only triggers automatically when desktop-related paths change
+
+Runtime note:
+
+- the workflows now opt into the Node 24 GitHub Actions runtime path
 
 ### `desktop-bundle`
 

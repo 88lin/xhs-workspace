@@ -2,7 +2,7 @@
 
 `apps/extension/` is the browser-side companion for `XHS Atelier`.
 
-It captures Xiaohongshu content in the browser, prepares `JSON / JSONL` export packages, and feeds them into the desktop app's `Capture / Inbox / Library` workflow. The primary product remains the Tauri desktop app in [`apps/desktop/`](../desktop/README.md).
+It captures Xiaohongshu content in the browser, prepares `JSON / JSONL` export packages, and feeds them into the desktop app's `Capture / Inbox / Library` workflow. The primary product remains the Tauri desktop app in [`apps/desktop/`](../desktop/README_EN.md).
 
 [中文文档](README.md)
 

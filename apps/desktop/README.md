@@ -1,95 +1,166 @@
-# XHS Atelier Desktop
+# XHS Atelier 桌面端说明
 
-`apps/desktop/` contains the main Tauri desktop product in this repository.
+`apps/desktop/` 是当前仓库的主产品目录，对应基于 Tauri 构建的 `XHS Atelier` 桌面应用。
 
-The goal of this app is to make Xiaohongshu capture, organization, manuscript drafting, and RedClaw execution usable from one polished desktop workspace instead of a collection of technical scripts.
+这个桌面端的目标很明确：把“小红书内容采集、素材沉淀、主题整理、创作 brief、稿件写作、RedClaw 执行、归档复用”这条链路，做成普通用户也能直接上手的本地桌面工作台。
 
-## Main Workflow
+## 适合谁使用
 
-The desktop app already supports these production-facing flows:
+- 想长期收集、沉淀、复用小红书内容素材的人
+- 想把选题、资料、草稿、改写、归档放进同一个工作流的内容创作者
+- 不想依赖命令行、脚本、零散文件夹管理内容的人
 
-- save AI generation settings and run a real connection test
-- import content through the browser bridge, manual entry, and JSON / JSONL files
-- organize inbox items into subject cards
-- generate a creation brief and write it into `Manuscripts`
-- enter the RedClaw authoring flow from a subject or manuscript
-- archive outputs and continue, rewrite, resume, or open them externally
-- manage scheduled and long-cycle RedClaw automation
+## 桌面端当前包含什么
 
-## Product Surface
+### `Overview`
 
-The current desktop shell is organized around four main areas:
+总览页用于看全局状态，重点不是“展示功能”，而是告诉用户现在能不能顺畅开始工作。
 
-- `Overview`: launch readiness, setup state, and recent actions
-- `Capture`: browser bridge imports, manual entry, and local file intake
-- `Library`: subject cards, summaries, tags, and Markdown export
-- `Settings`: AI configuration, export paths, automation setup, workspace backups, and release-readiness checks
+- 当前工作区是否已完成 AI 配置
+- 最近是否有导入、生成、归档输出
+- 自动化任务是否开启、是否存在阻塞项
+- 发布准备状态是否通过
+- 可以直接跳转到发布流程和发布检查清单
 
-Inside the `Library`, the main user path is:
+### `Capture`
 
-- capture material
-- promote it into a subject
-- generate a creation brief
-- write in `Manuscripts`
-- continue in `RedClaw`
-- archive and branch drafts over time
+采集页负责把外部素材送进桌面端。
 
-## Release Rules
+- 从浏览器桥接目录导入采集结果
+- 手动填写标题、链接、摘要等基础信息
+- 导入本地 `JSON / JSONL` 文件
+- 作为扩展端到桌面端的统一入口
 
-For this project, release packaging must not happen locally.
+### `Library`
 
-- Do not rely on local installer packaging
-- Do not treat local `pnpm tauri build` as the release path
-- Use GitHub Actions for validation, bundle generation, and release publishing
-- Keep the desktop version aligned across `package.json`, `Cargo.toml`, and `tauri.conf.json`
-- Use a matching release tag in the format `desktop-vX.Y.Z`
+资料库页负责把散乱素材整理成可长期复用的“主题卡片”。
 
-Relevant workflows:
+- 将采集内容提升为主题
+- 管理标题、摘要、标签、属性和补充说明
+- 形成后续 `Creation Brief` 和 `Manuscripts` 的上下文基础
+- 为持续写作积累可复用的知识资产，而不是一次性输入
 
-- `.github/workflows/desktop-validate.yml`
-- `.github/workflows/desktop-bundle.yml`
+### `Creation Brief`
 
-The recommended preflight command is:
+这是桌面端里连接“整理”和“创作”的关键层。
 
-- `pnpm release:check`
+- 从 `Library` 的主题卡片生成创作 brief
+- 把主题、受众、内容角度、结构约束整理成一份可执行输入
+- 为 `Manuscripts` 和 RedClaw 提供统一的创作前置上下文
 
-## Local Commands
+### `Manuscripts`
 
-These commands still exist for development work inside `apps/desktop/`:
+稿件区负责保存和维护“可编辑稿件”。
 
-- `pnpm dev`
-- `pnpm release:check`
-- `pnpm build`
-- `pnpm tauri:dev`
-- `pnpm tauri:build`
+- 从 brief 创建稿件
+- 保存本地草稿
+- 重新打开历史稿件
+- 为后续继续写、改写、分支创作提供稳定承接点
 
-`pnpm release:check` is the preflight command for release metadata.
+### `RedClaw`
 
-The other commands are useful for implementation and debugging, but not as the official release pipeline.
+RedClaw 是桌面端里的创作执行入口。
 
-## Bundle Metadata
+- 从主题直接发起生成
+- 从现有稿件继续生成
+- 按当前稿件发起改写
+- 恢复之前的会话继续工作
+- 将输出重新回流到归档和工作区体系内
 
-The desktop bundle is branded as `XHS Atelier` and now includes:
+### `Archive`
 
-- a fixed product identifier: `com.xhsatelier.desktop`
-- repository and homepage metadata
-- MIT license metadata
-- release-oriented descriptions for generated installers
+归档不是简单“删除历史”，而是让历史输出可追踪、可继续、可复用。
 
-## What Users Need First
+- 查看历史输出
+- 继续已有输出
+- 基于旧输出重写出新分支
+- 打开对应本地稿件或目录
 
-If you are using the desktop app for the first time, do these steps in order:
+### `Automation`
 
-1. Open `Settings`.
-2. Save the AI provider, model, endpoint, and API key.
-3. Run the connection test once.
-4. Open `Capture` and import material from the browser bridge, manual entry, or local files.
-5. Create or open a subject in `Library`.
-6. Generate the creation brief, move into `Manuscripts`, and open `RedClaw`.
-7. Use archive history and automation after the base path works.
+自动化部分用于长期内容运营。
 
-## Current Boundaries
+- 定时任务
+- 长周期任务
+- 自动生成输出并回挂到同一工作区
+- 适合固定栏目、系列内容、周期性复盘等场景
 
-- code signing, notarization, and auto-update channels are not configured yet
-- GitHub Actions is the official release path for installers
-- the extension remains a companion product rather than the primary surface
+### `Settings`
+
+设置页负责把桌面端从“演示状态”拉到“可持续使用状态”。
+
+- 配置 AI Provider、Model、Endpoint、API Key
+- 执行真实连接测试
+- 设置导出目录
+- 导出和恢复工作区快照
+- 查看发布前阻塞项
+
+## 普通用户推荐使用顺序
+
+1. 打开 `Settings`，填写模型服务配置。
+2. 先执行一次连接测试，确认桌面端确实能与模型服务通信。
+3. 打开 `Capture`，导入浏览器侧采集结果、手动录入内容，或导入本地文件。
+4. 在 `Library` 中把素材整理为主题卡片。
+5. 从主题卡片生成 `Creation Brief`。
+6. 在 `Manuscripts` 中创建并保存可编辑稿件。
+7. 从 `Manuscripts` 或主题入口进入 RedClaw，继续生成、重写或补写。
+8. 在 `Archive` 中管理历史输出。
+9. 确认基础流程稳定后，再开启 `Automation`。
+
+## 桌面端和扩展端怎么配合
+
+推荐的协作方式是：
+
+1. 浏览器扩展负责采集
+2. 桌面端负责整理、创作、归档、自动化
+
+更具体地说：
+
+- 扩展端把页面内容转成 `JSON / JSONL` 导出包
+- 这些导出包可以进入桌面端桥接目录，或者直接手动导入
+- 桌面端接手后，会把内容纳入 `Capture -> Library -> Brief -> Manuscripts -> RedClaw -> Archive`
+
+所以扩展端是 companion，不是主产品替代品。
+
+## 本地数据和工作区说明
+
+桌面端的设计方向是“本地优先”。
+
+- 工作区状态保存在本地
+- 导入后的内容进入本地工作区体系
+- 快照备份是元数据恢复点，不等于完整媒体文件迁移
+- 真正迁移机器时，应同时保留工作区目录和导出目录
+
+## 发布与安装规则
+
+这个项目已经明确规定：
+
+- 正式安装包不以本地打包结果为准
+- GitHub Actions 是唯一正式发布链路
+- `desktop-validate` 负责校验
+- `desktop-bundle` 负责构建安装包并发布 Release
+
+当前校验链会检查：
+
+- 版本号是否在 3 个桌面端元数据文件中保持一致
+- 前端类型检查是否通过
+- 前端构建是否通过
+- Rust host 编译是否通过
+- Tauri 无 bundle 构建是否通过
+
+Rust 格式检查当前保留在流程中，但作为 advisory，不阻塞正式校验结果。
+
+## 当前边界
+
+- 代码签名还未完成
+- macOS notarization 还未配置
+- 自动更新通道还未配置
+- 桌面端是主入口，扩展端仍然只是辅助采集入口
+
+## 相关文档
+
+- 英文说明：[README_EN.md](README_EN.md)
+- 仓库总说明：[../../README.md](../../README.md)
+- 桌面端发布流程：[../../docs/desktop-release-flow.md](../../docs/desktop-release-flow.md)
+- 桌面端发布检查清单：[../../docs/desktop-launch-checklist.md](../../docs/desktop-launch-checklist.md)
+- 浏览器扩展说明：[../extension/README.md](../extension/README.md)

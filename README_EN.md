@@ -2,126 +2,106 @@
 
 [中文](README.md) | English
 
-XHS Workspace is an open-source workspace for Xiaohongshu knowledge management users and content creators.
+`XHS Workspace` is an open-source repository for Xiaohongshu knowledge management users and content creators.
 
-The repository name is `xhs-workspace`, while the main product name is `XHS Atelier`. The goal is no longer to stay as a collection of scripts or command-line utilities. The goal is to turn capture, organization, drafting, archive, and ongoing content operations into a desktop product that non-technical users can actually use.
+The repository name is `xhs-workspace`, while the product name is `XHS Atelier`. The project direction is no longer to stay as a collection of scripts or command-line tools. The goal is to turn capture, organization, drafting, archive, and ongoing content operations into a desktop product that non-technical users can actually use.
 
-## What This Repository Includes
+## What This Repository Contains
 
-- `XHS Atelier Desktop`: the main Tauri desktop app.
-- `XHS Atelier Collector`: the optional browser companion for capture, analysis, and bridge import.
-- `packages/content-ops`: templates, prompts, strategy assets, and workflow materials.
-- `skills/`: retained legacy Skill entry points for compatibility.
+- `XHS Atelier Desktop`: the main Tauri desktop product
+- `XHS Atelier Collector`: the browser-side companion for capture and bridge import
+- `packages/content-ops`: content operations assets, prompts, strategy files, and workflow materials
+- `skills/`: retained legacy Skill entry points for compatibility
 
 ## Who This Is For
 
-- knowledge management users who want to collect and reuse Xiaohongshu material over time
-- content creators who want subjects, source material, briefs, drafts, and generation in one workspace
-- non-technical users who want a real product instead of scripts, shell commands, or fragile local setup
+- users who want to collect and reuse Xiaohongshu material over time
+- creators who want subjects, source material, briefs, drafts, and generation in one workspace
+- non-technical users who want a product, not shell commands and fragile local scripts
 
-## Current Capabilities
+## Current Capability Surface
 
-### Desktop App
+### Desktop
 
-- `Overview`: launch status, recent outputs, automation status, and release readiness.
-- `Capture`: browser bridge import, manual entry, and `JSON / JSONL` file import.
-- `Library`: turn captured material into reusable subject cards and writing assets.
-- `Creation brief -> Manuscripts -> RedClaw`: generate a brief from a subject, write into Manuscripts, and continue in the RedClaw authoring flow.
-- draft archive and continuation: continue, rewrite, resume sessions, and open external files.
-- automation: scheduled tasks and long-cycle tasks that keep writing output attached to the same workspace.
-- settings and workspace management: AI connection testing, export directory setup, workspace snapshot export, and restore.
+- `Overview`: workspace readiness, recent outputs, automation status, and release readiness
+- `Capture`: bridge intake, manual entry, and local `JSON / JSONL` imports
+- `Library`: convert captured material into reusable subject cards
+- `Creation Brief -> Manuscripts -> RedClaw`: move from organized material into actual writing flow
+- `Archive`: continue, rewrite, and resume older outputs
+- `Automation`: scheduled and long-cycle RedClaw tasks
+- `Settings`: AI connection setup, export path, workspace backup, and release checks
 
 ### Browser Companion
 
-- capture Xiaohongshu note content and base metadata inside the browser
-- optional browser-side AI analysis and tag organization
-- export `JSON`, `JSONL`, Markdown, and related formats
-- send captured material into the desktop bridge directory
-- keep captured data local by default
+- capture Xiaohongshu page content and base metadata
+- export `JSON`, `JSONL`, Markdown, and related local formats
+- hand off captured material to the desktop bridge directory
+- stay local by default
 
-### Repository And Release Pipeline
+### Release Pipeline
 
 - desktop installers are validated, built, and published through GitHub Actions
-- the browser extension can be packaged as a zip through GitHub Actions
+- extension bundles can be packaged through GitHub Actions
 - desktop releases include `bundle-manifest.json` and `SHA256SUMS.txt`
 
-## How Non-Technical Users Can Use It
+## Recommended End-User Path
 
-1. Install the desktop app: official installers will be published through GitHub Releases. The desktop app is the main entry point.
-2. Complete first-time setup: open `Settings`, fill in AI Provider, Model, Endpoint, and API Key, then run one real connection test.
-3. Capture content: use browser bridge import, manual entry, or local `JSON / JSONL` files from `Capture`.
-4. Organize subjects: turn captured material into subject cards in `Library`, then add summaries, tags, and content angles.
-5. Start writing: generate a `Creation brief`, write into `Manuscripts`, and continue in `RedClaw`.
-6. Manage output: continue, rewrite, or resume archived drafts from the recent output and archive views.
-7. Run long-term workflows: configure scheduled tasks and long-cycle tasks when you want ongoing output.
-8. Back up the workspace: export a workspace snapshot before major imports, machine changes, or release testing.
+1. Download the desktop installer from GitHub Releases.
+2. Open `Settings` and configure the model service.
+3. Run one real connection test.
+4. Import captured material from the bridge directory, manual entry, or local files.
+5. Organize the material into subjects in `Library`.
+6. Generate a `Creation Brief`.
+7. Create or refine a draft in `Manuscripts`.
+8. Continue the writing session in RedClaw.
+9. Use archive and automation only after the base workflow is stable.
 
-## Installation Paths
-
-### For End Users
-
-- Desktop installers: GitHub Releases.
-- Browser extension: prefer packaged zip releases when available. During development, you can still use `Load unpacked` with `apps/extension/`.
-
-### For Developers And Testers
-
-Both products live in the same monorepo:
+## Repository Layout
 
 ```text
 xhs-workspace/
 |- apps/
-|  |- desktop/                 # Tauri desktop app
+|  |- desktop/                 # main Tauri desktop product
 |  `- extension/               # browser capture companion
 |- packages/
-|  `- content-ops/             # content workflow and template assets
-|- skills/                     # legacy Skill entry points
-|- docs/                       # release and maintenance docs
-`- .github/                    # GitHub Actions and repository governance
+|  `- content-ops/             # content operations assets
+|     |- .xhsspec/             # actual prompts, templates, specs, and strategy files
+|     `- README.md             # directory guide
+|- docs/                       # release and launch documents
+|- skills/                     # legacy Skill compatibility layer
+`- .github/                    # GitHub Actions and repo governance
 ```
 
-Official desktop packaging is not defined by local builds. GitHub Actions is the source of truth for release artifacts.
+`packages/content-ops` has been flattened. The old `template-repo/` transition layer is gone, so maintainers can work directly in the real asset directory.
 
 ## Release Rules
 
-- pushing to `main` / `master` / `develop` triggers desktop validation
+- pushes to `main` / `master` / `develop` trigger desktop validation
 - pushing a `desktop-v*` tag builds desktop installers and publishes a release
-- pushing an `extension-v*` tag packages the browser extension zip
-- the desktop version must stay aligned across:
+- pushing an `extension-v*` tag packages the browser extension bundle
+- desktop version metadata must stay aligned across:
   - `apps/desktop/package.json`
   - `apps/desktop/src-tauri/Cargo.toml`
   - `apps/desktop/src-tauri/tauri.conf.json`
 
+The GitHub Actions workflows are now configured for the Node 24 runtime path, and the desktop validation pipeline is passing again.
+
 ## Current Boundaries
 
-- code signing, macOS notarization, and auto-update channels are not configured yet
-- the browser extension is a companion, not a replacement for the desktop workflow
-- `skills/` still exists, but it is no longer the main product shape of the repository
+- code signing is not finished yet
+- macOS notarization is not configured yet
+- auto-update channels are not configured yet
+- the extension remains a companion, not the primary product surface
 
 ## Key Documents
 
-- [Desktop App Guide](apps/desktop/README.md)
+- [Desktop Guide (Chinese)](apps/desktop/README.md)
+- [Desktop Guide (English)](apps/desktop/README_EN.md)
 - [Browser Extension Guide](apps/extension/README_EN.md)
+- [Content Ops Assets Guide](packages/content-ops/README.md)
 - [Desktop Release Flow](docs/desktop-release-flow.en.md)
 - [Desktop Launch Checklist](docs/desktop-launch-checklist.en.md)
 - [Third-Party Import Notes](THIRD_PARTY_IMPORTS.md)
-- [Contributing](CONTRIBUTING.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Security Policy](SECURITY.md)
-
-## Legacy Skill Mode
-
-If you still want the original Skill-based flow, the repository keeps that compatibility layer:
-
-```bash
-/plugin marketplace add 88lin/xhs-workspace
-/plugin install rednote-to-obsidian@xhs-workspace-marketplace
-```
-
-Example:
-
-```text
-/xhs https://www.xiaohongshu.com/explore/...
-```
 
 ## Open Source Notes
 

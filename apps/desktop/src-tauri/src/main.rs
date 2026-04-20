@@ -623,51 +623,51 @@ struct RedClawGenerationConfig {
 
 const XHSSPEC_CONFIG: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../../packages/content-ops/template-repo/.xhsspec/config.yaml"
+    "/../../../packages/content-ops/.xhsspec/config.yaml"
 ));
 const XHSSPEC_BRAND_PROFILE: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../../packages/content-ops/template-repo/.xhsspec/brand/profile.md"
+    "/../../../packages/content-ops/.xhsspec/brand/profile.md"
 ));
 const XHSSPEC_BRAND_AUDIENCE: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../../packages/content-ops/template-repo/.xhsspec/brand/audience.md"
+    "/../../../packages/content-ops/.xhsspec/brand/audience.md"
 ));
 const XHSSPEC_BRAND_TONE: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../../packages/content-ops/template-repo/.xhsspec/brand/tone.md"
+    "/../../../packages/content-ops/.xhsspec/brand/tone.md"
 ));
 const XHSSPEC_BRAND_OFFER: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../../packages/content-ops/template-repo/.xhsspec/brand/offer.md"
+    "/../../../packages/content-ops/.xhsspec/brand/offer.md"
 ));
 const XHSSPEC_BRAND_TABOO: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../../packages/content-ops/template-repo/.xhsspec/brand/taboo.md"
+    "/../../../packages/content-ops/.xhsspec/brand/taboo.md"
 ));
 const XHSSPEC_TOPIC_FRAMEWORKS: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../../packages/content-ops/template-repo/.xhsspec/strategy/topic-frameworks.md"
+    "/../../../packages/content-ops/.xhsspec/strategy/topic-frameworks.md"
 ));
 const XHSSPEC_CREATION_SPEC: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../../packages/content-ops/template-repo/.xhsspec/specs/creation.spec.md"
+    "/../../../packages/content-ops/.xhsspec/specs/creation.spec.md"
 ));
 const XHSSPEC_NOTE_SPEC: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../../packages/content-ops/template-repo/.xhsspec/specs/note.spec.md"
+    "/../../../packages/content-ops/.xhsspec/specs/note.spec.md"
 ));
 const XHSSPEC_QUICK_BRIEF_PROMPT: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../../packages/content-ops/template-repo/.xhsspec/prompts/quick-brief.md"
+    "/../../../packages/content-ops/.xhsspec/prompts/quick-brief.md"
 ));
 const XHSSPEC_QUICK_DRAFT_PROMPT: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../../packages/content-ops/template-repo/.xhsspec/prompts/quick-draft.md"
+    "/../../../packages/content-ops/.xhsspec/prompts/quick-draft.md"
 ));
 const XHSSPEC_WINNING_PATTERNS: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../../packages/content-ops/template-repo/.xhsspec/knowledge/winning-patterns.md"
+    "/../../../packages/content-ops/.xhsspec/knowledge/winning-patterns.md"
 ));
 
 fn redclaw_generation_config_from_settings(settings: &Value) -> Option<RedClawGenerationConfig> {
