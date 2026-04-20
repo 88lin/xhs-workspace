@@ -1,0 +1,64 @@
+name: extension-package
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'extension-v*'
+
+concurrency:
+  group: extension-package-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    name: Package Extension
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install zip utility
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip
+
+      - name: Build extension archive
+        working-directory: apps/extension
+        run: |
+          chmod +x ./package.sh
+          ./package.sh
+
+      - name: Upload extension archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: xhs-atelier-collector-release
+          path: apps/extension/xhs-atelier-collector-v*.zip
+          if-no-files-found: error
+          compression-level: 6
+
+  release:
+    name: Publish extension release
+    if: startsWith(github.ref, 'refs/tags/extension-v')
+    needs: package
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download packaged archive
+        uses: actions/download-artifact@v4
+        with:
+          path: extension-bundles
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: extension-bundles/**/*

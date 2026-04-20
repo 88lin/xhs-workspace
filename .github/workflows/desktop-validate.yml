@@ -1,0 +1,154 @@
+name: desktop-validate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+    paths:
+      - '.github/workflows/desktop-validate.yml'
+      - '.github/workflows/desktop-bundle.yml'
+      - 'apps/desktop/**'
+      - 'packages/**'
+      - 'pnpm-workspace.yaml'
+  pull_request:
+    paths:
+      - '.github/workflows/desktop-validate.yml'
+      - '.github/workflows/desktop-bundle.yml'
+      - 'apps/desktop/**'
+      - 'packages/**'
+      - 'pnpm-workspace.yaml'
+
+concurrency:
+  group: desktop-validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate Desktop App
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      CI: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: apps/desktop/pnpm-lock.yaml
+
+      - name: Validate desktop release metadata
+        working-directory: apps/desktop
+        run: node ./scripts/check-release-version.mjs
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+
+      - name: Cache Rust build artifacts
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop/src-tauri -> target
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            curl \
+            file \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            libssl-dev \
+            librsvg2-dev \
+            pkg-config \
+            patchelf
+
+      - name: Install desktop dependencies
+        working-directory: apps/desktop
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck frontend
+        working-directory: apps/desktop
+        run: pnpm typecheck
+
+      - name: Build frontend
+        working-directory: apps/desktop
+        run: pnpm build:web
+
+      - name: Check Rust formatting
+        working-directory: apps/desktop/src-tauri
+        run: cargo fmt --all --check
+
+      - name: Check Tauri host
+        working-directory: apps/desktop/src-tauri
+        run: cargo check --all-targets
+
+      - name: Check Tauri app build without bundles
+        working-directory: apps/desktop
+        run: pnpm tauri build --ci --no-bundle
+
+  host-check:
+    name: Host Check (${{ matrix.label }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            label: Linux
+          - os: windows-latest
+            label: Windows
+          - os: macos-latest
+            label: macOS
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build artifacts
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop/src-tauri -> target
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            curl \
+            file \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            libssl-dev \
+            librsvg2-dev \
+            pkg-config \
+            patchelf
+
+      - name: Check Tauri host on ${{ matrix.label }}
+        working-directory: apps/desktop/src-tauri
+        run: cargo check --all-targets

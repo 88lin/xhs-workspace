@@ -1,0 +1,71 @@
+name: Desktop Bug
+description: Report an issue in the Tauri desktop app
+title: "[desktop] "
+labels:
+  - desktop
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please include enough detail to reproduce the problem.
+
+        Desktop installers are built in GitHub Actions. You do not need to attach local packaging logs.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: For example `desktop-v0.1.0`
+      placeholder: desktop-v0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Windows
+        - macOS
+        - Linux
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the actual problem in one or two clear sentences.
+      placeholder: The RedClaw connection test fails even though the same endpoint and API key work elsewhere.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps To Reproduce
+      description: List the exact sequence that leads to the bug.
+      placeholder: |
+        1. Open Settings
+        2. Enter provider, model, endpoint, and API key
+        3. Click "Test connection"
+        4. See the error message
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Result
+      placeholder: The connection test should succeed and show the resolved endpoint and model.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Result
+      placeholder: Paste the exact error text or describe the incorrect behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs Or Screenshots
+      description: Attach screenshots, error messages, archive paths, or any relevant trace details.
+      render: shell

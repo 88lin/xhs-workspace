@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XHS Atelier Collector</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+    <header class="header">
+      <div class="header-title">
+        <span class="logo">XA</span>
+        <h1>XHS Atelier Collector</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn-settings" id="btnSettings" title="Settings">
+          <span class="settings-icon">SET</span>
+          <span class="settings-text">Settings</span>
+        </button>
+        <div class="header-status" id="status">
+          <span class="status-dot"></span>
+          <span class="status-text">Checking page...</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="stats-panel">
+      <div class="stat-card">
+        <span class="stat-num" id="totalPosts">0</span>
+        <span class="stat-label">Total captured</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="sessionCaptures">0</span>
+        <span class="stat-label">This session</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="lastCapture">-</span>
+        <span class="stat-label">Last capture</span>
+      </div>
+    </section>
+
+    <div class="capacity-warning" id="capacityWarning" style="display: none;">
+      <span class="warning-icon">!</span>
+      <span class="warning-text" id="capacityWarningText"></span>
+    </div>
+
+    <section class="source-panel" id="sourcePanel">
+      <h3 class="section-title">Capture sources</h3>
+      <div class="source-bars" id="sourceBars"></div>
+    </section>
+
+    <section class="auto-section">
+      <h3 class="section-title">Auto browse</h3>
+      <div class="auto-controls">
+        <div class="control-row">
+          <label for="scrollSpeed">Scroll speed</label>
+          <select id="scrollSpeed">
+            <option value="slow">Safe</option>
+            <option value="normal" selected>Balanced</option>
+            <option value="fast">Fast</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label for="maxScrolls">Maximum scrolls</label>
+          <input type="number" id="maxScrolls" value="100" min="10" max="1000" step="10">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btnStartScroll">Start auto browse</button>
+          <button class="btn btn-secondary" id="btnStopScroll" disabled>Stop</button>
+        </div>
+        <div class="control-row auto-analyze-row">
+          <label for="autoAnalyze">Run auto analysis after browsing</label>
+          <input type="checkbox" id="autoAnalyze">
+        </div>
+      </div>
+    </section>
+
+    <section class="export-section">
+      <h3 class="section-title">Export to desktop</h3>
+      <div class="export-intro">
+        <strong>Use the XHS Atelier import package first</strong>
+        <span>It is the smoothest path into the desktop app. Export here, then drag it into the desktop inbox or the bridge directory.</span>
+      </div>
+      <div class="export-grid">
+        <button class="export-btn export-btn-primary export-btn-wide" data-format="atelier">
+          <span class="export-badge">Recommended</span>
+          <span class="export-icon">APP</span>
+          <span class="export-name">XHS Atelier</span>
+          <span class="export-desc">Ready for desktop import</span>
+        </button>
+        <button class="export-btn" data-format="json">
+          <span class="export-icon">JSON</span>
+          <span class="export-name">JSON</span>
+          <span class="export-desc">Full structured data</span>
+        </button>
+        <button class="export-btn" data-format="jsonl">
+          <span class="export-icon">JSL</span>
+          <span class="export-name">JSONL</span>
+          <span class="export-desc">Line-based raw format</span>
+        </button>
+        <button class="export-btn" data-format="markdown">
+          <span class="export-icon">MD</span>
+          <span class="export-name">Markdown</span>
+          <span class="export-desc">Readable document format</span>
+        </button>
+        <button class="export-btn" data-format="training">
+          <span class="export-icon">AI</span>
+          <span class="export-name">Training data</span>
+          <span class="export-desc">Fine-tuning friendly output</span>
+        </button>
+      </div>
+      <div class="export-note">If the goal is simply to move captured content into the desktop app, you usually do not need to choose between JSON and JSONL manually.</div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-row">
+        <button class="btn btn-text" id="btnScanNow">Scan now</button>
+        <button class="btn btn-text" id="btnBatchAnalyze">Batch analyze</button>
+        <button class="btn btn-text" id="btnHistory">History</button>
+      </div>
+      <div class="footer-row">
+        <button class="btn btn-text" id="btnCleanup">Cleanup</button>
+        <button class="btn btn-danger-text" id="btnClear">Clear all</button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

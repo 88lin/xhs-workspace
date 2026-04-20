@@ -1,0 +1,36 @@
+{
+  "name": "xhs-atelier-desktop",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Tauri desktop app for XHS Atelier",
+  "homepage": "https://github.com/88lin/xhs-workspace",
+  "author": "茉灵智库",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 1420",
+    "release:check": "node ./scripts/check-release-version.mjs",
+    "typecheck": "tsc --noEmit",
+    "build:web": "vite build",
+    "build": "pnpm typecheck && pnpm build:web",
+    "preview": "vite preview --port 1420",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0",
+    "lucide-react": "^0.300.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tippy.js": "^6.3.7"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0",
+    "@types/node": "^22.15.21",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0"
+  }
+}

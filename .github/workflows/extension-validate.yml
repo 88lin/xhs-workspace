@@ -1,0 +1,53 @@
+name: extension-validate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+    paths:
+      - '.github/workflows/extension-validate.yml'
+      - '.github/workflows/extension-package.yml'
+      - 'apps/extension/**'
+  pull_request:
+    paths:
+      - '.github/workflows/extension-validate.yml'
+      - '.github/workflows/extension-package.yml'
+      - 'apps/extension/**'
+
+concurrency:
+  group: extension-validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate Extension Package
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install zip utility
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip
+
+      - name: Build extension archive
+        working-directory: apps/extension
+        run: |
+          chmod +x ./package.sh
+          ./package.sh
+
+      - name: Upload validation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: xhs-atelier-collector-preview
+          path: apps/extension/xhs-atelier-collector-v*.zip
+          if-no-files-found: error
+          compression-level: 6

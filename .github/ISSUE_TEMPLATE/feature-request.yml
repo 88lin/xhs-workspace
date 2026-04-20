@@ -1,0 +1,48 @@
+name: Feature Request
+description: Suggest an improvement for the desktop app, extension, workflows, or docs
+title: "[feature] "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Start from the user scenario and the workflow gap.
+
+        Clear outcome descriptions are more useful than implementation guesses.
+  - type: textarea
+    id: scenario
+    attributes:
+      label: User Scenario
+      description: What are you trying to accomplish, and in what context?
+      placeholder: I am organizing a subject card and want to batch-generate multiple Xiaohongshu draft angles from the same brief.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Current Gap
+      description: What is missing or frustrating in the current workflow?
+      placeholder: The desktop app only lets me push one draft at a time, so I cannot compare multiple angles efficiently.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Ideal Outcome
+      description: Describe what a good result would look like for the user.
+      placeholder: From one creation brief, I can generate three draft variants and archive them under the same subject.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Desktop
+        - Extension
+        - Content Ops
+        - Docs
+        - Workflows
+    validations:
+      required: true

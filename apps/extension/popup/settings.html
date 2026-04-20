@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collector Settings - XHS Atelier</title>
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <div class="settings-page">
+    <header class="header">
+      <button class="btn-back" id="btnBack">Back</button>
+      <h1>Collector settings</h1>
+      <button class="btn-save" id="btnSave">Save</button>
+    </header>
+
+    <div class="settings-content">
+      <section class="setting-section">
+        <h2 class="section-title">
+          <span class="icon">AI</span>
+          AI model setup
+        </h2>
+        <p class="section-desc">Configure the model provider, API key, and endpoint used by browser-side analysis.</p>
+
+        <div class="setting-item-full">
+          <label for="apiProvider">
+            <span class="step-badge">Step 1</span>
+            <span class="label-text">API provider</span>
+            <span class="label-hint">Choose the service that will run analysis requests</span>
+          </label>
+          <select id="apiProvider" class="select-full">
+            <optgroup label="Recommended">
+              <option value="openrouter">OpenRouter</option>
+              <option value="anthropic">Anthropic</option>
+              <option value="openai">OpenAI</option>
+              <option value="google">Google AI</option>
+            </optgroup>
+            <optgroup label="China-friendly">
+              <option value="qwen">Qwen</option>
+              <option value="deepseek">DeepSeek</option>
+              <option value="minimax">MiniMax</option>
+            </optgroup>
+            <optgroup label="Advanced">
+              <option value="custom">Custom endpoint</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="setting-item-full">
+          <label for="apiKey">
+            <span class="step-badge">Step 2</span>
+            <span class="label-text">API key</span>
+            <span class="label-hint" id="apiKeyHint">Used for the selected model provider</span>
+          </label>
+          <div class="field-actions">
+            <input type="password" id="apiKey" placeholder="Paste your API key" class="input-full input-grow" disabled>
+            <button class="btn-toggle-password" id="btnTogglePassword" type="button" disabled>Show</button>
+            <button class="btn-test-api" id="btnTestAPI" type="button" disabled>Test connection</button>
+          </div>
+          <div id="apiTestResult" class="api-test-result"></div>
+        </div>
+
+        <div class="setting-item-full" id="customEndpointContainer" style="display: none;">
+          <label for="customEndpoint">
+            <span class="label-text">Custom endpoint</span>
+            <span class="label-hint">Enter the full API URL</span>
+          </label>
+          <input type="text" id="customEndpoint" placeholder="https://api.example.com/v1/chat/completions" class="input-full">
+        </div>
+
+        <div class="setting-item-full" id="apiModelContainer">
+          <label for="apiModel">
+            <span class="step-badge">Step 3</span>
+            <span class="label-text">Model</span>
+            <span class="label-hint" id="apiModelHint">Choose the model used for analysis</span>
+          </label>
+          <select id="apiModel" class="select-full" disabled></select>
+        </div>
+
+        <div class="setting-item-full" id="customModelContainer" style="display: none;">
+          <label for="customModel">
+            <span class="step-badge">Step 3</span>
+            <span class="label-text">Model ID</span>
+            <span class="label-hint">For example: `gpt-4o-mini` or your vendor-specific model name</span>
+          </label>
+          <input type="text" id="customModel" placeholder="Enter a model ID" class="input-full" disabled>
+        </div>
+
+        <div class="api-hint">
+          <p><strong>Notes</strong></p>
+          <ul id="apiHintList">
+            <li>Your API key is stored locally in browser sync storage.</li>
+            <li>OpenRouter is the easiest way to switch between multiple models.</li>
+            <li><a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">Get an OpenRouter API key</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="setting-section">
+        <h2 class="section-title">
+          <span class="icon">CFG</span>
+          Quick presets
+        </h2>
+        <p class="section-desc">Apply a preset when you want a safe starting point instead of tuning every field manually.</p>
+
+        <div class="preset-grid">
+          <button class="preset-btn" data-preset="safe">
+            <span class="preset-icon">SAFE</span>
+            <span class="preset-name">Conservative</span>
+            <span class="preset-desc">Best for first-time use</span>
+          </button>
+          <button class="preset-btn" data-preset="balanced">
+            <span class="preset-icon">BAL</span>
+            <span class="preset-name">Balanced</span>
+            <span class="preset-desc">Default daily setup</span>
+          </button>
+          <button class="preset-btn" data-preset="fast">
+            <span class="preset-icon">FAST</span>
+            <span class="preset-name">Fast capture</span>
+            <span class="preset-desc">Higher speed, higher risk</span>
+          </button>
+          <button class="preset-btn" data-preset="unlimited">
+            <span class="preset-icon">ALL</span>
+            <span class="preset-name">Unlimited images</span>
+            <span class="preset-desc">No image cap during analysis</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="setting-section">
+        <h2 class="section-title">
+          <span class="icon">IMG</span>
+          Image limits
+        </h2>
+        <p class="section-desc">Control how many images are sent to AI analysis. Set a value to `0` to remove the cap.</p>
+
+        <div class="setting-item">
+          <label for="imageDetail">
+            <span class="label-text">Detail page images</span>
+            <span class="label-hint">Used for single note analysis</span>
+          </label>
+          <input type="number" id="imageDetail" min="0" max="50" value="6">
+          <span class="unit">images</span>
+        </div>
+
+        <div class="setting-item">
+          <label for="imageFeed">
+            <span class="label-text">Feed images</span>
+            <span class="label-hint">Used for feed-level analysis</span>
+          </label>
+          <input type="number" id="imageFeed" min="0" max="50" value="8">
+          <span class="unit">images</span>
+        </div>
+
+        <div class="setting-item">
+          <label for="imageProfile">
+            <span class="label-text">Profile page images</span>
+            <span class="label-hint">Used when analyzing creator profile pages</span>
+          </label>
+          <input type="number" id="imageProfile" min="0" max="50" value="8">
+          <span class="unit">images</span>
+        </div>
+      </section>
+
+      <section class="setting-section">
+        <h2 class="section-title">
+          <span class="icon">VID</span>
+          Video frame capture
+        </h2>
+        <p class="section-desc">When a note is a video, the extension can sample frames and send them to the AI model. More frames usually mean better analysis but slower requests and higher token usage.</p>
+
+        <div class="setting-item">
+          <label for="videoFrameCount">
+            <span class="label-text">Frame count</span>
+            <span class="label-hint">Recommended: 4-8 frames, maximum 12</span>
+          </label>
+          <input type="number" id="videoFrameCount" min="2" max="12" value="6">
+          <span class="unit">frames</span>
+        </div>
+      </section>
+
+      <section class="setting-section">
+        <h2 class="section-title">
+          <span class="icon">RATE</span>
+          Request pacing
+        </h2>
+        <p class="section-desc">Lower values are faster, higher values are safer. Use this to reduce the chance of triggering platform limits.</p>
+
+        <div class="setting-item">
+          <label for="rateMaxPerMinute">
+            <span class="label-text">Max requests per minute</span>
+            <span class="label-hint">Recommended: 15-35</span>
+          </label>
+          <input type="number" id="rateMaxPerMinute" min="10" max="50" value="25">
+          <span class="unit">req</span>
+        </div>
+
+        <div class="setting-item">
+          <label for="rateMaxPer5Min">
+            <span class="label-text">Max requests per 5 minutes</span>
+            <span class="label-hint">Recommended: 50-120</span>
+          </label>
+          <input type="number" id="rateMaxPer5Min" min="30" max="200" value="80">
+          <span class="unit">req</span>
+        </div>
+
+        <div class="setting-item">
+          <label for="rateMinInterval">
+            <span class="label-text">Minimum interval</span>
+            <span class="label-hint">Recommended: 2000-4000 ms</span>
+          </label>
+          <input type="number" id="rateMinInterval" min="1000" max="10000" step="100" value="2500">
+          <span class="unit">ms</span>
+        </div>
+      </section>
+
+      <section class="setting-section">
+        <h2 class="section-title">
+          <span class="icon">FLOW</span>
+          Scroll behavior
+        </h2>
+        <p class="section-desc">These values shape the automatic browsing pattern so it feels less robotic.</p>
+
+        <div class="setting-item">
+          <label for="scrollUpChance">
+            <span class="label-text">Up-scroll chance</span>
+            <span class="label-hint">0-100, recommended: 5-20</span>
+          </label>
+          <input type="number" id="scrollUpChance" min="0" max="100" value="10">
+          <span class="unit">%</span>
+        </div>
+
+        <div class="setting-item">
+          <label for="scrollLongPauseChance">
+            <span class="label-text">Long pause chance</span>
+            <span class="label-hint">0-100, recommended: 10-30</span>
+          </label>
+          <input type="number" id="scrollLongPauseChance" min="0" max="100" value="15">
+          <span class="unit">%</span>
+        </div>
+
+        <div class="setting-item">
+          <label for="scrollFatigue1">
+            <span class="label-text">Fatigue threshold 1</span>
+            <span class="label-hint">Recommended: 30-80 scrolls</span>
+          </label>
+          <input type="number" id="scrollFatigue1" min="10" max="200" value="50">
+          <span class="unit">times</span>
+        </div>
+
+        <div class="setting-item">
+          <label for="scrollFatigue2">
+            <span class="label-text">Fatigue threshold 2</span>
+            <span class="label-hint">Recommended: 80-150 scrolls</span>
+          </label>
+          <input type="number" id="scrollFatigue2" min="20" max="300" value="100">
+          <span class="unit">times</span>
+        </div>
+      </section>
+
+      <section class="setting-section">
+        <h2 class="section-title">
+          <span class="icon">EDIT</span>
+          Custom prompts
+        </h2>
+        <p class="section-desc">Add your own analysis prompts. They will appear as extra actions in the browser-side AI panels.</p>
+
+        <div id="customPromptList"></div>
+        <button class="btn-add-prompt" id="btnAddPrompt">+ Add prompt</button>
+      </section>
+
+      <section class="setting-section">
+        <h2 class="section-title">
+          <span class="icon">HELP</span>
+          Help and support
+        </h2>
+        <p class="section-desc">Need help? Start with the docs, then use the issue tracker if something is broken or missing.</p>
+
+        <div class="help-links">
+          <a href="https://github.com/88lin/xhs-workspace/tree/main/apps/extension#readme" target="_blank" rel="noreferrer" class="help-link">
+            <span class="help-icon">DOC</span>
+            <div class="help-content">
+              <div class="help-title">Usage guide</div>
+              <div class="help-desc">Read the extension guide and workflow notes</div>
+            </div>
+            <span class="help-arrow">-></span>
+          </a>
+
+          <a href="https://github.com/88lin/xhs-workspace/issues/new/choose" target="_blank" rel="noreferrer" class="help-link">
+            <span class="help-icon">BUG</span>
+            <div class="help-content">
+              <div class="help-title">Report an issue</div>
+              <div class="help-desc">Open a bug report or feature request</div>
+            </div>
+            <span class="help-arrow">-></span>
+          </a>
+
+          <a href="https://github.com/88lin/xhs-workspace" target="_blank" rel="noreferrer" class="help-link">
+            <span class="help-icon">GH</span>
+            <div class="help-content">
+              <div class="help-title">Project repository</div>
+              <div class="help-desc">Browse source, docs, and release notes</div>
+            </div>
+            <span class="help-arrow">-></span>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script src="settings.js"></script>
+</body>
+</html>

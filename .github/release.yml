@@ -1,0 +1,55 @@
+changelog:
+  exclude:
+    authors:
+      - github-actions[bot]
+    labels:
+      - skip-changelog
+      - duplicate
+      - invalid
+      - question
+      - wontfix
+  categories:
+    - title: Desktop App
+      labels:
+        - desktop
+        - tauri
+        - ui
+        - redclaw
+    - title: Browser Companion
+      labels:
+        - extension
+        - browser
+        - collector
+    - title: Content Ops And Templates
+      labels:
+        - content-ops
+        - xhsspec
+        - template
+        - prompt
+    - title: Fixes And Stability
+      labels:
+        - bug
+        - fix
+        - regression
+        - stability
+    - title: Release And Automation
+      labels:
+        - release
+        - ci
+        - github-actions
+        - automation
+    - title: Documentation
+      labels:
+        - docs
+        - documentation
+    - title: Dependencies
+      labels:
+        - dependencies
+        - deps
+    - title: Other Changes
+      labels:
+        - "*"
+      exclude:
+        labels:
+          - dependencies
+          - deps

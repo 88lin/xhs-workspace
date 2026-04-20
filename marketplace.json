@@ -1,10 +1,10 @@
 {
-  "name": "chenxiachan-xhs-claude-skills",
-  "description": "小红书转 Obsidian 插件合集",
+  "name": "xhs-workspace-marketplace",
+  "description": "Xiaohongshu workflow plugins and desktop workspace utilities.",
   "plugins": [
     {
       "name": "rednote-to-obsidian",
-      "description": "把小红书帖子变成简洁的 Obsidian 笔记，支持视频转录",
+      "description": "Capture Xiaohongshu content into clean, Obsidian-friendly notes.",
       "version": "1.0.0",
       "path": "."
     }

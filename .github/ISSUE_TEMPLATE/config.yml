@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Desktop Release Flow
+    url: https://github.com/88lin/xhs-workspace/blob/main/docs/desktop-release-flow.en.md
+    about: Review the GitHub Actions based desktop release process first.
+  - name: Desktop Launch Checklist
+    url: https://github.com/88lin/xhs-workspace/blob/main/docs/desktop-launch-checklist.en.md
+    about: Check the current launch blockers and warnings before filing a new issue.
+  - name: Security Policy
+    url: https://github.com/88lin/xhs-workspace/blob/main/SECURITY.md
+    about: Report suspected vulnerabilities privately before public disclosure.
