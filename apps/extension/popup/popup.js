@@ -1,58 +1,58 @@
 let statsRefreshTimer = null;
 
 const EXPORT_LABELS = {
-  atelier: 'XHS Atelier import package',
+  atelier: 'XHS Atelier 导入包',
   json: 'JSON',
   jsonl: 'JSONL',
   markdown: 'Markdown',
-  training: 'Training data',
+  training: '训练数据',
 };
 
 const SOURCE_LABELS = {
-  homefeed: 'Home feed',
-  search: 'Search',
-  detail: 'Detail page',
-  user_profile: 'Profile page',
-  dom_feed: 'DOM cards',
-  dom_detail: 'DOM detail',
+  homefeed: '首页信息流',
+  search: '搜索结果',
+  detail: '详情页',
+  user_profile: '主页',
+  dom_feed: '页面卡片',
+  dom_detail: '页面详情',
 };
 
 const PAGE_TYPE_LABELS = {
-  detail: 'Detail page',
-  feed: 'Feed',
-  profile: 'Profile page',
+  detail: '详情页',
+  feed: '信息流',
+  profile: '主页',
 };
 
 const BATCH_PROMPTS = {
-  'Content Overview': {
+  内容总览: {
     pageType: 'feed',
     prompt: [
-      'Analyze the following Xiaohongshu posts as a group.',
-      '1. Summarize the main topic clusters.',
-      '2. Explain what the higher-engagement posts have in common.',
-      '3. Describe the dominant content style.',
-      '4. Give 3 practical creation suggestions.',
-      'Reply in concise Chinese.',
+      '请把以下小红书帖子作为一个整体进行分析。',
+      '1. 总结主要主题簇。',
+      '2. 说明高互动帖子有哪些共同点。',
+      '3. 描述当前主导的内容风格。',
+      '4. 给出 3 条可执行的创作建议。',
+      '请用简洁中文回答。',
     ].join('\n'),
   },
-  'Potential Winners': {
+  潜力爆款: {
     pageType: 'feed',
     prompt: [
-      'Review the following Xiaohongshu posts and identify breakout potential.',
-      '1. Pick the 3 strongest posts and explain why they stand out.',
-      '2. Summarize repeatable patterns behind strong performance.',
-      '3. Turn the patterns into a reusable content formula.',
-      'Reply in concise Chinese.',
+      '请审阅以下小红书帖子，并识别其中最有爆发潜力的内容。',
+      '1. 选出最强的 3 条帖子，并说明原因。',
+      '2. 总结高表现内容背后的可复用规律。',
+      '3. 将这些规律整理成可重复执行的内容公式。',
+      '请用简洁中文回答。',
     ].join('\n'),
   },
-  'Tag Patterns': {
+  标签规律: {
     pageType: 'feed',
     prompt: [
-      'Review the following Xiaohongshu posts from a tagging perspective.',
-      '1. List the most frequent tags.',
-      '2. Explain how tags relate to engagement.',
-      '3. Recommend stronger tag combinations for future posts.',
-      'Reply in concise Chinese.',
+      '请从标签角度审阅以下小红书帖子。',
+      '1. 列出出现频率最高的标签。',
+      '2. 说明标签和互动表现之间的关系。',
+      '3. 推荐更适合后续发布的标签组合。',
+      '请用简洁中文回答。',
     ].join('\n'),
   },
 };
@@ -105,7 +105,7 @@ function renderSourceBars(bySource) {
   const total = Object.values(bySource).reduce((sum, value) => sum + value, 0);
 
   if (!total) {
-    container.innerHTML = '<div class="source-empty">No data yet</div>';
+    container.innerHTML = '<div class="source-empty">暂无数据</div>';
     return;
   }
 
@@ -140,12 +140,12 @@ function checkPageStatus() {
 
     if (isXhs) {
       dot.className = 'status-dot active';
-      text.textContent = 'Connected to Xiaohongshu';
+      text.textContent = '已连接到小红书页面';
       return;
     }
 
     dot.className = 'status-dot inactive';
-    text.textContent = 'Open a Xiaohongshu page first';
+    text.textContent = '请先打开小红书页面';
     document.getElementById('btnStartScroll').disabled = true;
     document.getElementById('btnScanNow').disabled = true;
   });
@@ -174,7 +174,7 @@ function bindEvents() {
     sendToActiveTab({ type: 'START_AUTO_SCROLL', config }, () => {
       document.getElementById('btnStartScroll').disabled = true;
       document.getElementById('btnStopScroll').disabled = false;
-      showToast('Auto browse started.');
+      showToast('自动浏览已开始。');
       startStatsRefresh();
     });
   });
@@ -183,7 +183,7 @@ function bindEvents() {
     sendToActiveTab({ type: 'STOP_AUTO_SCROLL' }, () => {
       document.getElementById('btnStartScroll').disabled = false;
       document.getElementById('btnStopScroll').disabled = true;
-      showToast('Auto browse stopped.');
+      showToast('自动浏览已停止。');
       stopStatsRefresh();
       loadStats();
     });
@@ -191,7 +191,7 @@ function bindEvents() {
 
   document.getElementById('btnScanNow').addEventListener('click', () => {
     sendToActiveTab({ type: 'SCAN_DOM' }, () => {
-      showToast('DOM scan finished.');
+      showToast('页面扫描已完成。');
       setTimeout(loadStats, 500);
     });
   });
@@ -208,25 +208,25 @@ function bindEvents() {
 
         if (result?.ok) {
           if (format === 'atelier') {
-            showToast(result.guidance || 'Exported an XHS Atelier import package.');
+            showToast(result.guidance || '已导出 XHS Atelier 导入包。');
           } else {
-            showToast(`Exported ${EXPORT_LABELS[format] || result.filename}.`);
+            showToast(`已导出 ${EXPORT_LABELS[format] || result.filename}。`);
           }
           return;
         }
 
-        showToast(`Export failed: ${result?.error || 'Unknown error'}`);
+        showToast(`导出失败：${result?.error || '未知错误'}`);
       });
     });
   });
 
   document.getElementById('btnClear').addEventListener('click', () => {
-    if (!confirm('Clear all collected data? This cannot be undone.')) {
+    if (!confirm('确定要清空全部采集数据吗？此操作无法撤销。')) {
       return;
     }
 
     chrome.runtime.sendMessage({ type: 'CLEAR_DATA' }, () => {
-      showToast('All collected data has been cleared.');
+      showToast('已清空全部采集数据。');
       loadStats();
     });
   });
@@ -259,7 +259,7 @@ chrome.runtime.onMessage.addListener((message) => {
     if (startBtn) startBtn.disabled = false;
     if (stopBtn) stopBtn.disabled = true;
 
-    showToast('Auto browse finished.');
+    showToast('自动浏览已完成。');
 
     const autoAnalyze = document.getElementById('autoAnalyze');
     if (autoAnalyze?.checked) {
@@ -268,7 +268,7 @@ chrome.runtime.onMessage.addListener((message) => {
   }
 
   if (message.type === 'AUTO_ANALYSIS_DONE') {
-    showToast(`Auto analysis finished: ${message.label}`);
+    showToast(`自动分析已完成：${message.label}`);
   }
 });
 
@@ -277,15 +277,15 @@ window.addEventListener('unload', stopStatsRefresh);
 function timeAgo(timestamp) {
   const diff = Date.now() - timestamp;
   const seconds = Math.floor(diff / 1000);
-  if (seconds < 60) return `${seconds}s ago`;
+  if (seconds < 60) return '刚刚';
 
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
+  if (minutes < 60) return `${minutes} 分钟前`;
 
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return `${hours} 小时前`;
 
-  return `${Math.floor(hours / 24)}d ago`;
+  return `${Math.floor(hours / 24)} 天前`;
 }
 
 function escapeHtml(value) {
@@ -324,14 +324,14 @@ function updateCapacityWarning(info) {
   if (info.isReached) {
     warningEl.style.display = 'flex';
     warningEl.classList.add('critical');
-    textEl.textContent = `Storage is full (${info.current}/${info.limit} items). Clean up data before collecting more.`;
+    textEl.textContent = `存储已满（${info.current}/${info.limit} 条），请先清理后再继续采集。`;
     return;
   }
 
   if (info.isNearLimit) {
     warningEl.style.display = 'flex';
     warningEl.classList.remove('critical');
-    textEl.textContent = `Storage is almost full (${info.current}/${info.limit}, ${info.percentage}% used).`;
+    textEl.textContent = `存储空间接近上限（${info.current}/${info.limit} 条，已使用 ${info.percentage}%）。`;
     return;
   }
 
@@ -340,19 +340,19 @@ function updateCapacityWarning(info) {
 
 function showCleanupDialog() {
   const options = [
-    { label: 'Remove data older than 7 days', action: 'old', days: 7 },
-    { label: 'Remove data older than 30 days', action: 'old', days: 30 },
-    { label: 'Remove exported data only', action: 'exported' },
-    { label: 'Remove the oldest 100 items', action: 'oldest', count: 100 },
-    { label: 'Remove the oldest 500 items', action: 'oldest', count: 500 },
+    { label: '删除 7 天前的数据', action: 'old', days: 7 },
+    { label: '删除 30 天前的数据', action: 'old', days: 30 },
+    { label: '仅删除已导出的数据', action: 'exported' },
+    { label: '删除最早的 100 条数据', action: 'oldest', count: 100 },
+    { label: '删除最早的 500 条数据', action: 'oldest', count: 500 },
   ];
 
   const message = [
-    'Choose a cleanup action:',
+    '请选择清理方式：',
     '',
     ...options.map((option, index) => `${index + 1}. ${option.label}`),
     '',
-    'Enter a number from 1 to 5, or cancel.',
+    '请输入 1 到 5 之间的数字，或直接取消。',
   ].join('\n');
 
   const choice = prompt(message);
@@ -381,12 +381,12 @@ function executeCleanup(option) {
 
   chrome.runtime.sendMessage({ type: messageType, ...params }, (result) => {
     if (result?.ok) {
-      showToast(`Removed ${result.deleted} items.`);
+      showToast(`已删除 ${result.deleted} 条数据。`);
       loadStats();
       return;
     }
 
-    showToast(`Cleanup failed: ${result?.error || 'Unknown error'}`);
+    showToast(`清理失败：${result?.error || '未知错误'}`);
   });
 }
 
@@ -400,13 +400,13 @@ function showBatchAnalyzePanel() {
 
     chrome.runtime.sendMessage({ type: 'GET_RECENT_POSTS', limit: 50 }, (response) => {
       if (chrome.runtime.lastError || !response?.ok) {
-        showToast('Failed to load recent posts.');
+        showToast('加载最近采集内容失败。');
         return;
       }
 
       const posts = response.posts || [];
       if (!posts.length) {
-        showToast('No posts available yet. Capture some content first.');
+        showToast('还没有可分析的内容，请先采集一些笔记。');
         return;
       }
 
@@ -425,18 +425,18 @@ function showBatchAnalyzePanel() {
       overlay.innerHTML = `
         <div class="history-panel batch-panel">
           <div class="history-header">
-            <span>Batch analysis</span>
+            <span>批量分析</span>
             <button class="history-close">x</button>
           </div>
           <div class="batch-prompt-select">
-            <label for="batchPromptKey">Prompt</label>
+            <label for="batchPromptKey">分析模板</label>
             <select id="batchPromptKey">
               ${Object.keys(BATCH_PROMPTS)
                 .map((key) => `<option value="${escapeAttr(key)}">${escapeHtml(key)}</option>`)
                 .join('')}
               ${
                 customPrompts.length
-                  ? `<optgroup label="Custom prompts">
+                  ? `<optgroup label="自定义提示词">
                       ${customPrompts
                         .filter((prompt) => prompt.name && prompt.content)
                         .map((prompt) => `<option value="${escapeAttr(prompt.name)}">${escapeHtml(prompt.name)}</option>`)
@@ -447,22 +447,22 @@ function showBatchAnalyzePanel() {
             </select>
           </div>
           <div class="batch-select-bar">
-            <span class="batch-count">Selected <strong id="batchSelectedCount">0</strong> / ${posts.length}</span>
-            <button class="batch-select-all">Select all</button>
+            <span class="batch-count">已选 <strong id="batchSelectedCount">0</strong> / ${posts.length}</span>
+            <button class="batch-select-all">全选</button>
           </div>
           <div class="history-list batch-list">
             ${posts
               .map((post) => {
                 const noteId = String(post.noteId || '');
-                const title = (post.title || 'Untitled').slice(0, 36);
-                const author = post.authorName || 'Unknown author';
+                const title = (post.title || '未命名').slice(0, 36);
+                const author = post.authorName || '未知作者';
                 const likes = String(post.likedCount || 0);
                 return `
                   <label class="batch-item">
                     <input type="checkbox" class="batch-check" value="${escapeAttr(noteId)}">
                     <div class="batch-item-info">
                       <div class="batch-item-title">${escapeHtml(title)}</div>
-                      <div class="batch-item-meta">${escapeHtml(author)} / ${escapeHtml(likes)} likes / ${timeAgo(post.capturedAt)}</div>
+                      <div class="batch-item-meta">${escapeHtml(author)} / ${escapeHtml(likes)} 赞 / ${timeAgo(post.capturedAt)}</div>
                     </div>
                   </label>
                 `;
@@ -470,7 +470,7 @@ function showBatchAnalyzePanel() {
               .join('')}
           </div>
           <div class="batch-footer">
-            <button class="btn btn-primary batch-run" id="btnRunBatch" disabled>Run analysis</button>
+            <button class="btn btn-primary batch-run" id="btnRunBatch" disabled>开始分析</button>
           </div>
         </div>
       `;
@@ -486,18 +486,21 @@ function showBatchAnalyzePanel() {
 
       const countEl = overlay.querySelector('#batchSelectedCount');
       const runBtn = overlay.querySelector('#btnRunBatch');
+      const selectAllBtn = overlay.querySelector('.batch-select-all');
 
       const updateCount = () => {
         const checked = overlay.querySelectorAll('.batch-check:checked').length;
         countEl.textContent = checked;
         runBtn.disabled = checked === 0;
+        const total = overlay.querySelectorAll('.batch-check').length;
+        selectAllBtn.textContent = checked === total ? '取消全选' : '全选';
       };
 
       overlay.querySelectorAll('.batch-check').forEach((checkbox) => {
         checkbox.addEventListener('change', updateCount);
       });
 
-      overlay.querySelector('.batch-select-all').addEventListener('click', () => {
+      selectAllBtn.addEventListener('click', () => {
         const checkboxes = [...overlay.querySelectorAll('.batch-check')];
         const allChecked = checkboxes.every((checkbox) => checkbox.checked);
         checkboxes.forEach((checkbox) => {
@@ -522,7 +525,7 @@ function showBatchAnalyzePanel() {
 }
 
 function executeBatchAnalysis(posts, promptKey, prompt) {
-  showToast(`Running batch analysis for ${posts.length} posts...`);
+  showToast(`正在为 ${posts.length} 条内容启动批量分析...`);
 
   sendToActiveTab(
     {
@@ -533,14 +536,14 @@ function executeBatchAnalysis(posts, promptKey, prompt) {
     },
     (response) => {
       if (chrome.runtime.lastError) {
-        showToast('Open a Xiaohongshu page first.');
+        showToast('请先打开小红书页面。');
         return;
       }
 
       if (response?.error === 'NO_API_KEY') {
-        showToast('Configure an API key in Settings first.');
+        showToast('请先在设置中配置 API Key。');
       } else if (response?.ok) {
-        showToast('Batch analysis started. Open History to review the result later.');
+        showToast('批量分析已开始，可稍后在历史记录中查看结果。');
       }
     },
   );
@@ -553,11 +556,11 @@ function triggerAutoAnalysis() {
     }
 
     if (response?.ok) {
-      showToast('Auto analysis started.');
+      showToast('自动分析已开始。');
     } else if (response?.error === 'NO_API_KEY') {
-      showToast('Configure an API key in Settings first.');
+      showToast('请先在设置中配置 API Key。');
     } else if (response?.error === 'NO_DATA') {
-      showToast('No captured data is available for analysis.');
+      showToast('当前没有可供分析的采集数据。');
     }
   });
 }
@@ -569,7 +572,7 @@ function showAnalysisHistory() {
 
   chrome.runtime.sendMessage({ type: 'GET_ANALYSES', limit: 20 }, (response) => {
     if (chrome.runtime.lastError || !response?.ok) {
-      showToast('Failed to load analysis history.');
+      showToast('加载分析历史失败。');
       return;
     }
 
@@ -580,13 +583,13 @@ function showAnalysisHistory() {
     overlay.innerHTML = `
       <div class="history-panel">
         <div class="history-header">
-          <span>Analysis history</span>
+          <span>分析历史</span>
           <button class="history-close">x</button>
         </div>
         <div class="history-list">
           ${
             list.length === 0
-              ? '<div class="history-empty">No saved analysis yet.</div>'
+              ? '<div class="history-empty">还没有保存的分析记录。</div>'
               : list
                   .map((item) => {
                     const safeId = Number(item.id) || 0;
@@ -600,8 +603,8 @@ function showAnalysisHistory() {
                         </div>
                         <div class="history-item-preview">${escapeHtml(preview)}...</div>
                         <div class="history-item-actions">
-                          <button class="history-copy" data-id="${safeId}">Copy</button>
-                          <button class="history-delete" data-id="${safeId}">Delete</button>
+                          <button class="history-copy" data-id="${safeId}">复制</button>
+                          <button class="history-delete" data-id="${safeId}">删除</button>
                         </div>
                       </div>
                     `;
@@ -631,8 +634,8 @@ function showAnalysisHistory() {
 
         navigator.clipboard
           .writeText(item.markdown)
-          .then(() => showToast('Copied to clipboard.'))
-          .catch(() => showToast('Copy failed.'));
+          .then(() => showToast('已复制到剪贴板。'))
+          .catch(() => showToast('复制失败。'));
       });
     });
 
@@ -649,7 +652,7 @@ function showAnalysisHistory() {
           if (item) {
             item.remove();
           }
-          showToast('Deleted.');
+          showToast('已删除。');
         });
       });
     });

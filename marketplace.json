@@ -1,10 +1,10 @@
 {
   "name": "xhs-workspace-marketplace",
-  "description": "Xiaohongshu workflow plugins and desktop workspace utilities.",
+  "description": "面向小红书工作流的插件集合与桌面工作台工具。",
   "plugins": [
     {
       "name": "rednote-to-obsidian",
-      "description": "Capture Xiaohongshu content into clean, Obsidian-friendly notes.",
+      "description": "把小红书内容采集并整理为适合归档和继续创作的结构化笔记。",
       "version": "1.0.0",
       "path": "."
     }

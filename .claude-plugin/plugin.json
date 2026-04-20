@@ -1,6 +1,6 @@
 {
   "name": "rednote-to-obsidian",
-  "description": "Extract Xiaohongshu posts into concise Obsidian notes with transcription support.",
+  "description": "将小红书内容整理为适合知识归档的结构化笔记，并支持后续写作与整理流程。",
   "version": "1.0.0",
   "author": {
     "name": "茉灵智库"

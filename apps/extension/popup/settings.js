@@ -21,17 +21,17 @@ const API_PROVIDERS = {
     endpoint: 'https://openrouter.ai/api/v1/chat/completions',
     keyPlaceholder: 'sk-or-v1-...',
     hint: [
-      'Your API key stays in local browser storage.',
-      'Supports multiple model families behind one endpoint.',
-      'Get a key from <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">OpenRouter</a>.',
+      'API Key 只保存在浏览器本地存储中。',
+      '一个接口下可以切换多种模型。',
+      '前往 <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">OpenRouter</a> 获取 API Key。',
     ],
     models: [
-      ['google/gemini-2.0-flash-001', 'Gemini 2.0 Flash (Recommended)'],
+      ['google/gemini-2.0-flash-001', 'Gemini 2.0 Flash（推荐）'],
       ['google/gemini-2.0-flash-thinking-exp', 'Gemini 2.0 Flash Thinking'],
       ['anthropic/claude-3.5-sonnet', 'Claude 3.5 Sonnet'],
       ['anthropic/claude-3-opus', 'Claude 3 Opus'],
       ['openai/gpt-4o', 'GPT-4o'],
-      ['openai/gpt-4o-mini', 'GPT-4o Mini (Low cost)'],
+      ['openai/gpt-4o-mini', 'GPT-4o Mini（低成本）'],
       ['openai/gpt-4-turbo', 'GPT-4 Turbo'],
       ['meta-llama/llama-3.3-70b-instruct', 'Llama 3.3 70B'],
     ],
@@ -41,14 +41,14 @@ const API_PROVIDERS = {
     endpoint: 'https://api.anthropic.com/v1/messages',
     keyPlaceholder: 'sk-ant-...',
     hint: [
-      'Direct Claude API from Anthropic.',
-      'Requires an Anthropic account.',
-      'Get a key from <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">Anthropic Console</a>.',
+      '直接使用 Anthropic 官方 Claude 接口。',
+      '需要你拥有 Anthropic 账户。',
+      '前往 <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">Anthropic Console</a> 获取 API Key。',
     ],
     models: [
-      ['claude-3-5-sonnet-20241022', 'Claude 3.5 Sonnet (Recommended)'],
+      ['claude-3-5-sonnet-20241022', 'Claude 3.5 Sonnet（推荐）'],
       ['claude-3-opus-20240229', 'Claude 3 Opus'],
-      ['claude-3-haiku-20240307', 'Claude 3 Haiku (Low cost)'],
+      ['claude-3-haiku-20240307', 'Claude 3 Haiku（低成本）'],
     ],
   },
   openai: {
@@ -56,13 +56,13 @@ const API_PROVIDERS = {
     endpoint: 'https://api.openai.com/v1/chat/completions',
     keyPlaceholder: 'sk-...',
     hint: [
-      'Direct GPT API from OpenAI.',
-      'Requires an OpenAI account.',
-      'Get a key from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noreferrer">OpenAI Platform</a>.',
+      '直接使用 OpenAI 官方 GPT 接口。',
+      '需要你拥有 OpenAI 账户。',
+      '前往 <a href="https://platform.openai.com/api-keys" target="_blank" rel="noreferrer">OpenAI Platform</a> 获取 API Key。',
     ],
     models: [
-      ['gpt-4o', 'GPT-4o (Recommended)'],
-      ['gpt-4o-mini', 'GPT-4o Mini (Low cost)'],
+      ['gpt-4o', 'GPT-4o（推荐）'],
+      ['gpt-4o-mini', 'GPT-4o Mini（低成本）'],
       ['gpt-4-turbo', 'GPT-4 Turbo'],
       ['gpt-4', 'GPT-4'],
     ],
@@ -72,14 +72,14 @@ const API_PROVIDERS = {
     endpoint: 'https://generativelanguage.googleapis.com/v1beta/models',
     keyPlaceholder: 'AIza...',
     hint: [
-      'Direct Gemini API from Google.',
-      'Requires a Google AI Studio key.',
-      'Get a key from <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noreferrer">Google AI Studio</a>.',
+      '直接使用 Google 官方 Gemini 接口。',
+      '需要 Google AI Studio 的 API Key。',
+      '前往 <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noreferrer">Google AI Studio</a> 获取 API Key。',
     ],
     models: [
-      ['gemini-2.0-flash-exp', 'Gemini 2.0 Flash (Recommended)'],
+      ['gemini-2.0-flash-exp', 'Gemini 2.0 Flash（推荐）'],
       ['gemini-1.5-pro', 'Gemini 1.5 Pro'],
-      ['gemini-1.5-flash', 'Gemini 1.5 Flash (Low cost)'],
+      ['gemini-1.5-flash', 'Gemini 1.5 Flash（低成本）'],
     ],
   },
   deepseek: {
@@ -87,12 +87,12 @@ const API_PROVIDERS = {
     endpoint: 'https://api.deepseek.com/v1/chat/completions',
     keyPlaceholder: 'sk-...',
     hint: [
-      'DeepSeek official API.',
-      'Text analysis only. Image analysis is not supported.',
-      'Get a key from <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noreferrer">DeepSeek Platform</a>.',
+      'DeepSeek 官方 API。',
+      '仅支持文本分析，不支持图像分析。',
+      '前往 <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noreferrer">DeepSeek Platform</a> 获取 API Key。',
     ],
     models: [
-      ['deepseek-chat', 'DeepSeek Chat (Recommended)'],
+      ['deepseek-chat', 'DeepSeek Chat（推荐）'],
       ['deepseek-reasoner', 'DeepSeek Reasoner'],
     ],
   },
@@ -101,69 +101,69 @@ const API_PROVIDERS = {
     endpoint: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
     keyPlaceholder: 'sk-...',
     hint: [
-      'Alibaba Cloud Qwen API.',
-      'Supports multimodal analysis on VL models.',
-      'Get a key from <a href="https://help.aliyun.com/zh/model-studio/getting-started/first-api-call-to-qwen" target="_blank" rel="noreferrer">Alibaba Cloud Model Studio</a>.',
+      '阿里云通义千问接口。',
+      'VL 模型支持多模态分析。',
+      '前往 <a href="https://help.aliyun.com/zh/model-studio/getting-started/first-api-call-to-qwen" target="_blank" rel="noreferrer">阿里云百炼</a> 获取 API Key。',
     ],
     models: [
-      ['qwen-vl-max-latest', 'Qwen VL Max (Multimodal, Recommended)'],
-      ['qwen-vl-plus-latest', 'Qwen VL Plus (Multimodal)'],
-      ['qwen-max', 'Qwen Max (Text)'],
-      ['qwen-plus', 'Qwen Plus (Text)'],
-      ['qwen-turbo', 'Qwen Turbo (Text, Low cost)'],
+      ['qwen-vl-max-latest', 'Qwen VL Max（多模态，推荐）'],
+      ['qwen-vl-plus-latest', 'Qwen VL Plus（多模态）'],
+      ['qwen-max', 'Qwen Max（文本）'],
+      ['qwen-plus', 'Qwen Plus（文本）'],
+      ['qwen-turbo', 'Qwen Turbo（文本，低成本）'],
     ],
   },
   minimax: {
     name: 'MiniMax',
     endpoint: 'https://api.minimax.io/anthropic',
-    keyPlaceholder: 'Paste your API key',
+    keyPlaceholder: '粘贴你的 API Key',
     hint: [
-      'MiniMax official API.',
-      'Text analysis only. Image analysis is not supported.',
-      'Get a key from <a href="https://platform.minimax.io" target="_blank" rel="noreferrer">MiniMax Platform</a>.',
+      'MiniMax 官方 API。',
+      '仅支持文本分析，不支持图像分析。',
+      '前往 <a href="https://platform.minimax.io" target="_blank" rel="noreferrer">MiniMax Platform</a> 获取 API Key。',
     ],
     models: [
-      ['MiniMax-M2.7', 'MiniMax M2.7 (Recommended)'],
+      ['MiniMax-M2.7', 'MiniMax M2.7（推荐）'],
       ['MiniMax-M2.7-highspeed', 'MiniMax M2.7 High Speed'],
       ['MiniMax-M2.5', 'MiniMax M2.5'],
       ['MiniMax-M2.5-highspeed', 'MiniMax M2.5 High Speed'],
     ],
   },
   custom: {
-    name: 'Custom endpoint',
+    name: '自定义接口',
     endpoint: '',
-    keyPlaceholder: 'Paste your API key',
+    keyPlaceholder: '粘贴你的 API Key',
     hint: [
-      'Use any OpenAI-compatible endpoint.',
-      'The endpoint should support the model format you expect.',
-      'If you need image analysis, make sure the endpoint accepts multimodal input.',
-      'Specify the final model in the Model ID field below.',
+      '可接入任意兼容 OpenAI 协议的接口。',
+      '请确认接口支持你预期的模型格式。',
+      '如果你要做图像分析，请确认接口支持多模态输入。',
+      '最终模型名称请在下方的模型 ID 中填写。',
     ],
-    models: [['custom-model', 'Custom model']],
+    models: [['custom-model', '自定义模型']],
   },
 };
 
 const PRESETS = {
   safe: {
-    name: 'Conservative',
+    name: '稳妥',
     imageLimit: { detail: 6, feed: 8, profile: 8 },
     rateLimit: { maxPerMinute: 20, maxPer5Min: 60, minInterval: 3000 },
     scrollBehavior: { upScrollChance: 0.1, longPauseChance: 0.2, fatigueThreshold1: 40, fatigueThreshold2: 80 },
   },
   balanced: {
-    name: 'Balanced',
+    name: '均衡',
     imageLimit: { detail: 6, feed: 8, profile: 8 },
     rateLimit: { maxPerMinute: 25, maxPer5Min: 80, minInterval: 2500 },
     scrollBehavior: { upScrollChance: 0.1, longPauseChance: 0.15, fatigueThreshold1: 50, fatigueThreshold2: 100 },
   },
   fast: {
-    name: 'Fast capture',
+    name: '高速采集',
     imageLimit: { detail: 10, feed: 15, profile: 15 },
     rateLimit: { maxPerMinute: 35, maxPer5Min: 100, minInterval: 2000 },
     scrollBehavior: { upScrollChance: 0.08, longPauseChance: 0.1, fatigueThreshold1: 60, fatigueThreshold2: 120 },
   },
   unlimited: {
-    name: 'Unlimited images',
+    name: '不限图片',
     imageLimit: { detail: 0, feed: 0, profile: 0 },
     rateLimit: { maxPerMinute: 25, maxPer5Min: 80, minInterval: 2500 },
     scrollBehavior: { upScrollChance: 0.1, longPauseChance: 0.15, fatigueThreshold1: 50, fatigueThreshold2: 100 },
@@ -171,17 +171,21 @@ const PRESETS = {
 };
 
 const PAGE_TYPE_OPTIONS = [
-  { value: 'detail', label: 'Detail page' },
-  { value: 'feed', label: 'Feed' },
-  { value: 'profile', label: 'Profile page' },
+  { value: 'detail', label: '详情页' },
+  { value: 'feed', label: '信息流' },
+  { value: 'profile', label: '主页' },
 ];
 
 const DEFAULT_PROMPT_NAMES = new Set([
+  '内容分析', '仿写文案', '爆款潜力', '标签建议', '视觉诊断',
+  '视频分析', '完播率诊断', '仿拍脚本', '爆款对标',
+  '趋势洞察', '选题推荐', '爆文拆解', '数据报告',
+  '博主画像', '运营策略', '爆款复盘', '对标建议',
   '📊 内容分析', '✍️ 仿写文案', '🔥 爆款潜力', '🏷️ 标签建议', '🎨 视觉诊断',
   '🎬 视频分析', '🔥 完播率诊断', '✍️ 仿拍脚本', '📊 爆款对标',
-  '📈 趋势洞察', '🎯 选题推荐', '🏆 爆文拆解', '📊 数据报告',
-  '👤 博主画像', '📐 运营策略', '🔥 爆款复盘', '🎯 对标建议',
-  'Content Overview', 'Potential Winners', 'Tag Patterns',
+  '📈 趋势洞察', '🧠 选题推荐', '🧩 爆文拆解', '📊 数据报告',
+  '👤 博主画像', '📋 运营策略', '🔥 爆款复盘', '🧭 对标建议',
+  '内容总览', '潜力爆款', '标签规律',
 ]);
 
 let apiTestStatus = { tested: false, success: false, lastTestedConfig: null };
@@ -200,33 +204,38 @@ function providerModels(provider) {
 function updateFormSteps() {
   const provider = el('apiProvider').value;
   const apiKey = el('apiKey').value.trim();
+
   el('apiKey').disabled = !provider;
   el('btnTogglePassword').disabled = !provider;
   el('btnTestAPI').disabled = !provider;
-  el('apiKey').placeholder = provider ? API_PROVIDERS[provider].keyPlaceholder : 'Choose a provider first';
+  el('apiKey').placeholder = provider ? API_PROVIDERS[provider].keyPlaceholder : '请先选择服务提供方';
   el('apiModel').disabled = !(provider && apiKey) || provider === 'custom';
   el('customModel').disabled = !(provider && apiKey);
   el('customEndpoint').disabled = !(provider === 'custom' && apiKey);
+
   if (!apiKey) {
-    el('customModel').placeholder = 'Enter your API key first';
+    el('customModel').placeholder = '请先输入 API Key';
   }
 }
 
 function updateProviderUI() {
   const provider = el('apiProvider').value || 'openrouter';
   const config = API_PROVIDERS[provider];
+
   el('apiKey').placeholder = config.keyPlaceholder;
-  el('apiKeyHint').textContent = `Used for ${config.name}`;
+  el('apiKeyHint').textContent = `用于 ${config.name} 的接口认证`;
   el('customEndpointContainer').style.display = provider === 'custom' ? 'flex' : 'none';
   el('customModelContainer').style.display = provider === 'custom' ? 'flex' : 'none';
   el('apiModelContainer').style.display = provider === 'custom' ? 'none' : 'flex';
   el('apiModel').innerHTML = '';
+
   providerModels(provider).forEach((model) => {
     const option = document.createElement('option');
     option.value = model.value;
     option.textContent = model.label;
     el('apiModel').appendChild(option);
   });
+
   el('apiHintList').innerHTML = config.hint.map((hint) => `<li>${hint}</li>`).join('');
   updateFormSteps();
 }
@@ -235,6 +244,7 @@ async function loadSettings() {
   try {
     const result = await chrome.storage.sync.get('userConfig');
     const config = result.userConfig || DEFAULT_CONFIG;
+
     el('imageDetail').value = config.imageLimit.detail;
     el('imageFeed').value = config.imageLimit.feed;
     el('imageProfile').value = config.imageLimit.profile;
@@ -254,6 +264,7 @@ async function loadSettings() {
       el('apiModel').value = config.apiConfig.apiModel || 'google/gemini-2.0-flash-001';
       el('customEndpoint').value = config.apiConfig.customEndpoint || '';
       el('customModel').value = config.apiConfig.customModel || '';
+
       if (config.apiConfig.apiKey) {
         apiTestStatus = {
           tested: true,
@@ -273,23 +284,25 @@ async function loadSettings() {
     updateFormSteps();
   } catch (error) {
     console.error('Failed to load settings:', error);
-    showToast('Failed to load settings.');
+    showToast('加载设置失败。');
   }
 }
 
 function validateConfig(config) {
   const errors = [];
-  if (config.imageLimit.detail < 0 || config.imageLimit.detail > 50) errors.push('Detail page image limit must be between 0 and 50.');
-  if (config.imageLimit.feed < 0 || config.imageLimit.feed > 50) errors.push('Feed image limit must be between 0 and 50.');
-  if (config.imageLimit.profile < 0 || config.imageLimit.profile > 50) errors.push('Profile page image limit must be between 0 and 50.');
-  if (config.rateLimit.maxPerMinute < 5 || config.rateLimit.maxPerMinute > 60) errors.push('Max requests per minute must be between 5 and 60.');
-  if (config.rateLimit.maxPer5Min < 20 || config.rateLimit.maxPer5Min > 300) errors.push('Max requests per 5 minutes must be between 20 and 300.');
-  if (config.rateLimit.minInterval < 1000 || config.rateLimit.minInterval > 10000) errors.push('Minimum interval must be between 1000 and 10000 ms.');
-  if (config.scrollBehavior.upScrollChance < 0 || config.scrollBehavior.upScrollChance > 1) errors.push('Up-scroll chance must be between 0 and 1.');
-  if (config.scrollBehavior.longPauseChance < 0 || config.scrollBehavior.longPauseChance > 1) errors.push('Long pause chance must be between 0 and 1.');
-  if (config.scrollBehavior.fatigueThreshold1 < 10 || config.scrollBehavior.fatigueThreshold1 > 200) errors.push('Fatigue threshold 1 must be between 10 and 200.');
-  if (config.scrollBehavior.fatigueThreshold2 < 20 || config.scrollBehavior.fatigueThreshold2 > 300) errors.push('Fatigue threshold 2 must be between 20 and 300.');
-  if (config.scrollBehavior.fatigueThreshold2 <= config.scrollBehavior.fatigueThreshold1) errors.push('Fatigue threshold 2 must be greater than fatigue threshold 1.');
+
+  if (config.imageLimit.detail < 0 || config.imageLimit.detail > 50) errors.push('详情页图片数量必须在 0 到 50 之间。');
+  if (config.imageLimit.feed < 0 || config.imageLimit.feed > 50) errors.push('信息流图片数量必须在 0 到 50 之间。');
+  if (config.imageLimit.profile < 0 || config.imageLimit.profile > 50) errors.push('主页图片数量必须在 0 到 50 之间。');
+  if (config.rateLimit.maxPerMinute < 5 || config.rateLimit.maxPerMinute > 60) errors.push('每分钟最大请求数必须在 5 到 60 之间。');
+  if (config.rateLimit.maxPer5Min < 20 || config.rateLimit.maxPer5Min > 300) errors.push('每 5 分钟最大请求数必须在 20 到 300 之间。');
+  if (config.rateLimit.minInterval < 1000 || config.rateLimit.minInterval > 10000) errors.push('最小间隔必须在 1000 到 10000 毫秒之间。');
+  if (config.scrollBehavior.upScrollChance < 0 || config.scrollBehavior.upScrollChance > 1) errors.push('向上回滚概率必须在 0 到 1 之间。');
+  if (config.scrollBehavior.longPauseChance < 0 || config.scrollBehavior.longPauseChance > 1) errors.push('长暂停概率必须在 0 到 1 之间。');
+  if (config.scrollBehavior.fatigueThreshold1 < 10 || config.scrollBehavior.fatigueThreshold1 > 200) errors.push('疲劳阈值 1 必须在 10 到 200 之间。');
+  if (config.scrollBehavior.fatigueThreshold2 < 20 || config.scrollBehavior.fatigueThreshold2 > 300) errors.push('疲劳阈值 2 必须在 20 到 300 之间。');
+  if (config.scrollBehavior.fatigueThreshold2 <= config.scrollBehavior.fatigueThreshold1) errors.push('疲劳阈值 2 必须大于疲劳阈值 1。');
+
   return errors;
 }
 
@@ -303,23 +316,24 @@ async function saveSettings() {
     const resolvedModel = provider === 'custom' ? customModel : apiModel;
 
     if (!apiKey) {
-      showToast('Add an API key first.');
+      showToast('请先填写 API Key。');
       el('apiKey').focus();
       return;
     }
     if (provider === 'custom' && !customEndpoint) {
-      showToast('Enter a custom API endpoint first.');
+      showToast('请先填写自定义接口地址。');
       el('customEndpoint').focus();
       return;
     }
     if (provider === 'custom' && !customModel) {
-      showToast('Enter a model ID first.');
+      showToast('请先填写模型 ID。');
       el('customModel').focus();
       return;
     }
 
     const currentAPIConfig = { provider, apiKey, apiModel: resolvedModel, customEndpoint, customModel };
     let apiConfigChanged = false;
+
     if (apiTestStatus.lastTestedConfig) {
       apiConfigChanged =
         apiTestStatus.lastTestedConfig.provider !== currentAPIConfig.provider ||
@@ -330,11 +344,13 @@ async function saveSettings() {
     }
 
     if (!apiTestStatus.tested || !apiTestStatus.success || apiConfigChanged) {
-      showToast('Run the API connection test before saving.');
+      showToast('保存前请先完成 API 连接测试。');
       const testButton = el('btnTestAPI');
       testButton.focus();
       testButton.style.animation = 'pulse 0.5s ease-in-out 3';
-      setTimeout(() => { testButton.style.animation = ''; }, 1500);
+      setTimeout(() => {
+        testButton.style.animation = '';
+      }, 1500);
       return;
     }
 
@@ -369,8 +385,8 @@ async function saveSettings() {
 
     const validationErrors = validateConfig(config);
     if (validationErrors.length) {
-      alert(['Configuration validation failed:', '', ...validationErrors].join('\n'));
-      showToast('Validation failed. Review the fields and try again.');
+      alert(['配置校验未通过：', '', ...validationErrors].join('\n'));
+      showToast('配置校验失败，请检查填写内容。');
       return;
     }
 
@@ -380,11 +396,11 @@ async function saveSettings() {
       chrome.tabs.sendMessage(tab.id, { type: 'UPDATE_CONFIG', config }).catch(() => {});
     });
 
-    showToast('Settings saved.');
+    showToast('设置已保存。');
     setTimeout(showSuccessModal, 500);
   } catch (error) {
     console.error('Failed to save settings:', error);
-    showToast('Save failed.');
+    showToast('保存失败。');
   }
 }
 
@@ -394,21 +410,25 @@ function showSuccessModal() {
   modal.innerHTML = `
     <div class="success-modal__card">
       <div class="success-modal__mark">XA</div>
-      <h2 class="success-modal__title">Settings saved</h2>
-      <p class="success-modal__body">Your collector is ready. Open Xiaohongshu and start capturing content.</p>
-      <button id="btnGoToXHS" class="success-modal__primary">Open Xiaohongshu -></button>
-      <button id="btnCloseModal" class="success-modal__secondary">Maybe later</button>
+      <h2 class="success-modal__title">设置已保存</h2>
+      <p class="success-modal__body">采集器已经准备就绪。打开小红书即可开始采集与分析。</p>
+      <button id="btnGoToXHS" class="success-modal__primary">打开小红书</button>
+      <button id="btnCloseModal" class="success-modal__secondary">稍后再说</button>
     </div>
   `;
+
   document.body.appendChild(modal);
+
   modal.querySelector('#btnGoToXHS').addEventListener('click', () => {
     chrome.tabs.create({ url: 'https://www.xiaohongshu.com/explore' });
     window.close();
   });
+
   modal.querySelector('#btnCloseModal').addEventListener('click', () => {
     modal.remove();
     window.close();
   });
+
   modal.addEventListener('click', (event) => {
     if (event.target === modal) {
       modal.remove();
@@ -420,6 +440,7 @@ function showSuccessModal() {
 function applyPreset(name) {
   const preset = PRESETS[name];
   if (!preset) return;
+
   el('imageDetail').value = preset.imageLimit.detail;
   el('imageFeed').value = preset.imageLimit.feed;
   el('imageProfile').value = preset.imageLimit.profile;
@@ -430,30 +451,42 @@ function applyPreset(name) {
   el('scrollLongPauseChance').value = Math.round(preset.scrollBehavior.longPauseChance * 100);
   el('scrollFatigue1').value = preset.scrollBehavior.fatigueThreshold1;
   el('scrollFatigue2').value = preset.scrollBehavior.fatigueThreshold2;
-  showToast(`Applied the "${preset.name}" preset.`);
+  showToast(`已应用「${preset.name}」预设。`);
 }
 
 function bindEvents() {
   el('btnBack').addEventListener('click', () => window.close());
   el('btnSave').addEventListener('click', saveSettings);
+
   el('apiProvider').addEventListener('change', () => {
     updateProviderUI();
     resetAPITestStatus();
     setTimeout(() => el('apiKey').focus(), 100);
   });
-  el('apiKey').addEventListener('input', () => { resetAPITestStatus(); updateFormSteps(); });
+
+  el('apiKey').addEventListener('input', () => {
+    resetAPITestStatus();
+    updateFormSteps();
+  });
   el('apiKey').addEventListener('blur', updateFormSteps);
   el('apiModel').addEventListener('change', resetAPITestStatus);
-  el('customEndpoint').addEventListener('input', () => { resetAPITestStatus(); updateFormSteps(); });
+  el('customEndpoint').addEventListener('input', () => {
+    resetAPITestStatus();
+    updateFormSteps();
+  });
   el('customModel').addEventListener('input', resetAPITestStatus);
+
   el('btnTogglePassword').addEventListener('click', () => {
     const input = el('apiKey');
-    el('btnTogglePassword').textContent = input.type === 'password' ? 'Hide' : 'Show';
-    input.type = input.type === 'password' ? 'text' : 'password';
+    const reveal = input.type === 'password';
+    input.type = reveal ? 'text' : 'password';
+    el('btnTogglePassword').textContent = reveal ? '隐藏' : '显示';
   });
+
   document.querySelectorAll('.preset-btn').forEach((button) => {
     button.addEventListener('click', () => applyPreset(button.dataset.preset));
   });
+
   el('btnTestAPI').addEventListener('click', testAPIConnection);
   el('btnAddPrompt').addEventListener('click', addCustomPromptRow);
 }
@@ -476,41 +509,42 @@ async function testAPIConnection() {
   const testBtn = el('btnTestAPI');
   const resolvedModel = provider === 'custom' ? customModel : apiModel;
 
-  if (!apiKey) return showApiError('Please enter an API key first.');
-  if (provider === 'custom' && !customEndpoint) return showApiError('Please enter a custom endpoint first.');
-  if (provider === 'custom' && !customModel) return showApiError('Please enter a model ID first.');
+  if (!apiKey) return showApiError('请先输入 API Key。');
+  if (provider === 'custom' && !customEndpoint) return showApiError('请先填写自定义接口地址。');
+  if (provider === 'custom' && !customModel) return showApiError('请先填写模型 ID。');
 
   testBtn.disabled = true;
-  testBtn.textContent = 'Testing...';
-  resultDiv.textContent = 'Testing the API connection...';
+  testBtn.textContent = '测试中...';
+  resultDiv.textContent = '正在测试 API 连接...';
   resultDiv.className = '';
   resultDiv.style.display = 'block';
 
   try {
     const endpoint = provider === 'custom' ? customEndpoint : API_PROVIDERS[provider].endpoint;
     let response;
+
     if (provider === 'anthropic') {
       response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: resolvedModel, max_tokens: 10, messages: [{ role: 'user', content: 'Hi' }] }),
+        body: JSON.stringify({ model: resolvedModel, max_tokens: 10, messages: [{ role: 'user', content: '你好' }] }),
       });
     } else if (provider === 'google') {
       response = await fetch(`${endpoint}/${resolvedModel}:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: 'Hi' }] }] }),
+        body: JSON.stringify({ contents: [{ parts: [{ text: '你好' }] }] }),
       });
     } else {
       response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-        body: JSON.stringify({ model: resolvedModel, messages: [{ role: 'user', content: 'Hi' }], max_tokens: 10 }),
+        body: JSON.stringify({ model: resolvedModel, messages: [{ role: 'user', content: '你好' }], max_tokens: 10 }),
       });
     }
 
     if (response.ok) {
-      resultDiv.textContent = 'Connection succeeded. You can save the settings now.';
+      resultDiv.textContent = '连接成功，现在可以保存设置了。';
       resultDiv.className = 'success';
       apiTestStatus = {
         tested: true,
@@ -520,13 +554,13 @@ async function testAPIConnection() {
     } else {
       const errorData = await response.json().catch(() => ({}));
       const message = errorData.error?.message || errorData.message || `HTTP ${response.status}`;
-      showApiError(`Connection failed: ${message}`);
+      showApiError(`连接失败：${message}`);
     }
   } catch (error) {
-    showApiError(`Connection failed: ${error.message}`);
+    showApiError(`连接失败：${error.message}`);
   } finally {
     testBtn.disabled = false;
-    testBtn.textContent = 'Test connection';
+    testBtn.textContent = '测试连接';
   }
 
   function showApiError(text) {
@@ -546,10 +580,12 @@ function showToast(text) {
 function renderCustomPrompts(prompts) {
   const container = el('customPromptList');
   container.innerHTML = '';
+
   if (!prompts.length) {
-    container.innerHTML = '<p class="empty-prompt-hint">No custom prompts yet. Use the button below to add one.</p>';
+    container.innerHTML = '<p class="empty-prompt-hint">还没有自定义提示词，点击下方按钮新增。</p>';
     return;
   }
+
   prompts.forEach((prompt, index) => container.appendChild(createPromptRow(prompt, index)));
 }
 
@@ -559,32 +595,35 @@ function createPromptRow(prompt, index) {
   row.dataset.index = index;
   row.innerHTML = `
     <div class="prompt-row-header">
-      <input type="text" class="prompt-name-input" placeholder="Prompt label (for example: Competitor teardown)" value="${escapeAttr(prompt.name || '')}">
+      <input type="text" class="prompt-name-input" placeholder="提示词名称，例如：竞品拆解" value="${escapeAttr(prompt.name || '')}">
       <select class="prompt-type-select">
         ${PAGE_TYPE_OPTIONS.map((option) => `<option value="${option.value}" ${prompt.pageType === option.value ? 'selected' : ''}>${option.label}</option>`).join('')}
       </select>
-      <button class="btn-remove-prompt" title="Remove">X</button>
+      <button class="btn-remove-prompt" title="删除">X</button>
     </div>
-    <textarea class="prompt-content-input" placeholder="Write the prompt that should run against the current page data..." rows="3">${escapeAttr(prompt.content || '')}</textarea>
+    <textarea class="prompt-content-input" placeholder="填写要基于当前页面数据执行的提示词..." rows="3">${escapeAttr(prompt.content || '')}</textarea>
     <div class="prompt-hint">
-      <span class="prompt-char-count">${(prompt.content || '').length} characters</span>
-      <span class="prompt-tip">Keep prompts under 500 characters when possible to reduce timeout risk.</span>
+      <span class="prompt-char-count">${(prompt.content || '').length} 字</span>
+      <span class="prompt-tip">建议控制在 500 字以内，降低超时风险。</span>
     </div>
   `;
+
   row.querySelector('.btn-remove-prompt').addEventListener('click', () => {
     row.remove();
     if (!document.querySelectorAll('.custom-prompt-row').length) {
-      el('customPromptList').innerHTML = '<p class="empty-prompt-hint">No custom prompts yet. Use the button below to add one.</p>';
+      el('customPromptList').innerHTML = '<p class="empty-prompt-hint">还没有自定义提示词，点击下方按钮新增。</p>';
     }
   });
+
   const textarea = row.querySelector('.prompt-content-input');
   const charCount = row.querySelector('.prompt-char-count');
   textarea.addEventListener('input', () => {
     const length = textarea.value.length;
-    charCount.textContent = `${length} characters`;
+    charCount.textContent = `${length} 字`;
     charCount.style.color = length > 500 ? '#ff3b30' : '';
     charCount.style.fontWeight = length > 500 ? 'bold' : '';
   });
+
   return row;
 }
 
@@ -598,25 +637,31 @@ function collectCustomPrompts() {
   const rows = document.querySelectorAll('.custom-prompt-row');
   const prompts = [];
   const seenNames = new Set();
+
   rows.forEach((row) => {
     const name = row.querySelector('.prompt-name-input').value.trim();
     const pageType = row.querySelector('.prompt-type-select').value;
     const content = row.querySelector('.prompt-content-input').value.trim();
+
     if (!name || !content) return;
+
     if (DEFAULT_PROMPT_NAMES.has(name)) {
-      showToast(`"${name}" conflicts with a built-in prompt name.`);
+      showToast(`「${name}」与内置提示词重名，请换一个名称。`);
       row.querySelector('.prompt-name-input').style.borderColor = '#ff3b30';
-      throw new Error(`Prompt name "${name}" conflicts with a built-in prompt.`);
+      throw new Error(`提示词名称「${name}」与内置提示词重名。`);
     }
+
     if (seenNames.has(name)) {
-      showToast(`"${name}" is duplicated. Use a unique prompt name.`);
+      showToast(`「${name}」重复了，请使用唯一名称。`);
       row.querySelector('.prompt-name-input').style.borderColor = '#ff3b30';
-      throw new Error(`Prompt name "${name}" is duplicated.`);
+      throw new Error(`提示词名称「${name}」重复。`);
     }
+
     seenNames.add(name);
     row.querySelector('.prompt-name-input').style.borderColor = '';
     prompts.push({ name, pageType, content });
   });
+
   return prompts;
 }
 

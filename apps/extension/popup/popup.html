@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XHS Atelier Collector</title>
+  <title>XHS Atelier 小红书采集器</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
@@ -11,16 +11,16 @@
     <header class="header">
       <div class="header-title">
         <span class="logo">XA</span>
-        <h1>XHS Atelier Collector</h1>
+        <h1>小红书采集器</h1>
       </div>
       <div class="header-actions">
-        <button class="btn-settings" id="btnSettings" title="Settings">
-          <span class="settings-icon">SET</span>
-          <span class="settings-text">Settings</span>
+        <button class="btn-settings" id="btnSettings" title="设置">
+          <span class="settings-icon">设</span>
+          <span class="settings-text">设置</span>
         </button>
         <div class="header-status" id="status">
           <span class="status-dot"></span>
-          <span class="status-text">Checking page...</span>
+          <span class="status-text">正在检查页面...</span>
         </div>
       </div>
     </header>
@@ -28,15 +28,15 @@
     <section class="stats-panel">
       <div class="stat-card">
         <span class="stat-num" id="totalPosts">0</span>
-        <span class="stat-label">Total captured</span>
+        <span class="stat-label">累计采集</span>
       </div>
       <div class="stat-card">
         <span class="stat-num" id="sessionCaptures">0</span>
-        <span class="stat-label">This session</span>
+        <span class="stat-label">本次会话</span>
       </div>
       <div class="stat-card">
         <span class="stat-num" id="lastCapture">-</span>
-        <span class="stat-label">Last capture</span>
+        <span class="stat-label">最近一次</span>
       </div>
     </section>
 
@@ -46,82 +46,82 @@
     </div>
 
     <section class="source-panel" id="sourcePanel">
-      <h3 class="section-title">Capture sources</h3>
+      <h3 class="section-title">采集来源</h3>
       <div class="source-bars" id="sourceBars"></div>
     </section>
 
     <section class="auto-section">
-      <h3 class="section-title">Auto browse</h3>
+      <h3 class="section-title">自动浏览</h3>
       <div class="auto-controls">
         <div class="control-row">
-          <label for="scrollSpeed">Scroll speed</label>
+          <label for="scrollSpeed">滚动速度</label>
           <select id="scrollSpeed">
-            <option value="slow">Safe</option>
-            <option value="normal" selected>Balanced</option>
-            <option value="fast">Fast</option>
+            <option value="slow">稳妥</option>
+            <option value="normal" selected>均衡</option>
+            <option value="fast">快速</option>
           </select>
         </div>
         <div class="control-row">
-          <label for="maxScrolls">Maximum scrolls</label>
+          <label for="maxScrolls">最大滚动次数</label>
           <input type="number" id="maxScrolls" value="100" min="10" max="1000" step="10">
         </div>
         <div class="btn-row">
-          <button class="btn btn-primary" id="btnStartScroll">Start auto browse</button>
-          <button class="btn btn-secondary" id="btnStopScroll" disabled>Stop</button>
+          <button class="btn btn-primary" id="btnStartScroll">开始自动浏览</button>
+          <button class="btn btn-secondary" id="btnStopScroll" disabled>停止</button>
         </div>
         <div class="control-row auto-analyze-row">
-          <label for="autoAnalyze">Run auto analysis after browsing</label>
+          <label for="autoAnalyze">浏览结束后自动分析</label>
           <input type="checkbox" id="autoAnalyze">
         </div>
       </div>
     </section>
 
     <section class="export-section">
-      <h3 class="section-title">Export to desktop</h3>
+      <h3 class="section-title">导出到桌面端</h3>
       <div class="export-intro">
-        <strong>Use the XHS Atelier import package first</strong>
-        <span>It is the smoothest path into the desktop app. Export here, then drag it into the desktop inbox or the bridge directory.</span>
+        <strong>优先使用 XHS Atelier 导入包</strong>
+        <span>这是进入桌面端最顺畅的方式。先在这里导出，再拖入桌面端收件箱或桥接目录即可。</span>
       </div>
       <div class="export-grid">
         <button class="export-btn export-btn-primary export-btn-wide" data-format="atelier">
-          <span class="export-badge">Recommended</span>
-          <span class="export-icon">APP</span>
+          <span class="export-badge">推荐</span>
+          <span class="export-icon">桌面</span>
           <span class="export-name">XHS Atelier</span>
-          <span class="export-desc">Ready for desktop import</span>
+          <span class="export-desc">可直接导入桌面端</span>
         </button>
         <button class="export-btn" data-format="json">
           <span class="export-icon">JSON</span>
           <span class="export-name">JSON</span>
-          <span class="export-desc">Full structured data</span>
+          <span class="export-desc">完整结构化数据</span>
         </button>
         <button class="export-btn" data-format="jsonl">
           <span class="export-icon">JSL</span>
           <span class="export-name">JSONL</span>
-          <span class="export-desc">Line-based raw format</span>
+          <span class="export-desc">逐行原始数据格式</span>
         </button>
         <button class="export-btn" data-format="markdown">
           <span class="export-icon">MD</span>
           <span class="export-name">Markdown</span>
-          <span class="export-desc">Readable document format</span>
+          <span class="export-desc">便于阅读的文档格式</span>
         </button>
         <button class="export-btn" data-format="training">
           <span class="export-icon">AI</span>
-          <span class="export-name">Training data</span>
-          <span class="export-desc">Fine-tuning friendly output</span>
+          <span class="export-name">训练数据</span>
+          <span class="export-desc">适合继续加工训练</span>
         </button>
       </div>
-      <div class="export-note">If the goal is simply to move captured content into the desktop app, you usually do not need to choose between JSON and JSONL manually.</div>
+      <div class="export-note">如果你的目标只是把采集内容送进桌面端，通常直接使用 XHS Atelier 导入包即可，不需要手动区分 JSON 和 JSONL。</div>
     </section>
 
     <footer class="footer">
       <div class="footer-row">
-        <button class="btn btn-text" id="btnScanNow">Scan now</button>
-        <button class="btn btn-text" id="btnBatchAnalyze">Batch analyze</button>
-        <button class="btn btn-text" id="btnHistory">History</button>
+        <button class="btn btn-text" id="btnScanNow">立即扫描</button>
+        <button class="btn btn-text" id="btnBatchAnalyze">批量分析</button>
+        <button class="btn btn-text" id="btnHistory">历史记录</button>
       </div>
       <div class="footer-row">
-        <button class="btn btn-text" id="btnCleanup">Cleanup</button>
-        <button class="btn btn-danger-text" id="btnClear">Clear all</button>
+        <button class="btn btn-text" id="btnCleanup">清理数据</button>
+        <button class="btn btn-danger-text" id="btnClear">清空全部</button>
       </div>
     </footer>
   </div>

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "XHS Atelier Collector",
+  "name": "XHS Atelier 小红书采集器",
   "version": "1.2.0",
-  "description": "Browser companion for XHS Atelier that captures Xiaohongshu content and exports JSON / JSONL packages into the desktop workflow.",
+  "description": "面向 XHS Atelier 的浏览器侧采集扩展，用于采集小红书内容并导出到桌面工作流。",
   "permissions": [
     "storage",
     "tabs",

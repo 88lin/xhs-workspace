@@ -205,6 +205,7 @@ input:disabled::placeholder {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.65;
+  overflow-wrap: anywhere;
 }
 
 .step-badge {
@@ -263,6 +264,7 @@ input:disabled::placeholder {
   color: var(--muted);
   font-size: 12px;
   line-height: 1.55;
+  overflow-wrap: anywhere;
 }
 
 .setting-item input[type="number"],
@@ -488,7 +490,7 @@ input:disabled::placeholder {
 .help-link {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
   padding: 16px;
   border: 1px solid var(--line);
@@ -534,6 +536,7 @@ input:disabled::placeholder {
   color: var(--muted);
   font-size: 12px;
   line-height: 1.55;
+  overflow-wrap: anywhere;
 }
 
 .help-arrow {
@@ -625,6 +628,7 @@ input:disabled::placeholder {
 
 .prompt-tip {
   text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .btn-add-prompt {
