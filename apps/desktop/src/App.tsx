@@ -1127,12 +1127,16 @@ export default function App() {
       activeSpaceId?: string;
       spaces?: Array<{ id: string; name: string }>;
     };
+    const debugPayload = (debug as Partial<DebugStatus>) || {};
 
     setAppVersion(version || '0.1.0');
     setSettings(normalizeAppSettings({ ...DEFAULT_SETTINGS, ...((rawSettings as Record<string, string>) || {}) }));
     setSpaceName(spacePayload.spaces?.find((item) => item.id === spacePayload.activeSpaceId)?.name || 'Default');
     setPluginStatus((plugin as PluginStatus) || {});
-    setDebugStatus({ enabled: true, ...((debug as Partial<DebugStatus>) || {}) });
+    setDebugStatus({
+      enabled: debugPayload.enabled ?? true,
+      logDirectory: debugPayload.logDirectory || '',
+    });
     setDebugLines((((debugRecent as { lines?: string[] }) || {}).lines || []).slice());
     setRunnerStatus((runner as RedClawRunnerStatus) || {});
     setScheduledTasks((((scheduled as { tasks?: ScheduledTaskRecord[] }) || {}).tasks || []).slice());

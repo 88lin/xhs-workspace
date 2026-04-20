@@ -77,4 +77,4 @@ const ipcRenderer = {
   },
 };
 
-;(window as typeof window & { ipcRenderer: typeof ipcRenderer }).ipcRenderer = ipcRenderer;
+window.ipcRenderer = ipcRenderer as Window['ipcRenderer'];
