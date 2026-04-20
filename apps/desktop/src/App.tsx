@@ -322,54 +322,54 @@ const RELEASE_FLOW_URL = `${REPOSITORY_URL}/blob/main/docs/desktop-release-flow.
 const CONTRIBUTING_URL = `${REPOSITORY_URL}/blob/main/CONTRIBUTING.md`;
 const SECURITY_POLICY_URL = `${REPOSITORY_URL}/blob/main/SECURITY.md`;
 const BUILD_STEPS = [
-  'Push desktop changes to the GitHub repository',
-  'Wait for the desktop-validate workflow to pass',
-  'Create a desktop-v* tag or release',
-  'Download installers from GitHub Releases',
+  '将桌面端改动推送到 GitHub 仓库',
+  '等待 `desktop-validate` 工作流通过',
+  '创建 `desktop-v*` 标签或发布版本',
+  '在 GitHub Releases 下载安装包',
 ];
 
 const VIEW_META: Record<StudioView, { title: string; summary: string }> = {
   overview: {
-    title: 'One workflow from capture to library to RedClaw',
-    summary: 'The desktop app is organized around capture, consolidation, and creation, while validation and installers are produced only by GitHub Actions.',
+    title: '从采集到资料库再到 RedClaw 的一体化流程',
+    summary: '桌面端围绕采集、沉淀与创作组织工作流，校验与安装包产物统一由 GitHub Actions 远程生成。',
   },
   capture: {
-    title: 'One inbox for browser bridge, manual capture, and JSON import',
-    summary: 'Browser bridge input, manual capture, and local JSON import all land in the same inbox before being promoted into reusable subjects.',
+    title: '浏览器桥接、手动采集与 JSON 导入共用一个收件箱',
+    summary: '浏览器桥接输入、手动采集和本地 JSON 导入都会先进入同一个收件箱，再转化为可复用的主题。',
   },
   library: {
-    title: 'Move from subject cards straight into Manuscripts and RedClaw',
-    summary: 'Each subject can generate a creation brief, write into Manuscripts, and carry context directly into a RedClaw writing session.',
+    title: '从主题卡片直接进入稿件区与 RedClaw',
+    summary: '每个主题都可以生成创作 Brief、写入稿件区，并把上下文直接带入 RedClaw 写作会话。',
   },
   settings: {
-    title: 'Lock down AI settings and the GitHub Actions delivery chain',
-    summary: 'The desktop app handles configuration, creation, and review. Dependency install, validation, bundling, and installer publishing all stay in GitHub Actions.',
+    title: '统一管理 AI 设置与 GitHub Actions 发布链路',
+    summary: '桌面端负责配置、创作与复核，依赖安装、校验、打包与安装包发布统一留在 GitHub Actions 中执行。',
   },
 };
 
 const OUTPUT_ARCHIVE_SOURCE_OPTIONS: Array<{ value: OutputArchiveSourceFilter; label: string }> = [
-  { value: 'all', label: 'All sources' },
-  { value: 'manual', label: 'Manual generation' },
-  { value: 'scheduled', label: 'Scheduled task' },
-  { value: 'longCycle', label: 'Long-cycle task' },
+  { value: 'all', label: '全部来源' },
+  { value: 'manual', label: '手动生成' },
+  { value: 'scheduled', label: '定时任务' },
+  { value: 'longCycle', label: '长周期任务' },
 ];
 
 const DRAFT_STRATEGY_FILTER_OPTIONS: Array<{ value: DraftStrategyFilter; label: string }> = [
-  { value: 'all', label: 'All strategies' },
-  { value: 'fresh', label: 'Fresh draft' },
-  { value: 'continue', label: 'Continue' },
-  { value: 'rewrite', label: 'Rewrite' },
+  { value: 'all', label: '全部策略' },
+  { value: 'fresh', label: '新建草稿' },
+  { value: 'continue', label: '续写覆盖' },
+  { value: 'rewrite', label: '改写分支' },
 ];
 
 const NAV_ITEMS: Array<{ id: StudioView; label: string; caption: string; Icon: LucideIcon }> = [
-  { id: 'overview', label: 'Overview', caption: 'Overview', Icon: Sparkles },
-  { id: 'capture', label: 'Capture', caption: 'Capture', Icon: Inbox },
-  { id: 'library', label: 'Library', caption: 'Library', Icon: LibraryBig },
-  { id: 'settings', label: 'Settings', caption: 'Settings', Icon: Settings2 },
+  { id: 'overview', label: '总览', caption: '工作台', Icon: Sparkles },
+  { id: 'capture', label: '采集', caption: '收件箱', Icon: Inbox },
+  { id: 'library', label: '资料库', caption: '主题资产', Icon: LibraryBig },
+  { id: 'settings', label: '设置', caption: '发布与自动化', Icon: Settings2 },
 ];
 
 const DEFAULT_SETTINGS: AppSettings = {
-  aiProvider: 'OpenAI Compatible',
+  aiProvider: 'OpenAI 兼容接口',
   aiModel: '',
   aiEndpoint: '',
   aiApiKey: '',
@@ -394,22 +394,22 @@ const getAppSettingsSaveIssues = (value: AppSettings) => {
   }
 
   if (!normalized.aiModel) {
-    issues.push('Please complete the RedClaw model.');
+    issues.push('请填写 RedClaw 模型名称。');
   }
   if (!normalized.aiEndpoint) {
-    issues.push('Please complete the RedClaw endpoint.');
+    issues.push('请填写 RedClaw 接口地址。');
   } else {
     try {
       const parsed = new URL(normalized.aiEndpoint);
       if (!/^https?:$/.test(parsed.protocol)) {
-        issues.push('The RedClaw endpoint must start with http:// or https://.');
+        issues.push('RedClaw 接口地址必须以 http:// 或 https:// 开头。');
       }
     } catch {
-      issues.push('The RedClaw endpoint must be a valid URL, for example https://api.example.com/v1.');
+      issues.push('RedClaw 接口地址必须是有效 URL，例如 https://api.example.com/v1。');
     }
   }
   if (!normalized.aiApiKey) {
-    issues.push('Please complete the RedClaw API key.');
+    issues.push('请填写 RedClaw API Key。');
   }
 
   return issues;
@@ -486,13 +486,13 @@ const DEFAULT_RUNNER_CONFIG: RunnerConfigForm = {
 };
 
 const WEEKDAY_OPTIONS = [
-  { value: 0, label: 'Sunday' },
-  { value: 1, label: 'Monday' },
-  { value: 2, label: 'Tuesday' },
-  { value: 3, label: 'Wednesday' },
-  { value: 4, label: 'Thursday' },
-  { value: 5, label: 'Friday' },
-  { value: 6, label: 'Saturday' },
+  { value: 0, label: '周日' },
+  { value: 1, label: '周一' },
+  { value: 2, label: '周二' },
+  { value: 3, label: '周三' },
+  { value: 4, label: '周四' },
+  { value: 5, label: '周五' },
+  { value: 6, label: '周六' },
 ] as const;
 
 const readMap = (key: string): Record<string, string> => {
@@ -544,99 +544,123 @@ const toTimestamp = (value?: string | number | null) => {
 const timeAgo = (value?: string | number | null) => {
   const diffMinutes = Math.max(1, Math.round((Date.now() - toTimestamp(value)) / 60000));
   if (diffMinutes < 60) {
-    return `${diffMinutes} min ago`;
+    return `${diffMinutes} 分钟前`;
   }
   if (diffMinutes < 1440) {
-    return `${Math.round(diffMinutes / 60)} hr ago`;
+    return `${Math.round(diffMinutes / 60)} 小时前`;
   }
-  return `${Math.round(diffMinutes / 1440)} d ago`;
+  return `${Math.round(diffMinutes / 1440)} 天前`;
 };
 
 const timeUntil = (value?: string | number | null) => {
   const diffMinutes = Math.round((toTimestamp(value) - Date.now()) / 60000);
   if (diffMinutes <= 0) {
-    return 'Due now';
+    return '即将执行';
   }
   if (diffMinutes < 60) {
-    return `${diffMinutes} min`;
+    return `${diffMinutes} 分钟后`;
   }
   if (diffMinutes < 1440) {
-    return `${Math.round(diffMinutes / 60)} hr`;
+    return `${Math.round(diffMinutes / 60)} 小时后`;
   }
-  return `${Math.round(diffMinutes / 1440)} d`;
+  return `${Math.round(diffMinutes / 1440)} 天后`;
 };
 
 const formatDateTime = (value?: string | number | null) =>
-  value ? new Date(toTimestamp(value)).toLocaleString('zh-CN', { hour12: false }) : 'Not set';
+  value ? new Date(toTimestamp(value)).toLocaleString('zh-CN', { hour12: false }) : '未设置';
 
 const scheduledModeLabel = (mode: ScheduledTaskRecord['mode']) =>
-  ({ interval: 'Interval', daily: 'Daily', weekly: 'Weekly', once: 'One-time' })[mode];
+  ({ interval: '间隔执行', daily: '每日', weekly: '每周', once: '一次性' })[mode];
+
+const describeRunResult = (result?: 'success' | 'error' | 'skipped' | string) =>
+  ({ success: '成功', error: '失败', skipped: '已跳过' })[String(result || '') as 'success' | 'error' | 'skipped'] || String(result || '未知');
+
+const describeLongCycleStatus = (status?: LongCycleTaskRecord['status'] | string) =>
+  ({ running: '运行中', paused: '已暂停', completed: '已完成' })[String(status || '') as 'running' | 'paused' | 'completed']
+  || String(status || '草稿');
+
+const describeActivityKind = (kind?: string) =>
+  ({
+    activity: '活动',
+    warning: '告警',
+    redclaw: 'RedClaw',
+    runner: '运行器',
+    heartbeat: '心跳',
+    scheduled: '定时任务',
+    'long-cycle': '长周期任务',
+    long_cycle: '长周期任务',
+    project: '主题自动化',
+    output: '输出',
+    capture: '采集',
+    import: '导入',
+    archive: '归档',
+  }[String(kind || '').toLowerCase()]) || String(kind || '活动');
 
 const scheduledTaskSummary = (task: ScheduledTaskRecord) => {
   if (task.mode === 'interval') {
-    return `Every ${task.intervalMinutes || 0} min`;
+    return `每 ${task.intervalMinutes || 0} 分钟执行一次`;
   }
   if (task.mode === 'daily') {
-    return `Daily ${task.time || '--:--'}`;
+    return `每天 ${task.time || '--:--'}`;
   }
   if (task.mode === 'weekly') {
     const weekdayText = (task.weekdays || [])
-      .map((value) => WEEKDAY_OPTIONS.find((item) => item.value === value)?.label || `Day ${value}`)
+      .map((value) => WEEKDAY_OPTIONS.find((item) => item.value === value)?.label || `星期 ${value}`)
       .join(' / ');
-    return `Weekly ${weekdayText || 'Not set'} ${task.time || '--:--'}`;
+    return `每周 ${weekdayText || '未设置'} ${task.time || '--:--'}`;
   }
-  return `One-time ${formatDateTime(task.runAt)}`;
+  return `单次执行 ${formatDateTime(task.runAt)}`;
 };
 
 const describeScheduledTaskForm = (form: ScheduledTaskForm) => {
   if (form.mode === 'interval') {
-    return `Every ${parsePositiveInt(form.intervalMinutes, 1440)} min`;
+    return `每 ${parsePositiveInt(form.intervalMinutes, 1440)} 分钟执行一次`;
   }
   if (form.mode === 'daily') {
-    return `Daily ${form.time || '--:--'}`;
+    return `每天 ${form.time || '--:--'}`;
   }
   if (form.mode === 'weekly') {
     const weekdayText = form.weekdays
-      .map((value) => WEEKDAY_OPTIONS.find((item) => item.value === value)?.label || `Day ${value}`)
+      .map((value) => WEEKDAY_OPTIONS.find((item) => item.value === value)?.label || `星期 ${value}`)
       .join(' / ');
-    return `Weekly ${weekdayText || 'No weekdays selected'} ${form.time || '--:--'}`;
+    return `每周 ${weekdayText || '未选择星期'} ${form.time || '--:--'}`;
   }
-  return form.runAt ? `One-time ${formatDateTime(form.runAt)}` : 'One-time run time not set';
+  return form.runAt ? `单次执行 ${formatDateTime(form.runAt)}` : '未设置单次执行时间';
 };
 
 const getScheduledTaskFormIssues = (form: ScheduledTaskForm) => {
   const issues: string[] = [];
   if (!form.name.trim()) {
-    issues.push('Add a task name.');
+    issues.push('请填写任务名称。');
   }
   if (!form.prompt.trim()) {
-    issues.push('Add a task prompt.');
+    issues.push('请填写任务提示词。');
   }
   if ((form.mode === 'daily' || form.mode === 'weekly') && !form.time) {
-    issues.push('Choose a run time.');
+    issues.push('请选择执行时间。');
   }
   if (form.mode === 'weekly' && !form.weekdays.length) {
-    issues.push('Pick at least one weekday.');
+    issues.push('请至少选择一个星期。');
   }
   if (form.mode === 'once' && !form.runAt) {
-    issues.push('Choose the run date and time.');
+    issues.push('请选择执行日期和时间。');
   }
   return issues;
 };
 
 const describeLongCycleTaskForm = (form: LongCycleTaskForm) =>
-  `Every ${parsePositiveInt(form.intervalMinutes, 1440)} min for ${parsePositiveInt(form.totalRounds, 7)} rounds`;
+  `每 ${parsePositiveInt(form.intervalMinutes, 1440)} 分钟执行一次，共 ${parsePositiveInt(form.totalRounds, 7)} 轮`;
 
 const getLongCycleTaskFormIssues = (form: LongCycleTaskForm) => {
   const issues: string[] = [];
   if (!form.name.trim()) {
-    issues.push('Add a task name.');
+    issues.push('请填写任务名称。');
   }
   if (!form.objective.trim()) {
-    issues.push('Add an objective.');
+    issues.push('请填写任务目标。');
   }
   if (!form.stepPrompt.trim()) {
-    issues.push('Add the step prompt.');
+    issues.push('请填写单轮提示词。');
   }
   return issues;
 };
@@ -655,20 +679,190 @@ const buildBrief = (subject: SubjectRecord, categoryName: string) =>
   [
     `# ${subject.name}`,
     '',
-    '## Creation Goal',
-    'Use the information below to produce a Xiaohongshu draft that can be edited and published.',
+    '## 创作目标',
+    '请根据以下信息产出一篇可继续编辑与发布的小红书草稿。',
     '',
-    `- Subject: ${subject.name}`,
-    `- Category: ${categoryName || 'Uncategorized'}`,
-    `- Summary: ${subject.description || 'Add the angle, audience, and expected outcome first.'}`,
-    subject.tags.length ? `- Tags: ${subject.tags.map((item) => `#${item}`).join(' ')}` : '',
+    `- 主题：${subject.name}`,
+    `- 分类：${categoryName || '未分类'}`,
+    `- 摘要：${subject.description || '请先补充选题角度、目标人群与预期结果。'}`,
+    subject.tags.length ? `- 标签：${subject.tags.map((item) => `#${item}`).join(' ')}` : '',
     ...subject.attributes.map((item) => `- ${item.key}: ${item.value}`),
     '',
-    '- Include a title, body structure, closing CTA, and recommended tags.',
-    '- Do not leave placeholders and do not output unrelated meta commentary.',
+    '- 输出需包含标题、正文结构、结尾 CTA 和推荐标签。',
+    '- 不要保留占位符，也不要输出无关的说明性元话语。',
   ]
     .filter(Boolean)
     .join('\n');
+
+const formatMarkdownInline = (value: string) =>
+  value
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1')
+    .replace(/(\*\*|__|~~|`)/g, '')
+    .replace(/(^|[^*])\*([^*]+)\*(?!\*)/g, '$1$2')
+    .replace(/(^|[^_])_([^_]+)_(?!_)/g, '$1$2')
+    .trim();
+
+const renderMarkdownPreview = (value: string, emptyText = '暂无内容') => {
+  const source = value.replace(/\r\n/g, '\n').trim();
+  if (!source) {
+    return <p className="markdown-preview-empty">{emptyText}</p>;
+  }
+
+  const lines = source.split('\n');
+  const blocks: JSX.Element[] = [];
+  let paragraph: string[] = [];
+  let listType: 'ul' | 'ol' | null = null;
+  let listItems: string[] = [];
+  let quoteLines: string[] = [];
+  let codeLines: string[] | null = null;
+
+  const flushParagraph = () => {
+    if (!paragraph.length) {
+      return;
+    }
+    blocks.push(<p key={`p-${blocks.length}`}>{formatMarkdownInline(paragraph.join(' '))}</p>);
+    paragraph = [];
+  };
+
+  const flushList = () => {
+    if (!listType || !listItems.length) {
+      listType = null;
+      listItems = [];
+      return;
+    }
+
+    const listKey = `list-${blocks.length}`;
+    if (listType === 'ul') {
+      blocks.push(
+        <ul key={listKey}>
+          {listItems.map((item, index) => (
+            <li key={`${listKey}-${index}`}>{formatMarkdownInline(item)}</li>
+          ))}
+        </ul>,
+      );
+    } else {
+      blocks.push(
+        <ol key={listKey}>
+          {listItems.map((item, index) => (
+            <li key={`${listKey}-${index}`}>{formatMarkdownInline(item)}</li>
+          ))}
+        </ol>,
+      );
+    }
+
+    listType = null;
+    listItems = [];
+  };
+
+  const flushQuote = () => {
+    if (!quoteLines.length) {
+      return;
+    }
+    blocks.push(<blockquote key={`quote-${blocks.length}`}>{formatMarkdownInline(quoteLines.join(' '))}</blockquote>);
+    quoteLines = [];
+  };
+
+  const flushCode = () => {
+    if (!codeLines) {
+      return;
+    }
+    blocks.push(
+      <pre key={`code-${blocks.length}`} className="markdown-preview-code">
+        <code>{codeLines.join('\n')}</code>
+      </pre>,
+    );
+    codeLines = null;
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.trimEnd();
+    const trimmed = line.trim();
+
+    if (trimmed.startsWith('```')) {
+      flushParagraph();
+      flushList();
+      flushQuote();
+      if (codeLines) {
+        flushCode();
+      } else {
+        codeLines = [];
+      }
+      continue;
+    }
+
+    if (codeLines) {
+      codeLines.push(rawLine);
+      continue;
+    }
+
+    if (!trimmed) {
+      flushParagraph();
+      flushList();
+      flushQuote();
+      continue;
+    }
+
+    const headingMatch = trimmed.match(/^(#{1,3})\s+(.*)$/);
+    if (headingMatch) {
+      flushParagraph();
+      flushList();
+      flushQuote();
+      const text = formatMarkdownInline(headingMatch[2]);
+      if (headingMatch[1].length === 1) {
+        blocks.push(<h1 key={`h-${blocks.length}`}>{text}</h1>);
+      } else if (headingMatch[1].length === 2) {
+        blocks.push(<h2 key={`h-${blocks.length}`}>{text}</h2>);
+      } else {
+        blocks.push(<h3 key={`h-${blocks.length}`}>{text}</h3>);
+      }
+      continue;
+    }
+
+    const quoteMatch = trimmed.match(/^>\s?(.*)$/);
+    if (quoteMatch) {
+      flushParagraph();
+      flushList();
+      quoteLines.push(quoteMatch[1]);
+      continue;
+    }
+
+    const bulletMatch = trimmed.match(/^[-*]\s+(.*)$/);
+    if (bulletMatch) {
+      flushParagraph();
+      flushQuote();
+      if (listType && listType !== 'ul') {
+        flushList();
+      }
+      listType = 'ul';
+      listItems.push(bulletMatch[1]);
+      continue;
+    }
+
+    const orderedMatch = trimmed.match(/^\d+\.\s+(.*)$/);
+    if (orderedMatch) {
+      flushParagraph();
+      flushQuote();
+      if (listType && listType !== 'ol') {
+        flushList();
+      }
+      listType = 'ol';
+      listItems.push(orderedMatch[1]);
+      continue;
+    }
+
+    flushList();
+    flushQuote();
+    paragraph.push(trimmed);
+  }
+
+  flushParagraph();
+  flushList();
+  flushQuote();
+  flushCode();
+
+  return <div className="markdown-preview-content">{blocks}</div>;
+};
 
 const buildContextId = (spaceName: string, subject: SubjectRecord, manuscriptPath: string) =>
   ['redclaw', spaceName || 'default', subject.id, manuscriptPath || subject.name]
@@ -705,7 +899,7 @@ export default function App() {
 
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [appVersion, setAppVersion] = useState('0.1.0');
-  const [spaceName, setSpaceName] = useState('Default');
+  const [spaceName, setSpaceName] = useState('默认空间');
   const [pluginStatus, setPluginStatus] = useState<PluginStatus>({});
   const [debugStatus, setDebugStatus] = useState<DebugStatus>({ enabled: false, logDirectory: '' });
   const [debugLines, setDebugLines] = useState<string[]>([]);
@@ -763,54 +957,54 @@ export default function App() {
   const hasCompleteRedClawConfig = Boolean(normalizedSettings.aiModel && normalizedSettings.aiEndpoint && normalizedSettings.aiApiKey);
   const redClawReady = hasCompleteRedClawConfig && !settingsSaveIssues.length;
   const launchBlockers = [
-    !hasCompleteRedClawConfig ? 'Complete the RedClaw model, endpoint, and API key first.' : '',
+    !hasCompleteRedClawConfig ? '请先补全 RedClaw 模型、接口地址和 API Key。' : '',
     ...settingsSaveIssues,
-    !subjects.length ? 'Create at least one subject so the workspace has a reusable creation entry.' : '',
-    (runnerStatus.contentPackSections || 0) <= 0 ? 'The embedded content pack is not loaded yet, so this build is not release-ready.' : '',
+    !subjects.length ? '请至少创建一个主题，保证工作台有可复用的创作入口。' : '',
+    (runnerStatus.contentPackSections || 0) <= 0 ? '内置内容包尚未加载完成，当前构建还不具备发布条件。' : '',
   ].filter(Boolean);
   const launchWarnings = [
-    !settingsConnectionStatus ? 'Run one real AI connection test before shipping.' : '',
-    settingsConnectionStatus?.tone === 'warning' ? `Latest AI connection test failed: ${settingsConnectionStatus.detail}` : '',
-    !pluginStatus.bridgeDirectory ? 'The browser bridge folder is not prepared yet. Manual capture and local import still work.' : '',
-    !normalizedSettings.exportDirectory ? 'No custom export directory is set. The desktop app will fall back to the workspace directory.' : '',
+    !settingsConnectionStatus ? '发布前请至少完成一次真实的 AI 连接测试。' : '',
+    settingsConnectionStatus?.tone === 'warning' ? `最近一次 AI 连接测试失败：${settingsConnectionStatus.detail}` : '',
+    !pluginStatus.bridgeDirectory ? '浏览器桥接目录尚未准备完成，但手动采集和本地导入仍可正常使用。' : '',
+    !normalizedSettings.exportDirectory ? '当前未设置自定义导出目录，桌面端会回退到工作区目录。' : '',
   ].filter(Boolean);
   const launchChecklist = [
     {
       id: 'ai-settings',
       done: redClawReady,
-      title: 'RedClaw direct config',
+      title: 'RedClaw 直连配置',
       detail: redClawReady
         ? `${normalizedSettings.aiModel} - ${normalizedSettings.aiEndpoint}`
-        : 'Model, endpoint, and API key still need to be completed and verified.',
+        : '模型、接口地址和 API Key 仍需补全并验证。',
     },
     {
       id: 'ai-test',
       done: settingsConnectionStatus?.tone === 'success',
-      title: 'Model connection test',
+      title: '模型连接测试',
       detail: settingsConnectionStatus
-        ? `${settingsConnectionStatus.detail}${settingsConnectionStatus.latencyMs ? ` - ${settingsConnectionStatus.latencyMs} ms` : ''}`
-        : 'Run a real API connection test before release to confirm the key, route, and model all work.',
+        ? `${settingsConnectionStatus.detail}${settingsConnectionStatus.latencyMs ? ` · ${settingsConnectionStatus.latencyMs} ms` : ''}`
+        : '发布前请完成一次真实 API 连接测试，确认 Key、路由与模型均可正常工作。',
     },
     {
       id: 'content-pack',
       done: (runnerStatus.contentPackSections || 0) > 0,
-      title: 'Embedded content pack',
+      title: '内置内容包',
       detail:
         (runnerStatus.contentPackSections || 0) > 0
-          ? `${runnerStatus.contentPackName || 'embedded-xhsspec'} loaded with ${runnerStatus.contentPackSections || 0} sections.`
-          : 'No embedded content pack is available yet.',
+          ? `${runnerStatus.contentPackName || 'embedded-xhsspec'} 已加载，共 ${runnerStatus.contentPackSections || 0} 个分区。`
+          : '当前尚未检测到可用的内置内容包。',
     },
     {
       id: 'subject-library',
       done: subjects.length > 0,
-      title: 'Subject library',
-      detail: subjects.length ? `There are already ${subjects.length} subjects ready for Manuscripts / RedClaw.` : 'Create at least one subject first.',
+      title: '主题资料库',
+      detail: subjects.length ? `当前已有 ${subjects.length} 个主题可直接进入稿件区 / RedClaw。` : '请先创建至少一个主题。',
     },
     {
       id: 'release-flow',
       done: true,
-      title: 'GitHub release flow',
-      detail: 'Desktop validation, bundling, and installer publishing all run through GitHub Actions.',
+      title: 'GitHub 发布流程',
+      detail: '桌面端校验、打包与安装包发布统一通过 GitHub Actions 执行。',
     },
   ];
   const compactPercent = Math.min(100, Math.round((contextUsage.compactRatio || 0) * 100));
@@ -871,15 +1065,15 @@ export default function App() {
   const canReconnectOutputSession = (value?: { projectId?: string; sessionId?: string }) =>
     Boolean(value?.sessionId && canOpenOutputInStudio(value));
   const describeOutputSourceKind = (sourceKind: OutputArchiveRecord['sourceKind']) =>
-    sourceKind === 'manual' ? 'Manual generation' : sourceKind === 'scheduled' ? 'Scheduled task' : 'Long-cycle task';
-  const describeOutputMode = (sourceKind: OutputArchiveRecord['sourceKind']) => (sourceKind === 'manual' ? 'Manual' : 'Automation');
+    sourceKind === 'manual' ? '手动生成' : sourceKind === 'scheduled' ? '定时任务' : '长周期任务';
+  const describeOutputMode = (sourceKind: OutputArchiveRecord['sourceKind']) => (sourceKind === 'manual' ? '手动' : '自动化');
   const normalizeDraftStrategy = (draftStrategy?: DraftStrategy): DraftStrategy => draftStrategy || 'fresh';
   const describeDraftStrategy = (draftStrategy?: DraftStrategy) =>
     normalizeDraftStrategy(draftStrategy) === 'continue'
-      ? 'Continue and overwrite'
+      ? '续写并覆盖'
       : normalizeDraftStrategy(draftStrategy) === 'rewrite'
-        ? 'Rewrite as branch'
-        : 'Fresh draft';
+        ? '改写为新分支'
+        : '新建草稿';
   const matchesDraftStrategyFilter = (draftStrategy: DraftStrategy | undefined, filter: DraftStrategyFilter) =>
     filter === 'all' || normalizeDraftStrategy(draftStrategy) === filter;
   const countDraftStrategies = (items: Array<{ draftStrategy?: DraftStrategy }>): Record<DraftStrategyFilter, number> => ({
@@ -896,16 +1090,16 @@ export default function App() {
     const normalizedDraftStrategy = normalizeDraftStrategy(output.draftStrategy);
     if (normalizedDraftStrategy === 'rewrite') {
       return output.referenceManuscriptPath
-        ? `Reference manuscript: ${output.referenceManuscriptPath}`
-        : 'This draft was rewritten into a new branch from an earlier manuscript.';
+        ? `参考稿件：${output.referenceManuscriptPath}`
+        : '该草稿基于更早的稿件改写为一个新的分支版本。';
     }
     if (normalizedDraftStrategy === 'continue') {
-      return `Overwrite target: ${output.referenceManuscriptPath || output.manuscriptPath}`;
+      return `覆盖目标：${output.referenceManuscriptPath || output.manuscriptPath}`;
     }
-    return 'This draft was generated from scratch.';
+    return '该草稿为从零生成。';
   };
   const outputDisplayTitle = (output: OutputArchiveRecord | AutomationOutputRecord) =>
-    ('title' in output ? output.title : output.taskName) || 'Untitled draft';
+    ('title' in output ? output.title : output.taskName) || '未命名草稿';
   const normalizedArchiveQuery = archiveQuery.trim().toLowerCase();
   const archiveFilterBase = outputArchive.filter((item) => {
     if (archiveSourceFilter !== 'all' && item.sourceKind !== archiveSourceFilter) {
@@ -941,15 +1135,15 @@ export default function App() {
   );
   const redClawFollowUpHint = !linkedSession
     ? activeSubjectRecoverableOutput
-      ? 'Resume the latest session from the workflow guide above, then continue the same draft here.'
-      : 'Open the manuscript in RedClaw first, then send follow-up instructions here.'
+      ? '请先从上方流程引导中恢复最近一次会话，再在这里继续同一篇草稿。'
+      : '请先在 RedClaw 中打开稿件，再从这里发送后续指令。'
     : !hasActiveSubjectWorkingPath
-      ? 'Create or reopen the manuscript before sending a follow-up request.'
+      ? '发送后续请求前，请先创建或重新打开稿件。'
       : runtimeState.isProcessing
-        ? 'Wait for the current generation pass to finish before sending another follow-up instruction.'
+        ? '请等待当前这一轮生成完成，再发送新的后续指令。'
         : !redClawReady
-          ? 'Complete the RedClaw settings in Settings before continuing the session.'
-          : 'Follow-up prompts revise the current manuscript in place. Use "Rewrite as new draft" when you need a new branch.';
+          ? '继续会话前，请先在设置页补全 RedClaw 配置。'
+          : '后续提示词会直接在当前稿件上修改；如果你需要保留原稿并生成新版本，请使用“改写为新草稿”。';
   const scheduledSubmitBusyKey = editingScheduledTaskId ? `scheduled-save:${editingScheduledTaskId}` : 'add-scheduled';
   const longCycleSubmitBusyKey = editingLongCycleTaskId ? `long-cycle-save:${editingLongCycleTaskId}` : 'add-long-cycle';
   const redClawRecoveryNeeded = Boolean(
@@ -983,13 +1177,13 @@ export default function App() {
   const longCycleTaskFormSummary = describeLongCycleTaskForm(longCycleForm);
   const scheduledTaskSubjectHint = !scheduledTaskForm.projectId
     ? subjects.length
-      ? 'Link a subject to keep generated manuscripts attached to the library workflow.'
-      : 'Create a subject in Library first if this automation should stay attached to the manuscript workspace.'
+      ? '关联一个主题后，生成出来的稿件会继续留在资料库工作流中。'
+      : '如果希望这条自动化始终挂在稿件工作区上，请先去资料库创建主题。'
     : '';
   const longCycleTaskSubjectHint = !longCycleForm.projectId
     ? subjects.length
-      ? 'Link a subject so each round stays attached to the same library workspace.'
-      : 'Create a subject in Library first if this loop should build against a reusable manuscript.'
+      ? '关联一个主题后，每一轮结果都会持续沉淀在同一资料库工作区中。'
+      : '如果希望这条长周期任务基于可复用稿件持续推进，请先去资料库创建主题。'
     : '';
   const canSubmitScheduledTask = !scheduledTaskFormIssues.length;
   const canSubmitLongCycleTask = !longCycleTaskFormIssues.length;
@@ -1131,7 +1325,7 @@ export default function App() {
 
     setAppVersion(version || '0.1.0');
     setSettings(normalizeAppSettings({ ...DEFAULT_SETTINGS, ...((rawSettings as Record<string, string>) || {}) }));
-    setSpaceName(spacePayload.spaces?.find((item) => item.id === spacePayload.activeSpaceId)?.name || 'Default');
+    setSpaceName(spacePayload.spaces?.find((item) => item.id === spacePayload.activeSpaceId)?.name || '默认空间');
     setPluginStatus((plugin as PluginStatus) || {});
     setDebugStatus({
       enabled: debugPayload.enabled ?? true,
@@ -1193,7 +1387,7 @@ export default function App() {
       };
 
       if (result?.success === false) {
-        throw new Error(result.error || `Failed to open ${label}.`);
+        throw new Error(result.error || `打开${label}失败。`);
       }
 
       setNotice({ tone: 'success', text: successText });
@@ -1201,50 +1395,50 @@ export default function App() {
   };
 
   const handleOpenGitHubReleases = async () =>
-    handleOpenExternalResource('open-releases', RELEASES_URL, 'Opened GitHub Releases.', 'GitHub Releases');
+    handleOpenExternalResource('open-releases', RELEASES_URL, '已打开 GitHub Releases。', 'GitHub Releases 页面');
 
   const handleOpenLaunchChecklist = async () =>
     handleOpenExternalResource(
       'open-launch-checklist',
       LAUNCH_CHECKLIST_URL,
-      'Opened the desktop launch checklist.',
-      'the desktop launch checklist',
+      '已打开桌面端上线检查清单。',
+      '桌面端上线检查清单',
     );
 
   const handleOpenReleaseFlow = async () =>
     handleOpenExternalResource(
       'open-release-flow',
       RELEASE_FLOW_URL,
-      'Opened the desktop release flow documentation.',
-      'the desktop release flow documentation',
+      '已打开桌面端发布流程文档。',
+      '桌面端发布流程文档',
     );
 
   const handleOpenRepository = async () =>
-    handleOpenExternalResource('open-repository', REPOSITORY_URL, 'Opened the project repository.', 'the project repository');
+    handleOpenExternalResource('open-repository', REPOSITORY_URL, '已打开项目仓库。', '项目仓库');
 
   const handleOpenContributingGuide = async () =>
     handleOpenExternalResource(
       'open-contributing',
       CONTRIBUTING_URL,
-      'Opened the contribution guide.',
-      'the contribution guide',
+      '已打开贡献指南。',
+      '贡献指南',
     );
 
   const handleOpenSecurityPolicy = async () =>
     handleOpenExternalResource(
       'open-security',
       SECURITY_POLICY_URL,
-      'Opened the security policy.',
-      'the security policy',
+      '已打开安全策略。',
+      '安全策略',
     );
 
   const handleOpenIssueTracker = async () =>
-    handleOpenExternalResource('open-issues', ISSUE_TRACKER_URL, 'Opened the GitHub issue forms.', 'the GitHub issue forms');
+    handleOpenExternalResource('open-issues', ISSUE_TRACKER_URL, '已打开 GitHub Issue 表单。', 'GitHub Issue 表单');
 
   const refreshAll = async () => {
     await runAction('refresh', async () => {
       await Promise.all([load(), refreshSessionInsights(linkedSession, true)]);
-      setNotice({ tone: 'success', text: 'Workspace refreshed.' });
+      setNotice({ tone: 'success', text: '工作台已刷新。' });
     });
   };
 
@@ -1263,7 +1457,7 @@ export default function App() {
       await load();
       setNotice({
         tone: 'success',
-        text: readyAfterSave ? 'RedClaw settings saved. You can test the connection now.' : 'Settings saved.',
+        text: readyAfterSave ? 'RedClaw 设置已保存，现在可以测试连接。' : '设置已保存。',
       });
     } catch (error) {
       setNotice({ tone: 'warning', text: String(error) });
@@ -1292,21 +1486,21 @@ export default function App() {
       if (!result.success) {
         setSettingsConnectionStatus({
           tone: 'warning',
-          title: 'Connection test failed',
-          detail: result.error || 'RedClaw connection test failed.',
+          title: '连接测试失败',
+          detail: result.error || 'RedClaw 连接测试失败。',
           checkedAt: Date.now(),
           resolvedEndpoint: result.resolvedEndpoint,
           model: result.model,
           latencyMs: result.latencyMs,
           reply: result.reply,
         });
-        throw new Error(result.error || 'RedClaw connection test failed.');
+        throw new Error(result.error || 'RedClaw 连接测试失败。');
       }
 
-      const detail = `Connected to ${result.model || nextSettings.aiModel} - ${result.resolvedEndpoint || nextSettings.aiEndpoint}`;
+      const detail = `已连接到 ${result.model || nextSettings.aiModel} · ${result.resolvedEndpoint || nextSettings.aiEndpoint}`;
       setSettingsConnectionStatus({
         tone: 'success',
-        title: 'Connection test passed',
+        title: '连接测试通过',
         detail,
         checkedAt: Date.now(),
         resolvedEndpoint: result.resolvedEndpoint || nextSettings.aiEndpoint,
@@ -1316,7 +1510,7 @@ export default function App() {
       });
       setNotice({
         tone: 'success',
-        text: result.reply ? `RedClaw connection test passed: ${result.reply}` : 'RedClaw connection test passed.',
+        text: result.reply ? `RedClaw 连接测试通过：${result.reply}` : 'RedClaw 连接测试通过。',
       });
     });
   };
@@ -1331,14 +1525,14 @@ export default function App() {
       };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to open the export directory.');
+        throw new Error(result.error || '打开导出目录失败。');
       }
 
       setNotice({
         tone: 'success',
         text: result.usedFallbackDirectory
-          ? `Opened the fallback export directory: ${result.path || 'app workspace'}`
-          : `Opened the export directory: ${result.path || normalizedSettings.exportDirectory}`,
+          ? `已打开回退导出目录：${result.path || '应用工作区'}`
+          : `已打开导出目录：${result.path || normalizedSettings.exportDirectory}`,
       });
     });
   };
@@ -1352,12 +1546,12 @@ export default function App() {
       };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to open the workspace directory.');
+        throw new Error(result.error || '打开工作区目录失败。');
       }
 
       setNotice({
         tone: 'success',
-        text: `Opened the workspace directory: ${result.path || 'XHSAtelier'}`,
+        text: `已打开工作区目录：${result.path || 'XHSAtelier'}`,
       });
     });
   };
@@ -1377,14 +1571,14 @@ export default function App() {
       };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to create the workspace backup.');
+        throw new Error(result.error || '创建工作区备份失败。');
       }
 
       setNotice({
         tone: 'success',
         text: result.path
-          ? `Workspace backup saved: ${result.path}`
-          : 'Workspace backup saved. Open the export folder to review the snapshot.',
+          ? `工作区备份已保存：${result.path}`
+          : '工作区备份已保存，请前往导出目录查看快照。',
       });
     });
   };
@@ -1399,7 +1593,7 @@ export default function App() {
 
     const [file] = files;
     const shouldContinue = window.confirm(
-      'Restore this workspace backup now? This will replace the current desktop workspace state, but it will not restore local manuscript or media files.',
+      '现在恢复这份工作区备份吗？这会替换当前桌面端状态，但不会恢复本地稿件文件或媒体文件。',
     );
 
     if (!shouldContinue) {
@@ -1416,7 +1610,7 @@ export default function App() {
       };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to restore the workspace backup.');
+        throw new Error(result.error || '恢复工作区备份失败。');
       }
 
       resetScheduledTaskEditor();
@@ -1427,7 +1621,7 @@ export default function App() {
       await load();
       setNotice({
         tone: 'success',
-        text: `Workspace backup restored. ${result.counts?.subjects || 0} subjects and ${result.counts?.captures || 0} captures are now available. Re-enter the RedClaw API key before running generation again.`,
+        text: `工作区备份已恢复，现已载入 ${result.counts?.subjects || 0} 个主题和 ${result.counts?.captures || 0} 条采集记录。再次执行生成前，请重新填写 RedClaw API Key。`,
       });
     });
   };
@@ -1447,11 +1641,11 @@ export default function App() {
       })) as { success?: boolean; error?: string };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to save automation settings.');
+        throw new Error(result.error || '保存自动化运行器设置失败。');
       }
 
       await load();
-      setNotice({ tone: 'success', text: 'Automation settings saved.' });
+      setNotice({ tone: 'success', text: '自动化运行器设置已保存。' });
     });
   };
 
@@ -1470,11 +1664,11 @@ export default function App() {
       })) as { success?: boolean; error?: string };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to start automation runner.');
+        throw new Error(result.error || '启动自动化运行器失败。');
       }
 
       await load();
-      setNotice({ tone: 'success', text: 'Automation runner started.' });
+      setNotice({ tone: 'success', text: '自动化运行器已启动。' });
     });
   };
 
@@ -1483,11 +1677,11 @@ export default function App() {
       const result = (await window.ipcRenderer.redclawRunner.stop()) as { success?: boolean; error?: string };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to stop automation runner.');
+        throw new Error(result.error || '停止自动化运行器失败。');
       }
 
       await load();
-      setNotice({ tone: 'success', text: 'Automation runner stopped.' });
+      setNotice({ tone: 'success', text: '自动化运行器已停止。' });
     });
   };
 
@@ -1501,11 +1695,11 @@ export default function App() {
       })) as { success?: boolean; error?: string };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to save subject automation settings.');
+        throw new Error(result.error || '保存主题自动化设置失败。');
       }
 
       await load();
-      setNotice({ tone: 'success', text: 'Subject automation settings saved.' });
+      setNotice({ tone: 'success', text: '主题自动化设置已保存。' });
     });
   };
 
@@ -1513,7 +1707,7 @@ export default function App() {
     const currentTaskId = editingScheduledTaskId;
     await runAction(currentTaskId ? `scheduled-save:${currentTaskId}` : 'add-scheduled', async () => {
       if (!scheduledTaskForm.name.trim() || !scheduledTaskForm.prompt.trim()) {
-        throw new Error('Please enter a scheduled task name and prompt.');
+        throw new Error('请填写定时任务名称和提示词。');
       }
 
       const payload: {
@@ -1546,17 +1740,17 @@ export default function App() {
 
       if (scheduledTaskForm.mode === 'daily') {
         if (!scheduledTaskForm.time) {
-          throw new Error('Daily tasks require a time.');
+          throw new Error('每日任务必须设置执行时间。');
         }
         payload.time = scheduledTaskForm.time;
       }
 
       if (scheduledTaskForm.mode === 'weekly') {
         if (!scheduledTaskForm.time) {
-          throw new Error('Weekly tasks require a time.');
+          throw new Error('每周任务必须设置执行时间。');
         }
         if (!scheduledTaskForm.weekdays.length) {
-          throw new Error('Weekly tasks require at least one weekday.');
+          throw new Error('每周任务至少需要选择一个星期。');
         }
         payload.time = scheduledTaskForm.time;
         payload.weekdays = scheduledTaskForm.weekdays.slice();
@@ -1564,7 +1758,7 @@ export default function App() {
 
       if (scheduledTaskForm.mode === 'once') {
         if (!scheduledTaskForm.runAt) {
-          throw new Error('One-time tasks require a run time.');
+          throw new Error('一次性任务必须设置执行时间。');
         }
         payload.runAt = scheduledTaskForm.runAt;
       }
@@ -1574,16 +1768,16 @@ export default function App() {
         : await window.ipcRenderer.redclawRunner.addScheduled(payload)) as { success?: boolean; error?: string };
 
       if (!result.success) {
-        throw new Error(result.error || (currentTaskId ? 'Failed to update scheduled task.' : 'Failed to create scheduled task.'));
+        throw new Error(result.error || (currentTaskId ? '更新定时任务失败。' : '创建定时任务失败。'));
       }
 
       resetScheduledTaskEditor();
       await load();
       if (currentTaskId) {
-        setNotice({ tone: 'success', text: 'Scheduled task updated.' });
+        setNotice({ tone: 'success', text: '定时任务已更新。' });
         return;
       }
-      setNotice({ tone: 'success', text: 'Scheduled task created.' });
+      setNotice({ tone: 'success', text: '定时任务已创建。' });
     });
   };
 
@@ -1591,7 +1785,7 @@ export default function App() {
     const currentTaskId = editingLongCycleTaskId;
     await runAction(currentTaskId ? `long-cycle-save:${currentTaskId}` : 'add-long-cycle', async () => {
       if (!longCycleForm.name.trim() || !longCycleForm.objective.trim() || !longCycleForm.stepPrompt.trim()) {
-        throw new Error('Please complete the long-cycle name, objective, and step prompt.');
+        throw new Error('请补全长周期任务名称、任务目标和单轮提示词。');
       }
 
       const payload = {
@@ -1611,16 +1805,16 @@ export default function App() {
         : await window.ipcRenderer.redclawRunner.addLongCycle(payload)) as { success?: boolean; error?: string };
 
       if (!result.success) {
-        throw new Error(result.error || (currentTaskId ? 'Failed to update long-cycle task.' : 'Failed to create long-cycle task.'));
+        throw new Error(result.error || (currentTaskId ? '更新长周期任务失败。' : '创建长周期任务失败。'));
       }
 
       resetLongCycleEditor();
       await load();
       if (currentTaskId) {
-        setNotice({ tone: 'success', text: 'Long-cycle task updated.' });
+        setNotice({ tone: 'success', text: '长周期任务已更新。' });
         return;
       }
-      setNotice({ tone: 'success', text: 'Long-cycle task created.' });
+      setNotice({ tone: 'success', text: '长周期任务已创建。' });
     });
   };
 
@@ -1632,13 +1826,13 @@ export default function App() {
       };
       if (!result.success) {
         await load();
-        throw new Error(result.error || 'Failed to run the scheduled task now.');
+        throw new Error(result.error || '立即执行定时任务失败。');
       }
       await load();
       if (linkedSession) {
         await refreshSessionInsights(linkedSession, true);
       }
-      setNotice({ tone: 'success', text: 'Scheduled task started.' });
+      setNotice({ tone: 'success', text: '定时任务已开始执行。' });
     });
   };
 
@@ -1650,13 +1844,13 @@ export default function App() {
       };
       if (!result.success) {
         await load();
-        throw new Error(result.error || 'Failed to advance the long-cycle task.');
+        throw new Error(result.error || '推进长周期任务失败。');
       }
       await load();
       if (linkedSession) {
         await refreshSessionInsights(linkedSession, true);
       }
-      setNotice({ tone: 'success', text: 'Long-cycle task advanced.' });
+      setNotice({ tone: 'success', text: '长周期任务已推进一轮。' });
     });
   };
 
@@ -1667,7 +1861,7 @@ export default function App() {
         enabled: !task.enabled,
       })) as { success?: boolean; error?: string };
       if (!result.success) {
-        throw new Error(result.error || 'Failed to toggle the scheduled task.');
+        throw new Error(result.error || '切换定时任务状态失败。');
       }
       await load();
     });
@@ -1680,7 +1874,7 @@ export default function App() {
         enabled: !task.enabled,
       })) as { success?: boolean; error?: string };
       if (!result.success) {
-        throw new Error(result.error || 'Failed to toggle the long-cycle task.');
+        throw new Error(result.error || '切换长周期任务状态失败。');
       }
       await load();
     });
@@ -1693,7 +1887,7 @@ export default function App() {
         error?: string;
       };
       if (!result.success) {
-        throw new Error(result.error || 'Failed to remove the scheduled task.');
+        throw new Error(result.error || '删除定时任务失败。');
       }
       if (editingScheduledTaskId === taskId) {
         resetScheduledTaskEditor();
@@ -1709,7 +1903,7 @@ export default function App() {
         error?: string;
       };
       if (!result.success) {
-        throw new Error(result.error || 'Failed to remove the long-cycle task.');
+        throw new Error(result.error || '删除长周期任务失败。');
       }
       if (editingLongCycleTaskId === taskId) {
         resetLongCycleEditor();
@@ -1721,7 +1915,7 @@ export default function App() {
   const handleSaveSubject = async () => {
     await runAction('subject', async () => {
       if (!draft.name.trim()) {
-        throw new Error('Please enter a subject name.');
+        throw new Error('请填写主题名称。');
       }
 
       const payload = {
@@ -1738,7 +1932,7 @@ export default function App() {
         : await window.ipcRenderer.subjects.create(payload);
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to save the subject.');
+        throw new Error(result.error || '保存主题失败。');
       }
 
       await load();
@@ -1746,7 +1940,7 @@ export default function App() {
         setEditingNew(false);
         setSelectedId(result.subject.id);
       }
-      setNotice({ tone: 'success', text: 'Subject saved.' });
+      setNotice({ tone: 'success', text: '主题已保存。' });
     });
   };
 
@@ -1762,10 +1956,10 @@ export default function App() {
       })) as { success?: boolean; error?: string; path?: string };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to export Markdown.');
+        throw new Error(result.error || '导出 Markdown 失败。');
       }
 
-      setNotice({ tone: 'success', text: `Markdown exported: ${result.path}` });
+      setNotice({ tone: 'success', text: `Markdown 已导出：${result.path}` });
     });
   };
 
@@ -1787,12 +1981,12 @@ export default function App() {
       })) as { success?: boolean; error?: string; path?: string };
 
       if (!created.success || !created.path) {
-        throw new Error(created.error || 'Failed to create the creation brief.');
+        throw new Error(created.error || '创建创作 Brief 失败。');
       }
 
       rememberManuscript(activeSubject.id, created.path);
       await loadManuscriptIntoStudio(created.path);
-      setNotice({ tone: 'success', text: 'Creation brief written to Manuscripts.' });
+      setNotice({ tone: 'success', text: '创作 Brief 已写入 Manuscripts。' });
     });
   };
 
@@ -1808,15 +2002,15 @@ export default function App() {
       })) as { success?: boolean; error?: string };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to save the manuscript.');
+        throw new Error(result.error || '保存稿件失败。');
       }
 
-      setNotice({ tone: 'success', text: 'Manuscript saved.' });
+      setNotice({ tone: 'success', text: '稿件已保存。' });
     });
   };
 
   const handleCopyBrief = async () => {
-    await copyTextToClipboard(brief, 'Creation brief copied.');
+    await copyTextToClipboard(brief, '创作 Brief 已复制。');
   };
 
   const copyTextToClipboard = async (text: string, successText: string) => {
@@ -1826,7 +2020,7 @@ export default function App() {
       })) as { success?: boolean; error?: string };
 
       if (result.success === false) {
-        throw new Error(result.error || 'Copy failed.');
+        throw new Error(result.error || '复制失败。');
       }
 
       setNotice({ tone: 'success', text: successText });
@@ -1842,7 +2036,7 @@ export default function App() {
     })) as { success?: boolean; error?: string; path?: string };
 
     if (!result.success || !result.path) {
-      throw new Error(result.error || 'Failed to reserve a new manuscript path.');
+      throw new Error(result.error || '预留新稿件路径失败。');
     }
 
     return result.path;
@@ -1871,7 +2065,7 @@ export default function App() {
   }) => {
     if (!redClawReady) {
       setView('settings');
-      setNotice({ tone: 'warning', text: 'Complete the RedClaw model, endpoint, and API key in Settings first.' });
+      setNotice({ tone: 'warning', text: '请先在设置页补全 RedClaw 的模型、接口地址和 API Key。' });
       return;
     }
 
@@ -1896,19 +2090,19 @@ export default function App() {
       const session = await window.ipcRenderer.chat.getOrCreateContextSession({
         contextId: buildContextId(spaceName, subject, nextManuscriptPath || ''),
         contextType: 'xhs-atelier:redclaw-entry',
-        title: `RedClaw / ${subject.name}`,
+        title: `RedClaw · ${subject.name}`,
         initialContext: `${REDCLAW_CONTEXT}\nCurrent subject: ${subject.name}`,
       });
 
       if (!session?.id) {
-        throw new Error('Failed to create the RedClaw session.');
+        throw new Error('创建 RedClaw 会话失败。');
       }
 
       rememberSession(subject.id, session.id);
       setRuntimeState({
         sessionId: session.id,
         isProcessing: true,
-        partialResponse: 'RedClaw is preparing the writing request...',
+        partialResponse: 'RedClaw 正在准备写作请求...',
         updatedAt: Date.now(),
       });
 
@@ -1941,7 +2135,7 @@ export default function App() {
       })) as { success?: boolean; error?: string; savedManuscriptPath?: string };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to send the draft to RedClaw.');
+        throw new Error(result.error || '发送稿件到 RedClaw 失败。');
       }
 
       if (result.savedManuscriptPath) {
@@ -1972,7 +2166,7 @@ export default function App() {
       taskType: 'direct_write',
       brief:
         briefText.trim() ||
-        `Continue refining the current Xiaohongshu manuscript for ${subject.name} and keep one clear publishable angle.`,
+        `继续优化 ${subject.name} 当前的小红书稿件，并保持一个清晰、可发布的核心角度。`,
       draftDirective: [
         'Treat the current manuscript below as the latest working draft.',
         'Update the same manuscript path in place unless the user explicitly asks for a separate branch.',
@@ -1994,7 +2188,7 @@ export default function App() {
     const subjectId = output.projectId || '';
     const subject = subjectMap.get(subjectId);
     if (!subject) {
-      setNotice({ tone: 'warning', text: 'This manuscript is not linked to an existing subject yet, so RedClaw generation cannot start from here.' });
+      setNotice({ tone: 'warning', text: '这份稿件尚未关联到已有主题，因此暂时不能从这里发起 RedClaw 生成。' });
       return;
     }
 
@@ -2012,7 +2206,7 @@ export default function App() {
         sourcePath: resolvedPath,
         sourceContent: source.content || '',
         mode,
-        successText: mode === 'continue' ? 'Continued generation from the current manuscript.' : 'Rewrote the current manuscript into a new draft.',
+        successText: mode === 'continue' ? '已基于当前稿件继续生成。' : '已将当前稿件改写为新的草稿分支。',
       });
     } catch (error) {
       setNotice({ tone: 'warning', text: String(error) });
@@ -2034,7 +2228,7 @@ export default function App() {
       return;
     }
     if (options.action === 'resume' && !output.sessionId) {
-      setNotice({ tone: 'warning', text: options.missingSessionText || 'This manuscript does not have a recoverable RedClaw session yet.' });
+      setNotice({ tone: 'warning', text: options.missingSessionText || '当前稿件暂时没有可恢复的 RedClaw 会话。' });
       return;
     }
 
@@ -2060,7 +2254,7 @@ export default function App() {
     await runAction(`output-external:${output.id}`, async () => {
       const result = await readManuscriptFile(output.manuscriptPath);
       if (!result.absolutePath) {
-        throw new Error('No absolute manuscript path is available.');
+        throw new Error('当前没有可用的稿件绝对路径。');
       }
 
       const openResult = (await window.ipcRenderer.openAppPath(result.absolutePath)) as {
@@ -2068,7 +2262,7 @@ export default function App() {
         error?: string;
       };
       if (!openResult.success) {
-        throw new Error(openResult.error || 'Failed to open the manuscript in the system app.');
+        throw new Error(openResult.error || '在系统应用中打开稿件失败。');
       }
 
       setNotice({ tone: 'success', text: successText });
@@ -2078,39 +2272,39 @@ export default function App() {
   const handleOpenAutomationOutputInStudio = async (output: AutomationOutputRecord) =>
     connectOutputToLibrary(output, {
       action: 'open',
-      successText: 'Switched to the latest automation manuscript.',
-      missingSubjectText: 'This output is not linked to an existing subject yet, so it can only be opened externally for now.',
+      successText: '已切换到最近一次自动化生成的稿件。',
+      missingSubjectText: '当前输出尚未关联到已有主题，所以暂时只能在外部应用中打开。',
     });
 
   const handleResumeAutomationOutputSession = async (output: AutomationOutputRecord) =>
     connectOutputToLibrary(output, {
       action: 'resume',
-      successText: 'Resumed the RedClaw session for the latest automation output.',
-      missingSubjectText: 'This output is not linked to an existing subject yet, so the session cannot be resumed from here.',
-      missingSessionText: 'This output does not have a recoverable RedClaw session yet.',
+      successText: '已恢复最近一次自动化输出对应的 RedClaw 会话。',
+      missingSubjectText: '当前输出尚未关联到已有主题，因此不能在这里恢复会话。',
+      missingSessionText: '当前输出暂时没有可恢复的 RedClaw 会话。',
     });
 
   const handleOpenAutomationOutputExternally = async (output: AutomationOutputRecord) =>
-    openOutputExternally(output, 'Opened the manuscript in the system app.');
+    openOutputExternally(output, '已在系统应用中打开稿件。');
 
   const handleOpenArchivedOutputInStudio = async (output: OutputArchiveRecord) => {
     await connectOutputToLibrary(output, {
       action: 'open',
-      successText: 'Switched to the archived manuscript.',
-      missingSubjectText: 'This archived manuscript is not linked to an existing subject yet, so it can only be opened externally for now.',
+      successText: '已切换到归档稿件。',
+      missingSubjectText: '这份归档稿件尚未关联到已有主题，所以暂时只能在外部应用中打开。',
     });
   };
 
   const handleResumeArchivedOutputSession = async (output: OutputArchiveRecord) =>
     connectOutputToLibrary(output, {
       action: 'resume',
-      successText: 'Resumed the RedClaw session for the archived manuscript.',
-      missingSubjectText: 'This archived manuscript is not linked to an existing subject yet, so the session cannot be resumed from here.',
-      missingSessionText: 'This archived manuscript does not have a recoverable RedClaw session yet.',
+      successText: '已恢复归档稿件对应的 RedClaw 会话。',
+      missingSubjectText: '这份归档稿件尚未关联到已有主题，因此不能在这里恢复会话。',
+      missingSessionText: '这份归档稿件暂时没有可恢复的 RedClaw 会话。',
     });
 
   const handleOpenArchivedOutputExternally = async (output: OutputArchiveRecord) =>
-    openOutputExternally(output, 'Opened the archived manuscript in the system app.');
+    openOutputExternally(output, '已在系统应用中打开归档稿件。');
 
   const handleResetArchiveFilters = () => {
     setArchiveQuery('');
@@ -2125,17 +2319,17 @@ export default function App() {
       })) as { success?: boolean; error?: string };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to delete the archived draft.');
+        throw new Error(result.error || '删除归档草稿失败。');
       }
 
       await load();
-      setNotice({ tone: 'success', text: 'Archived draft deleted.' });
+      setNotice({ tone: 'success', text: '归档草稿已删除。' });
     });
   };
 
   const handleClearVisibleArchive = async () => {
     if (!visibleOutputArchive.length) {
-      setNotice({ tone: 'warning', text: 'No archived drafts match the current filter.' });
+      setNotice({ tone: 'warning', text: '当前筛选条件下没有可清理的归档草稿。' });
       return;
     }
 
@@ -2147,10 +2341,10 @@ export default function App() {
           removedCount?: number;
         };
         if (!result.success) {
-          throw new Error(result.error || 'Failed to clear archived drafts.');
+          throw new Error(result.error || '清空归档草稿失败。');
         }
         await load();
-        setNotice({ tone: 'success', text: `Cleared ${result.removedCount || 0} archived drafts.` });
+        setNotice({ tone: 'success', text: `已清理 ${result.removedCount || 0} 份归档草稿。` });
         return;
       }
 
@@ -2159,10 +2353,10 @@ export default function App() {
           sourceKind: archiveSourceFilter,
         })) as { success?: boolean; error?: string; removedCount?: number };
         if (!result.success) {
-          throw new Error(result.error || 'Failed to clear archived drafts by source.');
+          throw new Error(result.error || '按来源清理归档草稿失败。');
         }
         await load();
-        setNotice({ tone: 'success', text: `Cleared ${result.removedCount || 0} archived drafts.` });
+        setNotice({ tone: 'success', text: `已清理 ${result.removedCount || 0} 份归档草稿。` });
         return;
       }
 
@@ -2175,10 +2369,10 @@ export default function App() {
       )) as Array<{ success?: boolean; error?: string }>;
       const failedRemoval = removalResults.find((item) => item.success === false);
       if (failedRemoval) {
-        throw new Error(failedRemoval.error || 'Failed while removing visible archived drafts.');
+        throw new Error(failedRemoval.error || '清理当前可见归档草稿时发生错误。');
       }
       await load();
-      setNotice({ tone: 'success', text: `Cleared ${visibleOutputArchive.length} archived drafts.` });
+      setNotice({ tone: 'success', text: `已清理 ${visibleOutputArchive.length} 份归档草稿。` });
     });
   };
 
@@ -2193,27 +2387,27 @@ export default function App() {
       })) as { success?: boolean; error?: string; removedCount?: number };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to clear drafts linked to the current subject.');
+        throw new Error(result.error || '清理当前主题关联草稿失败。');
       }
 
       await load();
-      setNotice({ tone: 'success', text: `Cleared ${result.removedCount || 0} drafts linked to the current subject.` });
+      setNotice({ tone: 'success', text: `已清理当前主题下的 ${result.removedCount || 0} 份草稿。` });
     });
   };
 
   const handleCopyLogDirectory = async () => {
     if (!debugStatus.logDirectory) {
-      setNotice({ tone: 'warning', text: 'No log directory is available yet.' });
+      setNotice({ tone: 'warning', text: '当前还没有可用的日志目录。' });
       return;
     }
 
-    await copyTextToClipboard(debugStatus.logDirectory, 'Log directory copied.');
+    await copyTextToClipboard(debugStatus.logDirectory, '日志目录已复制。');
   };
 
   const handleRefreshDiagnostics = async () => {
     await runAction('refresh-diagnostics', async () => {
       await load();
-      setNotice({ tone: 'success', text: 'Diagnostics refreshed.' });
+      setNotice({ tone: 'success', text: '诊断信息已刷新。' });
     });
   };
 
@@ -2270,7 +2464,7 @@ export default function App() {
       sourcePath: manuscriptPath || linkedPath || undefined,
       sourceContent: manuscriptContent || undefined,
       mode: 'continue',
-      successText: 'RedClaw completed one generation pass.',
+      successText: 'RedClaw 已完成一轮生成。',
     });
   };
 
@@ -2279,22 +2473,22 @@ export default function App() {
       return;
     }
     if (!linkedSession) {
-      setNotice({ tone: 'warning', text: 'No active RedClaw session is linked yet. Open the manuscript in RedClaw first.' });
+      setNotice({ tone: 'warning', text: '当前还没有关联中的 RedClaw 会话，请先在 RedClaw 中打开稿件。' });
       return;
     }
     if (!hasActiveSubjectWorkingPath) {
-      setNotice({ tone: 'warning', text: 'Create or reopen the manuscript first, then send the follow-up request.' });
+      setNotice({ tone: 'warning', text: '请先创建或重新打开稿件，再发送后续修改指令。' });
       return;
     }
 
     const instruction = redClawFollowUpPrompt.trim();
     if (!instruction) {
-      setNotice({ tone: 'warning', text: 'Enter a follow-up instruction for RedClaw first.' });
+      setNotice({ tone: 'warning', text: '请先输入发给 RedClaw 的后续修改指令。' });
       return;
     }
     if (!redClawReady) {
       startTransition(() => setView('settings'));
-      setNotice({ tone: 'warning', text: 'Complete the RedClaw settings before continuing this session.' });
+      setNotice({ tone: 'warning', text: '继续当前会话前，请先补全 RedClaw 设置。' });
       return;
     }
 
@@ -2310,14 +2504,14 @@ export default function App() {
       setRuntimeState({
         sessionId: linkedSession,
         isProcessing: true,
-        partialResponse: 'RedClaw is revising the current manuscript...',
+        partialResponse: 'RedClaw 正在修改当前稿件...',
         updatedAt: Date.now(),
       });
 
       const result = (await window.ipcRenderer.chat.sendMessage({
         sessionId: linkedSession,
         message: packet.content,
-        displayContent: `Follow-up revision / ${activeSubject.name}`,
+        displayContent: `后续修改 / ${activeSubject.name}`,
         taskHints: packet.taskHints,
       })) as {
         success?: boolean;
@@ -2326,7 +2520,7 @@ export default function App() {
       };
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to send the follow-up request to RedClaw.');
+        throw new Error(result.error || '向 RedClaw 发送后续修改请求失败。');
       }
 
       if (result.savedManuscriptPath) {
@@ -2336,7 +2530,7 @@ export default function App() {
 
       await Promise.all([refreshSessionInsights(linkedSession, true), load()]);
       setRedClawFollowUpPrompt('');
-      setNotice({ tone: 'success', text: 'RedClaw applied the follow-up instruction to the current manuscript.' });
+      setNotice({ tone: 'success', text: 'RedClaw 已将后续修改指令应用到当前稿件。' });
     });
   };
 
@@ -2347,7 +2541,7 @@ export default function App() {
 
     const sourcePath = manuscriptPath || linkedPath || '';
     if (!sourcePath.trim()) {
-      setNotice({ tone: 'warning', text: 'Create or open a manuscript first, then use "Rewrite as new draft".' });
+      setNotice({ tone: 'warning', text: '请先创建或打开稿件，再使用“改写为新草稿”。' });
       return;
     }
 
@@ -2359,7 +2553,7 @@ export default function App() {
       sourcePath,
       sourceContent: manuscriptContent || undefined,
       mode: 'rewrite',
-      successText: 'RedClaw generated a rewritten version from the current manuscript.',
+      successText: 'RedClaw 已基于当前稿件生成新的改写版本。',
     });
   };
 
@@ -2384,7 +2578,7 @@ export default function App() {
       })) as { success?: boolean; error?: string; failed?: Array<{ error?: string }> };
 
       if (!result.success) {
-        throw new Error(result.error || result.failed?.[0]?.error || 'Failed to import files.');
+        throw new Error(result.error || result.failed?.[0]?.error || '导入文件失败。');
       }
 
       await load();
@@ -2396,33 +2590,35 @@ export default function App() {
     <section className="atelier-view">
       <section className="hero-panel">
         <div className="hero-copy">
-          <div className="hero-kicker">Current focus</div>
-          <h2>Creation brief -&gt; Manuscripts -&gt; RedClaw</h2>
-          <p>The desktop now connects creation brief, manuscript editing, and RedClaw generation into one continuous workspace for everyday users.</p>
+          <div className="hero-kicker">当前重点</div>
+          <h2>创作 Brief -&gt; 稿件区 -&gt; RedClaw</h2>
+          <p>桌面端现在已经把创作 Brief、稿件编辑和 RedClaw 生成串成一个连续工作流，普通用户也可以直接上手使用。</p>
           <div className="hero-actions">
             <button type="button" className="primary-action" onClick={() => void refreshAll()}>
               {busy === 'refresh' ? <Loader2 className="spin" size={16} /> : <RefreshCw size={16} />}
-              Refresh Workspace            </button>
+              刷新工作台
+            </button>
             <button
               type="button"
               className="secondary-action"
               onClick={() => startTransition(() => setView('library'))}
             >
-              Open Library            </button>
+              打开资料库
+            </button>
           </div>
         </div>
 
         <div className="hero-orbit">
           <div className="hero-orbit-card">
-            <div className="hero-orbit-label">Readiness</div>
+            <div className="hero-orbit-label">就绪度</div>
             <div className="hero-orbit-value">
-              {subjects.length} subjects / {captures.length} inbox items / {pluginStatus.pendingItems || 0} pending bridge files
+              {subjects.length} 个主题 / {captures.length} 条收件箱记录 / {pluginStatus.pendingItems || 0} 个待导入桥接文件
             </div>
             <ul>
-              <li>Bridge directory: {pluginStatus.bridgeDirectory ? 'Ready' : 'Not prepared'}</li>
-              <li>AI connection: {redClawReady ? 'Configured' : 'Needs setup'}</li>
-              <li>Embedded content pack: {runnerStatus.contentPackName || 'embedded-xhsspec'} / {runnerStatus.contentPackSections || 0} sections</li>
-              <li>Desktop validation and releases run through GitHub Actions</li>
+              <li>桥接目录：{pluginStatus.bridgeDirectory ? '已准备' : '未准备'}</li>
+              <li>AI 连接：{redClawReady ? '已配置' : '待配置'}</li>
+              <li>内置内容包：{runnerStatus.contentPackName || 'embedded-xhsspec'} / {runnerStatus.contentPackSections || 0} 个分区</li>
+              <li>桌面端校验和发布统一通过 GitHub Actions 执行</li>
             </ul>
           </div>
         </div>
@@ -2430,26 +2626,26 @@ export default function App() {
 
       <section className="stats-grid">
         <article className="stat-card">
-          <div className="stat-label">Inbox</div>
+          <div className="stat-label">收件箱</div>
           <div className="stat-value">{captures.length}</div>
-          <div className="stat-detail">Browser bridge, manual capture, and file import all land here.</div>
+          <div className="stat-detail">浏览器桥接、手动采集和文件导入都会先汇总到这里。</div>
         </article>
         <article className="stat-card">
-          <div className="stat-label">Library</div>
+          <div className="stat-label">资料库</div>
           <div className="stat-value">{subjects.length}</div>
-          <div className="stat-detail">Subjects that can move directly into Manuscripts and RedClaw.</div>
+          <div className="stat-detail">这里存放可直接进入稿件区和 RedClaw 的主题资产。</div>
         </article>
         <article className="stat-card">
           <div className="stat-label">RedClaw</div>
-          <div className="stat-value">{runtimeState.isProcessing ? 'Live' : 'Idle'}</div>
-          <div className="stat-detail">{runtimeState.partialResponse || 'Live generation status will appear here.'}</div>
+          <div className="stat-value">{runtimeState.isProcessing ? '运行中' : '空闲'}</div>
+          <div className="stat-detail">{runtimeState.partialResponse || '这里会显示当前生成状态。'}</div>
         </article>
       </section>
 
       <section className="split-grid">
         <section className="atelier-card">
-          <div className="section-tag">Latest activity</div>
-          <h3>Recent activity</h3>
+          <div className="section-tag">最近动态</div>
+          <h3>近期活动</h3>
           <div className="activity-list">
             {activities.length ? (
               activities.slice(0, 6).map((item) => (
@@ -2462,20 +2658,20 @@ export default function App() {
                       <strong>{item.title}</strong>
                       <span>{timeAgo(item.createdAt)}</span>
                     </div>
-                    <div className="activity-kind">{item.kind || 'activity'}</div>
-                    <p>{item.detail || 'No additional detail.'}</p>
+                    <div className="activity-kind">{describeActivityKind(item.kind)}</div>
+                    <p>{item.detail || '暂无更多说明。'}</p>
                   </div>
                 </article>
               ))
             ) : (
-              <div className="import-report-note">No recent activity yet.</div>
+              <div className="import-report-note">当前还没有最近活动记录。</div>
             )}
           </div>
         </section>
 
         <section className="atelier-card">
-          <div className="section-tag">Desktop release</div>
-          <h3>GitHub Actions release flow</h3>
+          <div className="section-tag">桌面端发布</div>
+          <h3>GitHub Actions 发布流程</h3>
           <div className="build-rail">
             {BUILD_STEPS.map((step, index) => (
               <div key={step} className="build-step">
@@ -2491,7 +2687,7 @@ export default function App() {
               onClick={() => void handleOpenGitHubReleases()}
             >
               {busy === 'open-releases' ? <Loader2 className="spin" size={15} /> : <Download size={15} />}
-              Open GitHub Releases
+              打开发布页
             </button>
             <button
               type="button"
@@ -2499,7 +2695,7 @@ export default function App() {
               onClick={() => void handleOpenLaunchChecklist()}
             >
               {busy === 'open-launch-checklist' ? <Loader2 className="spin" size={15} /> : <FileText size={15} />}
-              Open launch checklist
+              打开上线清单
             </button>
             <button
               type="button"
@@ -2507,31 +2703,31 @@ export default function App() {
               onClick={() => void handleOpenIssueTracker()}
             >
               {busy === 'open-issues' ? <Loader2 className="spin" size={15} /> : <ExternalLink size={15} />}
-              Report issue
+              反馈问题
             </button>
           </div>
         </section>
       </section>
 
       <section className="atelier-card">
-        <div className="section-tag">Archive</div>
-        <h3>Recent output archive</h3>
+        <div className="section-tag">归档</div>
+        <h3>最近输出归档</h3>
         <div className="info-grid">
           <div className="info-item">
-            <span>Total outputs</span>
+            <span>总输出数</span>
             <strong>{outputArchive.length}</strong>
           </div>
           <div className="info-item">
-            <span>Manual outputs</span>
+            <span>手动输出</span>
             <strong>{manualOutputArchiveCount}</strong>
           </div>
           <div className="info-item">
-            <span>Automated outputs</span>
+            <span>自动化输出</span>
             <strong>{automatedOutputArchiveCount}</strong>
           </div>
           <div className="info-item">
-            <span>Latest output</span>
-            <strong>{outputArchive[0] ? timeAgo(outputArchive[0].createdAt) : 'No records yet'}</strong>
+            <span>最近输出</span>
+            <strong>{outputArchive[0] ? timeAgo(outputArchive[0].createdAt) : '暂无记录'}</strong>
           </div>
         </div>
 
@@ -2592,16 +2788,16 @@ export default function App() {
             onClick={() => void handleClearVisibleArchive()}
           >
             {busy === 'archive-clear-visible' ? <Loader2 className="spin" size={16} /> : <CircleDashed size={16} />}
-            Clear visible results
+            清空当前结果
           </button>
         </div>
 
         <div className="import-report-note">
           {visibleOutputArchive.length === outputArchive.length
-            ? `Showing all ${outputArchive.length} archived outputs.`
-            : `Showing ${visibleOutputArchive.length} / ${outputArchive.length} archived outputs.`}
+            ? `当前展示全部 ${outputArchive.length} 条归档输出。`
+            : `当前展示 ${visibleOutputArchive.length} / ${outputArchive.length} 条归档输出。`}
         </div>
-        <div className="import-report-note">Continue will overwrite the current manuscript, while rewrite will create a new RedClaw branch draft.</div>
+        <div className="import-report-note">“续写覆盖”会覆盖当前稿件，“改写分支”会保留原稿并新建一个 RedClaw 分支草稿。</div>
 
         <div className="automation-stack">
           {visibleOutputArchive.length ? (
@@ -2612,7 +2808,7 @@ export default function App() {
                     <strong>{item.title}</strong>
                     <div className="automation-meta">
                       <span>{describeOutputSourceKind(item.sourceKind)}</span>
-                      <span>{item.projectName || 'Unlinked subject'}</span>
+                      <span>{item.projectName || '未关联主题'}</span>
                       <span>{timeAgo(item.createdAt)}</span>
                       <span>{describeDraftStrategy(item.draftStrategy)}</span>
                     </div>
@@ -2632,7 +2828,7 @@ export default function App() {
                       onClick={() => void handleOpenArchivedOutputInStudio(item)}
                     >
                       {busy === `output-open:${item.id}` ? <Loader2 className="spin" size={16} /> : <FolderOpen size={16} />}
-                      Open manuscript
+                      打开稿件
                     </button>
                   ) : null}
                   {canOpenOutputInStudio(item) ? (
@@ -2642,7 +2838,7 @@ export default function App() {
                       onClick={() => void handleGenerateOutputWithRedClaw(item, 'continue')}
                     >
                       {busy === `output-redclaw-continue:${item.id}` ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
-                      Continue in RedClaw
+                      在 RedClaw 中继续
                     </button>
                   ) : null}
                   {canOpenOutputInStudio(item) ? (
@@ -2652,7 +2848,7 @@ export default function App() {
                       onClick={() => void handleGenerateOutputWithRedClaw(item, 'rewrite')}
                     >
                       {busy === `output-redclaw-rewrite:${item.id}` ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                      Rewrite as new draft
+                      改写为新草稿
                     </button>
                   ) : null}
                   {canReconnectOutputSession(item) ? (
@@ -2662,7 +2858,7 @@ export default function App() {
                       onClick={() => void handleResumeArchivedOutputSession(item)}
                     >
                       {busy === `output-resume:${item.id}` ? <Loader2 className="spin" size={16} /> : <Wand2 size={16} />}
-                      Resume session
+                      恢复会话
                     </button>
                   ) : null}
                   <button
@@ -2671,15 +2867,15 @@ export default function App() {
                     onClick={() => void handleOpenArchivedOutputExternally(item)}
                   >
                     {busy === `output-external:${item.id}` ? <Loader2 className="spin" size={16} /> : <ExternalLink size={16} />}
-                    Open externally
+                    用系统应用打开
                   </button>
                   <button
                     type="button"
                     className="secondary-action compact"
-                    onClick={() => void copyTextToClipboard(item.manuscriptPath, 'Manuscript path copied.')}
+                    onClick={() => void copyTextToClipboard(item.manuscriptPath, '稿件路径已复制。')}
                   >
                     <Copy size={16} />
-                    Copy path
+                    复制路径
                   </button>
                   <button
                     type="button"
@@ -2687,15 +2883,15 @@ export default function App() {
                     onClick={() => void handleRemoveArchivedOutput(item.id)}
                   >
                     {busy === `output-remove:${item.id}` ? <Loader2 className="spin" size={16} /> : <CircleDashed size={16} />}
-                    Remove
+                    删除
                   </button>
                 </div>
               </article>
             ))
           ) : outputArchive.length ? (
-            <div className="import-report-note">No archived outputs match the current filters. Try a different keyword or source.</div>
+            <div className="import-report-note">当前筛选条件下没有匹配的归档输出，可以换个关键词或来源再试。</div>
           ) : (
-            <div className="import-report-note">No archived outputs yet. After sending drafts to RedClaw or running automation tasks, history will accumulate here.</div>
+            <div className="import-report-note">当前还没有归档输出。等你把草稿发给 RedClaw 或运行自动化任务后，历史版本会逐步沉淀到这里。</div>
           )}
         </div>
       </section>
@@ -2705,32 +2901,32 @@ export default function App() {
     <section className="atelier-view">
       <section className="capture-grid">
         <section className="capture-card">
-          <div className="section-tag">Manual capture</div>
-          <h3>Manual inbox capture</h3>
+          <div className="section-tag">手动采集</div>
+          <h3>手动录入到收件箱</h3>
           <div className="subject-form">
             <label>
-              <span>Source URL</span>
+              <span>来源链接</span>
               <input
                 value={captureForm.sourceUrl}
                 onChange={(event) => setCaptureForm((current) => ({ ...current, sourceUrl: event.target.value }))}
               />
             </label>
             <label>
-              <span>Title</span>
+              <span>标题</span>
               <input
                 value={captureForm.title}
                 onChange={(event) => setCaptureForm((current) => ({ ...current, title: event.target.value }))}
               />
             </label>
             <label>
-              <span>Tags</span>
+              <span>标签</span>
               <input
                 value={captureForm.tagsText}
                 onChange={(event) => setCaptureForm((current) => ({ ...current, tagsText: event.target.value }))}
               />
             </label>
             <label>
-              <span>Summary</span>
+              <span>摘要</span>
               <textarea
                 value={captureForm.description}
                 onChange={(event) => setCaptureForm((current) => ({ ...current, description: event.target.value }))}
@@ -2751,29 +2947,30 @@ export default function App() {
                 })) as { success?: boolean; error?: string };
 
                 if (!result.success) {
-                  throw new Error(result.error || 'Failed to create the inbox record.');
+                    throw new Error(result.error || '创建收件箱记录失败。');
                 }
 
                 setCaptureForm(DEFAULT_CAPTURE);
                 await load();
-                setNotice({ tone: 'success', text: 'Inbox record added.' });
+                setNotice({ tone: 'success', text: '收件箱记录已添加。' });
               })
             }
           >
             {busy === 'capture' ? <Loader2 className="spin" size={16} /> : <Plus size={16} />}
-            Add to inbox          </button>
+            添加到收件箱
+          </button>
         </section>
 
         <section className="capture-card">
-          <div className="section-tag">Bridge</div>
-          <h3>Browser bridge</h3>
+          <div className="section-tag">桥接</div>
+          <h3>浏览器桥接</h3>
           <div className="info-grid">
             <div className="info-item">
-              <span>Inbox</span>
-              <strong>{pluginStatus.bridgeDirectory || 'Bridge not prepared'}</strong>
+              <span>桥接目录</span>
+              <strong>{pluginStatus.bridgeDirectory || '尚未准备'}</strong>
             </div>
             <div className="info-item">
-              <span>Pending</span>
+              <span>待处理</span>
               <strong>{pluginStatus.pendingItems || 0}</strong>
             </div>
           </div>
@@ -2786,15 +2983,16 @@ export default function App() {
                 void runAction('bridge', async () => {
                   const result = await window.ipcRenderer.browserPlugin.prepare();
                   if (!result.success) {
-                    throw new Error(result.error || 'Failed to prepare the bridge directory.');
+                    throw new Error(result.error || '准备桥接目录失败。');
                   }
                   await load();
-                  setNotice({ tone: 'success', text: 'Bridge directory prepared.' });
+                  setNotice({ tone: 'success', text: '桥接目录已准备。' });
                 })
               }
             >
               {busy === 'bridge' ? <Loader2 className="spin" size={16} /> : <FolderOpen size={16} />}
-              Prepare bridge            </button>
+              准备桥接目录
+            </button>
 
             <button
               type="button"
@@ -2806,28 +3004,28 @@ export default function App() {
                     error?: string;
                   };
                   if (!result.success) {
-                    throw new Error(result.error || 'Failed to import bridge files.');
+                    throw new Error(result.error || '导入桥接文件失败。');
                   }
                   await load();
-                  setNotice({ tone: 'success', text: 'Bridge files imported.' });
+                  setNotice({ tone: 'success', text: '桥接文件已导入。' });
                 })
               }
             >
               {busy === 'import-bridge' ? <Loader2 className="spin" size={16} /> : <Upload size={16} />}
-              Import from bridge
+              从桥接目录导入
             </button>
           </div>
         </section>
 
         <section className="capture-card">
-          <div className="section-tag">JSON import</div>
-          <h3>Import JSON / JSONL files</h3>
+          <div className="section-tag">JSON 导入</div>
+          <h3>导入 JSON / JSONL 文件</h3>
           <button type="button" className="file-dropzone" onClick={() => fileRef.current?.click()}>
             <div className="file-dropzone-head">
-              <span>Local import</span>
+              <span>本地导入</span>
               <Upload size={16} />
             </div>
-            <strong>{busy === 'import-files' ? 'Importing files...' : 'Drag or choose local JSON / JSONL files'}</strong>
+            <strong>{busy === 'import-files' ? '正在导入文件...' : '拖拽或选择本地 JSON / JSONL 文件'}</strong>
           </button>
           <input
             ref={fileRef}
@@ -2841,24 +3039,24 @@ export default function App() {
       </section>
 
       <section className="atelier-card">
-        <div className="section-tag">Inbox</div>
-        <h3>Inbox items</h3>
+        <div className="section-tag">收件箱</div>
+        <h3>收件箱条目</h3>
         <div className="capture-list">
           {captures.length ? (
             captures.map((item) => (
               <article key={item.id} className="capture-item">
                 <div className="capture-item-top">
                   <div>
-                    <h4>{item.title || 'Untitled item'}</h4>
-                    <p>{item.description || 'No description'}</p>
+                    <h4>{item.title || '未命名条目'}</h4>
+                    <p>{item.description || '暂无描述'}</p>
                   </div>
                   <span className={`journey-state ${item.status === 'converted' ? 'is-complete' : 'is-pending'}`}>
-                    {item.status === 'converted' ? 'Converted' : 'Pending'}
+                    {item.status === 'converted' ? '已转主题' : '待处理'}
                   </span>
                 </div>
                 <div className="capture-item-meta">
-                  <span>{item.authorName || 'Unknown author'}</span>
-                  <span>{item.sourceUrl || 'No source URL'}</span>
+                  <span>{item.authorName || '未知作者'}</span>
+                  <span>{item.sourceUrl || '无来源链接'}</span>
                 </div>
                 <div className="capture-item-actions">
                   <button
@@ -2876,7 +3074,7 @@ export default function App() {
                         };
 
                         if (!result.success) {
-                          throw new Error(result.error || 'Failed to promote the inbox item to a subject.');
+                          throw new Error(result.error || '将收件箱条目提升为主题失败。');
                         }
 
                         await load();
@@ -2885,17 +3083,18 @@ export default function App() {
                           setSelectedId(result.subject.id);
                         }
                         startTransition(() => setView('library'));
-                        setNotice({ tone: 'success', text: 'Inbox item promoted to subject.' });
+                        setNotice({ tone: 'success', text: '收件箱条目已转为主题。' });
                       })
                     }
                   >
                     {busy === item.id ? <Loader2 className="spin" size={16} /> : <Wand2 size={16} />}
-                    Promote to subject                  </button>
+                    转为主题
+                  </button>
                 </div>
               </article>
             ))
           ) : (
-            <div className="import-report-note">No inbox items yet.</div>
+            <div className="import-report-note">当前还没有收件箱内容。</div>
           )}
         </div>
       </section>
@@ -2907,12 +3106,12 @@ export default function App() {
         <section className="atelier-card">
           <div className="library-header">
             <div>
-              <div className="section-tag">Shelf</div>
-              <h3>Subject library</h3>
+              <div className="section-tag">主题架</div>
+              <h3>主题资料库</h3>
             </div>
             <div className="search-field">
               <Search size={16} />
-              <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search subjects, tags, or summaries" />
+              <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="搜索主题、标签或摘要" />
             </div>
           </div>
 
@@ -2925,7 +3124,8 @@ export default function App() {
             }}
           >
             <Plus size={16} />
-            New subject          </button>
+            新建主题
+          </button>
 
           <div className="subject-list">
             {visibleSubjects.length ? (
@@ -2956,15 +3156,15 @@ export default function App() {
                       <div className="subject-card-headline">
                         <div>
                           <div className="subject-card-category">
-                            {categoryNameMap.get(item.categoryId || '') || 'Uncategorized'}
+                            {categoryNameMap.get(item.categoryId || '') || '未分类'}
                           </div>
                           <h4>{item.name}</h4>
                         </div>
                         <span className={`subject-status-chip ${!editingNew && item.id === activeSubject?.id ? 'is-editing' : 'is-draft'}`}>
-                          {!editingNew && item.id === activeSubject?.id ? 'Editing' : 'Subject'}
+                          {!editingNew && item.id === activeSubject?.id ? '编辑中' : '主题'}
                         </span>
                       </div>
-                      <p>{item.description || 'No summary'}</p>
+                      <p>{item.description || '暂无摘要'}</p>
                       <div className="subject-card-meta">
                         <span>{timeAgo(item.updatedAt)}</span>
                       </div>
@@ -2973,22 +3173,22 @@ export default function App() {
                 </article>
               ))
             ) : (
-              <div className="import-report-note">No subjects yet. Create one to unlock the writing workspace.</div>
+              <div className="import-report-note">当前还没有主题。先创建一个主题，才能进入完整创作工作流。</div>
             )}
           </div>
         </section>
 
         <section className="atelier-card">
-          <div className="section-tag">Editor</div>
-          <h3>{editingNew ? 'New subject' : 'Edit selected subject'}</h3>
+          <div className="section-tag">编辑器</div>
+          <h3>{editingNew ? '新建主题' : '编辑当前主题'}</h3>
           <div className="subject-form">
             <div className="subject-form-grid">
               <label>
-                <span>Subject name</span>
+                <span>主题名称</span>
                 <input value={draft.name} onChange={(event) => setDraft((current) => ({ ...current, name: event.target.value }))} />
               </label>
               <label>
-                <span>Tags</span>
+                <span>标签</span>
                 <input
                   value={draft.tagsText}
                   onChange={(event) => setDraft((current) => ({ ...current, tagsText: event.target.value }))}
@@ -2998,12 +3198,12 @@ export default function App() {
 
             <div className="subject-editor-meta-grid">
               <label>
-                <span>Category</span>
+                <span>分类</span>
                 <select
                   value={draft.categoryId}
                   onChange={(event) => setDraft((current) => ({ ...current, categoryId: event.target.value }))}
                 >
-                  <option value="">Uncategorized</option>
+                  <option value="">未分类</option>
                   {categories.map((item) => (
                     <option key={item.id} value={item.id}>
                       {item.name}
@@ -3012,17 +3212,17 @@ export default function App() {
                 </select>
               </label>
               <label>
-                <span>Linked manuscript</span>
-                <input value={linkedPath || 'Not linked yet'} readOnly />
+                <span>关联稿件</span>
+                <input value={linkedPath || '尚未关联'} readOnly />
               </label>
               <label>
-                <span>RedClaw session</span>
-                <input value={linkedSession || 'Not linked yet'} readOnly />
+                <span>RedClaw 会话</span>
+                <input value={linkedSession || '尚未关联'} readOnly />
               </label>
             </div>
 
             <label>
-              <span>Summary</span>
+              <span>摘要</span>
               <textarea
                 value={draft.description}
                 onChange={(event) => setDraft((current) => ({ ...current, description: event.target.value }))}
@@ -3032,11 +3232,11 @@ export default function App() {
             <div className="subject-editor-actions">
               <button type="button" className="primary-action" onClick={() => void handleSaveSubject()}>
                 {busy === 'subject' ? <Loader2 className="spin" size={16} /> : <Wand2 size={16} />}
-                {draft.id ? 'Save subject' : 'New subject'}
+                {draft.id ? '保存主题' : '创建主题'}
               </button>
               <button type="button" className="secondary-action" disabled={!activeSubject} onClick={() => void handleExportSubject()}>
                 {busy === 'export' ? <Loader2 className="spin" size={16} /> : <FileDown size={16} />}
-                Export Markdown
+                导出 Markdown
               </button>
             </div>
           </div>
@@ -3045,8 +3245,8 @@ export default function App() {
 
       {activeSubject ? (
         <section className="atelier-card">
-          <div className="section-tag">Creation workspace</div>
-          <h3>Creation brief / Manuscripts / RedClaw</h3>
+          <div className="section-tag">创作工作区</div>
+          <h3>创作 Brief / 稿件区 / RedClaw</h3>
           <div className="workspace-guide-grid">
             <article
               className={`workspace-guide-card ${
@@ -3059,8 +3259,8 @@ export default function App() {
             >
               <div className="workspace-guide-top">
                 <div>
-                  <span className="subject-workspace-label">Step 1</span>
-                  <h4>Connection</h4>
+                  <span className="subject-workspace-label">步骤 1</span>
+                  <h4>连接检查</h4>
                 </div>
                 <span
                   className={`workspace-guide-status ${
@@ -3072,24 +3272,24 @@ export default function App() {
                   }`}
                 >
                   {!redClawReady
-                    ? 'Needs setup'
+                    ? '待配置'
                     : settingsConnectionStatus?.tone === 'success'
-                      ? 'Verified'
+                      ? '已验证'
                       : settingsConnectionStatus?.tone === 'warning'
-                        ? 'Retry needed'
-                        : 'Untested'}
+                        ? '需重试'
+                        : '未测试'}
                 </span>
               </div>
               <p className="workspace-guide-summary">
                 {!redClawReady
-                  ? settingsSaveIssues[0] || 'Complete the model, endpoint, and API key before starting generation.'
+                  ? settingsSaveIssues[0] || '开始生成前，请先补全模型、接口地址和 API Key。'
                   : settingsConnectionStatus?.tone === 'success'
-                    ? `${settingsConnectionStatus.model || normalizedSettings.aiModel} is ready via ${
+                    ? `${settingsConnectionStatus.model || normalizedSettings.aiModel} 已通过 ${
                         settingsConnectionStatus.resolvedEndpoint || normalizedSettings.aiEndpoint
-                      }.`
+                      } 连接就绪。`
                     : settingsConnectionStatus?.tone === 'warning'
                       ? settingsConnectionStatus.detail
-                      : 'Run one real connection test before pushing the subject into RedClaw.'}
+                      : '把主题送入 RedClaw 前，建议先跑一次真实连接测试。'}
               </p>
               <div className="subject-workspace-actions">
                 <button
@@ -3098,7 +3298,7 @@ export default function App() {
                   onClick={() => startTransition(() => setView('settings'))}
                 >
                   <Settings2 size={16} />
-                  Open settings
+                  打开设置
                 </button>
                 {redClawReady ? (
                   <button
@@ -3107,7 +3307,7 @@ export default function App() {
                     onClick={() => void handleTestRedClawConnection()}
                   >
                     {busy === 'settings-test' ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
-                    {settingsConnectionStatus?.tone === 'success' ? 'Retest connection' : 'Test connection'}
+                    {settingsConnectionStatus?.tone === 'success' ? '重新测试连接' : '测试连接'}
                   </button>
                 ) : null}
               </div>
@@ -3116,22 +3316,22 @@ export default function App() {
             <article className={`workspace-guide-card ${hasActiveSubjectWorkingPath ? 'is-ready' : 'is-info'}`}>
               <div className="workspace-guide-top">
                 <div>
-                  <span className="subject-workspace-label">Step 2</span>
-                  <h4>Manuscript</h4>
+                  <span className="subject-workspace-label">步骤 2</span>
+                  <h4>稿件区</h4>
                 </div>
                 <span className={`workspace-guide-status ${hasActiveSubjectWorkingPath ? 'is-ready' : 'is-info'}`}>
-                  {hasActiveSubjectWorkingPath ? 'Ready' : 'Create first'}
+                  {hasActiveSubjectWorkingPath ? '已就绪' : '先创建'}
                 </span>
               </div>
               <p className="workspace-guide-summary">
                 {hasActiveSubjectWorkingPath
-                  ? `Working file: ${activeSubjectWorkingPath}`
-                  : 'Create a manuscript from the brief so the desktop can save edits, reopen drafts, and branch future rewrites.'}
+                  ? `当前工作稿件：${activeSubjectWorkingPath}`
+                  : '先根据 Brief 创建稿件，这样桌面端才能保存编辑、重新打开草稿并继续派生改写版本。'}
               </p>
               <div className="subject-workspace-actions">
                 <button type="button" className="secondary-action compact" onClick={() => void handleOpenOrCreateManuscript()}>
                   {busy === 'manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                  {hasActiveSubjectWorkingPath ? 'Open manuscript' : 'Create manuscript'}
+                  {hasActiveSubjectWorkingPath ? '打开稿件' : '创建稿件'}
                 </button>
                 {manuscriptPath ? (
                   <button
@@ -3140,12 +3340,12 @@ export default function App() {
                     onClick={() => void handleSaveManuscript()}
                   >
                     {busy === 'save-manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                    Save manuscript
+                    保存稿件
                   </button>
                 ) : (
                   <button type="button" className="secondary-action compact" onClick={() => void handleCopyBrief()}>
                     <Copy size={16} />
-                    Copy brief
+                    复制 Brief
                   </button>
                 )}
               </div>
@@ -3158,36 +3358,36 @@ export default function App() {
             >
               <div className="workspace-guide-top">
                 <div>
-                  <span className="subject-workspace-label">Step 3</span>
-                  <h4>RedClaw session</h4>
+                  <span className="subject-workspace-label">步骤 3</span>
+                  <h4>RedClaw 会话</h4>
                 </div>
                 <span
                   className={`workspace-guide-status ${
                     linkedSession ? 'is-ready' : activeSubjectRecoverableOutput ? 'is-warning' : 'is-info'
                   }`}
                 >
-                  {linkedSession ? 'Linked' : activeSubjectRecoverableOutput ? 'Recoverable' : 'Not started'}
+                  {linkedSession ? '已关联' : activeSubjectRecoverableOutput ? '可恢复' : '未开始'}
                 </span>
               </div>
               <p className="workspace-guide-summary">
                 {linkedSession
                   ? runtimeState.isProcessing
-                    ? 'The current session is generating. Refresh runtime for live context updates or continue editing the same manuscript.'
-                    : 'This subject is already linked to a RedClaw session. Continue the current draft or branch a new rewrite at any time.'
+                    ? '当前会话正在生成中。你可以刷新运行状态查看最新上下文，也可以继续编辑当前稿件。'
+                    : '当前主题已经关联到 RedClaw 会话，你可以随时继续当前草稿，或另起一个改写分支。'
                   : activeSubjectRecoverableOutput
-                    ? `A recoverable session is available from ${outputDisplayTitle(activeSubjectRecoverableOutput)}. Relink it here instead of starting from scratch.`
+                    ? `检测到来自 ${outputDisplayTitle(activeSubjectRecoverableOutput)} 的可恢复会话，可以直接接回，无需从头开始。`
                     : activeSubjectLatestOutput
-                      ? 'A draft already exists for this subject, but no live session is linked right now. Open the latest draft or start a new pass from the current manuscript.'
+                      ? '这个主题已经有草稿，但当前没有活跃会话。你可以打开最新草稿，或者基于当前稿件重新发起一轮。'
                       : hasActiveSubjectWorkingPath
-                        ? 'No RedClaw session exists yet. Send the current manuscript to RedClaw to create the first live writing session.'
-                        : 'Create a manuscript first, then open it in RedClaw to begin the live writing flow.'}
+                        ? '当前还没有 RedClaw 会话。把稿件发送给 RedClaw 后，就会创建第一条实时写作会话。'
+                        : '请先创建稿件，再送到 RedClaw 开始实时写作流程。'}
               </p>
               <div className="subject-workspace-actions">
                 {linkedSession ? (
                   <>
                     <button type="button" className="primary-action compact" onClick={() => void handleSendToRedClaw()}>
                       {busy === 'redclaw' ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                      Continue in RedClaw
+                      在 RedClaw 中继续
                     </button>
                     <button
                       type="button"
@@ -3195,7 +3395,7 @@ export default function App() {
                       onClick={() => void refreshSessionInsights(linkedSession)}
                     >
                       <RefreshCw size={16} />
-                      Refresh runtime
+                      刷新状态
                     </button>
                   </>
                 ) : activeSubjectRecoverableOutput ? (
@@ -3210,7 +3410,7 @@ export default function App() {
                       ) : (
                         <Wand2 size={16} />
                       )}
-                      Resume latest session
+                      恢复最近会话
                     </button>
                     <button
                       type="button"
@@ -3222,18 +3422,18 @@ export default function App() {
                       ) : (
                         <FolderOpen size={16} />
                       )}
-                      Open latest draft
+                      打开最近草稿
                     </button>
                   </>
                 ) : hasActiveSubjectWorkingPath ? (
                   <button type="button" className="primary-action compact" onClick={() => void handleSendToRedClaw()}>
                     {busy === 'redclaw' ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                    Open in RedClaw
+                    打开 RedClaw
                   </button>
                 ) : (
                   <button type="button" className="secondary-action compact" onClick={() => void handleOpenOrCreateManuscript()}>
                     {busy === 'manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                    Create manuscript first
+                    先创建稿件
                   </button>
                 )}
               </div>
@@ -3244,28 +3444,30 @@ export default function App() {
             <div className="subject-workspace-card">
               <div className="subject-workspace-head">
                 <div>
-                  <span className="subject-workspace-label">Creation brief</span>
+                  <span className="subject-workspace-label">创作 Brief</span>
                   <strong>{activeSubject.name}</strong>
                 </div>
                 <div className="subject-workspace-actions">
                   <button type="button" className="secondary-action compact" onClick={() => void handleCopyBrief()}>
                     <Copy size={16} />
-                    Copy brief
+                    复制 Brief
                   </button>
                   <button type="button" className="secondary-action compact" onClick={() => void handleOpenOrCreateManuscript()}>
                     {busy === 'manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                    {linkedPath ? 'Open manuscript' : 'Create manuscript'}
+                    {linkedPath ? '打开稿件' : '创建稿件'}
                   </button>
                 </div>
               </div>
-              <textarea className="subject-workspace-editor" value={brief} readOnly />
+              <div className="markdown-preview-pane">
+                {renderMarkdownPreview(brief, '当前主题还没有可预览的创作 Brief。')}
+              </div>
             </div>
 
             <div className="subject-workspace-card">
               <div className="subject-workspace-head">
                 <div>
-                  <span className="subject-workspace-label">Manuscripts</span>
-                  <strong>{activeSubjectWorkingPath || 'No manuscript created yet'}</strong>
+                  <span className="subject-workspace-label">稿件区</span>
+                  <strong>{activeSubjectWorkingPath || '尚未创建稿件'}</strong>
                 </div>
                 <div className="subject-workspace-actions">
                   <button
@@ -3275,7 +3477,7 @@ export default function App() {
                     onClick={() => void handleSaveManuscript()}
                   >
                     {busy === 'save-manuscript' ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                    Save manuscript
+                    保存稿件
                   </button>
                   <button
                     type="button"
@@ -3284,19 +3486,30 @@ export default function App() {
                     onClick={() => void handleRewriteCurrentManuscript()}
                   >
                     {busy === 'redclaw-rewrite' ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
-                    Rewrite as new draft
+                    改写为新草稿
                   </button>
                   <button type="button" className="primary-action compact" onClick={() => void handleSendToRedClaw()}>
                     {busy === 'redclaw' ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                    Open in RedClaw
+                    发送到 RedClaw
                   </button>
                 </div>
               </div>
-              <textarea
-                className="subject-workspace-editor"
-                value={manuscriptContent}
-                onChange={(event) => setManuscriptContent(event.target.value)}
-              />
+              <div className="markdown-preview-split">
+                <div className="markdown-preview-column">
+                  <span className="subject-workspace-label">Markdown 编辑区</span>
+                  <textarea
+                    className="subject-workspace-editor"
+                    value={manuscriptContent}
+                    onChange={(event) => setManuscriptContent(event.target.value)}
+                  />
+                </div>
+                <div className="markdown-preview-column">
+                  <span className="subject-workspace-label">格式预览</span>
+                  <div className="markdown-preview-pane">
+                    {renderMarkdownPreview(manuscriptContent, '稿件内容为空，暂时没有可预览内容。')}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -3304,8 +3517,8 @@ export default function App() {
             <div className="subject-workspace-card runtime-panel">
               <div className="subject-workspace-head">
                 <div>
-                  <span className="subject-workspace-label">Runtime</span>
-                  <strong>{linkedSession || 'No linked session'}</strong>
+                  <span className="subject-workspace-label">运行状态</span>
+                  <strong>{linkedSession || '未关联会话'}</strong>
                 </div>
                 <div className="subject-workspace-actions">
                   <button
@@ -3315,21 +3528,21 @@ export default function App() {
                     onClick={() => void refreshSessionInsights(linkedSession)}
                   >
                     <RefreshCw size={16} />
-                    Refresh runtime
+                    刷新状态
                   </button>
                 </div>
               </div>
 
               <div className="runtime-summary">
                 <div className={`runtime-chip ${!linkedSession ? 'is-warning' : runtimeState.isProcessing ? 'is-live' : 'is-idle'}`}>
-                  {!linkedSession ? 'No session' : runtimeState.isProcessing ? 'Generating' : 'Idle'}
+                  {!linkedSession ? '未连接' : runtimeState.isProcessing ? '生成中' : '空闲'}
                 </div>
                 <div className="runtime-summary-text">
                   {!linkedSession
                     ? activeSubjectRecoverableOutput
-                      ? 'No live session is linked right now. Resume the latest recoverable session from the workflow guide above.'
-                      : 'No live session is linked yet. Open the manuscript in RedClaw to start one.'
-                    : runtimeState.partialResponse || 'No streaming output yet.'}
+                      ? '当前没有活跃会话，可以从上方流程区恢复最近一次可接续的会话。'
+                      : '当前还没有活跃会话，请先把稿件发到 RedClaw。'
+                    : runtimeState.partialResponse || '当前还没有流式输出。'}
                 </div>
               </div>
 
@@ -3337,43 +3550,43 @@ export default function App() {
                 <span style={{ width: `${compactPercent}%` }} />
               </div>
 
-              <div className="runtime-grid">
-                <div className="runtime-stat">
-                  <span>Context</span>
+                <div className="runtime-grid">
+                  <div className="runtime-stat">
+                  <span>上下文</span>
                   <strong>{contextUsage.contextType || 'xhs-atelier:redclaw-entry'}</strong>
-                </div>
-                <div className="runtime-stat">
-                  <span>Messages</span>
+                  </div>
+                  <div className="runtime-stat">
+                  <span>消息数</span>
                   <strong>{contextUsage.messageCount || 0}</strong>
-                </div>
-                <div className="runtime-stat">
-                  <span>Est. tokens</span>
+                  </div>
+                  <div className="runtime-stat">
+                  <span>预估 Tokens</span>
                   <strong>{contextUsage.estimatedTotalTokens || 0}</strong>
-                </div>
-                <div className="runtime-stat">
-                  <span>Threshold</span>
+                  </div>
+                  <div className="runtime-stat">
+                  <span>阈值</span>
                   <strong>{contextUsage.compactThreshold || 24000}</strong>
-                </div>
-                <div className="runtime-stat">
-                  <span>Pack tokens</span>
+                  </div>
+                  <div className="runtime-stat">
+                  <span>内容包 Tokens</span>
                   <strong>{contextUsage.embeddedPromptTokens || 0}</strong>
-                </div>
-                <div className="runtime-stat">
-                  <span>History</span>
+                  </div>
+                  <div className="runtime-stat">
+                  <span>历史 Tokens</span>
                   <strong>{contextUsage.activeHistoryTokens || 0}</strong>
+                  </div>
+                  <div className="runtime-stat">
+                  <span>更新时间</span>
+                  <strong>{runtimeState.updatedAt ? timeAgo(runtimeState.updatedAt) : '刚刚更新'}</strong>
+                  </div>
                 </div>
-                <div className="runtime-stat">
-                  <span>Updated</span>
-                  <strong>{runtimeState.updatedAt ? timeAgo(runtimeState.updatedAt) : 'Just now'}</strong>
-                </div>
-              </div>
             </div>
 
             <div className="subject-workspace-card">
               <div className="subject-workspace-head">
                 <div>
-                  <span className="subject-workspace-label">RedClaw</span>
-                  <strong>{linkedSession || 'No linked session'}</strong>
+                  <span className="subject-workspace-label">RedClaw 会话</span>
+                  <strong>{linkedSession || '未关联会话'}</strong>
                 </div>
               </div>
 
@@ -3382,32 +3595,34 @@ export default function App() {
                   messages.map((item) => (
                     <article key={item.id} className={`subject-redclaw-message${item.role === 'user' ? ' is-user' : ''}`}>
                       <div className="subject-redclaw-meta">
-                        <span>{item.role === 'user' ? 'You' : 'RedClaw'}</span>
+                        <span>{item.role === 'user' ? '你' : 'RedClaw'}</span>
                         <span>{timeAgo(item.created_at)}</span>
                       </div>
                       {item.displayContent || item.display_content ? (
                         <div className="subject-redclaw-display">{item.displayContent || item.display_content}</div>
                       ) : null}
-                      <p>{item.content}</p>
+                      <div className="markdown-preview-pane is-compact">
+                        {renderMarkdownPreview(item.content, '暂无消息内容。')}
+                      </div>
                     </article>
                   ))
                 ) : (
-                  <div className="import-report-note">The creation brief stays editable in Manuscripts, and you can reopen RedClaw here whenever you want to continue or branch the draft.</div>
+                  <div className="import-report-note">创作 Brief 会持续保存在稿件区中；后续你也可以随时回到这里续写、改写或接着完善当前草稿。</div>
                 )}
               </div>
 
               <div className="subject-redclaw-composer">
                 <div className="subject-workspace-head">
                   <div>
-                    <span className="subject-workspace-label">Follow-up</span>
-                    <strong>{linkedSession ? 'Continue the same session' : 'Session not linked yet'}</strong>
+                    <span className="subject-workspace-label">后续指令</span>
+                    <strong>{linkedSession ? '继续当前会话' : '当前还未关联会话'}</strong>
                   </div>
                 </div>
                 <textarea
                   className="subject-redclaw-input"
                   value={redClawFollowUpPrompt}
                   onChange={(event) => setRedClawFollowUpPrompt(event.target.value)}
-                  placeholder="Example: Make the opening sharper, keep the original structure, and end with a stronger CTA."
+                  placeholder="例如：开头更抓人，保留原结构，并把结尾 CTA 写得更有行动感。"
                   disabled={!linkedSession}
                 />
                 <div className={`import-report-note${canSendRedClawFollowUp || !redClawFollowUpPrompt.trim() ? '' : ' is-warning'}`}>
@@ -3421,18 +3636,18 @@ export default function App() {
                     onClick={() => void handleSendRedClawFollowUp()}
                   >
                     {busy === 'redclaw-follow-up' ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                    Send follow-up
+                    发送指令
                   </button>
                   <button
                     type="button"
                     className="secondary-action compact"
                     disabled={!linkedSession}
                     onClick={() =>
-                      setRedClawFollowUpPrompt('Sharpen the hook, remove repeated lines, and make the CTA more confident without changing the core angle.')
+                      setRedClawFollowUpPrompt('把开头写得更有钩子，去掉重复句，并在不改变核心角度的前提下把 CTA 写得更坚定。')
                     }
                   >
                     <Sparkles size={16} />
-                    Insert example
+                    插入示例
                   </button>
                   <button
                     type="button"
@@ -3441,7 +3656,7 @@ export default function App() {
                     onClick={() => setRedClawFollowUpPrompt('')}
                   >
                     <CircleDashed size={16} />
-                    Clear
+                    清空
                   </button>
                 </div>
               </div>
@@ -3451,8 +3666,8 @@ export default function App() {
           <div className="subject-form">
             <div className="subject-workspace-head">
               <div>
-                <span className="subject-workspace-label">Draft history</span>
-                <strong>{activeSubjectOutputArchive.length ? `${activeSubjectOutputArchive.length} recent drafts` : 'No archived drafts yet'}</strong>
+                <span className="subject-workspace-label">草稿历史</span>
+                <strong>{activeSubjectOutputArchive.length ? `共 ${activeSubjectOutputArchive.length} 份最近草稿` : '暂时还没有归档草稿'}</strong>
               </div>
               {activeSubjectOutputArchive.length ? (
                 <div className="subject-workspace-actions">
@@ -3467,7 +3682,7 @@ export default function App() {
                     ) : (
                       <CircleDashed size={16} />
                     )}
-                    Clear current subject history
+                    清空当前主题历史
                   </button>
                 </div>
               ) : null}
@@ -3501,7 +3716,7 @@ export default function App() {
                           onClick={() => void handleOpenArchivedOutputInStudio(item)}
                         >
                           {busy === `output-open:${item.id}` ? <Loader2 className="spin" size={16} /> : <FolderOpen size={16} />}
-                          Open manuscript
+                          打开稿件
                         </button>
                       ) : null}
                       {canOpenOutputInStudio(item) ? (
@@ -3511,7 +3726,7 @@ export default function App() {
                           onClick={() => void handleGenerateOutputWithRedClaw(item, 'continue')}
                         >
                           {busy === `output-redclaw-continue:${item.id}` ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
-                          Continue in RedClaw
+                          在 RedClaw 中续写
                         </button>
                       ) : null}
                       {canOpenOutputInStudio(item) ? (
@@ -3521,7 +3736,7 @@ export default function App() {
                           onClick={() => void handleGenerateOutputWithRedClaw(item, 'rewrite')}
                         >
                           {busy === `output-redclaw-rewrite:${item.id}` ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                          Rewrite as new draft
+                          改写为新草稿
                         </button>
                       ) : null}
                       {canReconnectOutputSession(item) ? (
@@ -3531,7 +3746,7 @@ export default function App() {
                           onClick={() => void handleResumeArchivedOutputSession(item)}
                         >
                           {busy === `output-resume:${item.id}` ? <Loader2 className="spin" size={16} /> : <Wand2 size={16} />}
-                          Resume session
+                          恢复会话
                         </button>
                       ) : null}
                       <button
@@ -3540,15 +3755,15 @@ export default function App() {
                         onClick={() => void handleOpenArchivedOutputExternally(item)}
                       >
                         {busy === `output-external:${item.id}` ? <Loader2 className="spin" size={16} /> : <ExternalLink size={16} />}
-                        Open in system app
+                        在系统中打开
                       </button>
                       <button
                         type="button"
                         className="secondary-action compact"
-                        onClick={() => void copyTextToClipboard(item.manuscriptPath, 'Manuscript path copied.')}
+                        onClick={() => void copyTextToClipboard(item.manuscriptPath, '稿件路径已复制。')}
                       >
                         <Copy size={16} />
-                        Copy path
+                        复制路径
                       </button>
                       <button
                         type="button"
@@ -3556,22 +3771,22 @@ export default function App() {
                         onClick={() => void handleRemoveArchivedOutput(item.id)}
                       >
                         {busy === `output-remove:${item.id}` ? <Loader2 className="spin" size={16} /> : <CircleDashed size={16} />}
-                        Remove
+                        删除
                       </button>
                     </div>
                   </article>
                 ))
               ) : (
-                <div className="import-report-note">This subject has no archived drafts yet. After running RedClaw or automation tasks, versions will accumulate here.</div>
+                <div className="import-report-note">当前主题还没有归档草稿。等你执行 RedClaw 或自动化任务后，历史版本会逐步沉淀在这里。</div>
               )}
             </div>
           </div>
         </section>
       ) : (
         <section className="atelier-card">
-          <div className="section-tag">Creation workspace</div>
-          <h3>Choose a subject to start</h3>
-          <div className="import-report-note">Create or select a subject to generate a creation brief, open a manuscript, and enter the RedClaw workspace.</div>
+          <div className="section-tag">创作工作区</div>
+          <h3>先选择一个主题开始</h3>
+          <div className="import-report-note">先创建或选中一个主题，然后就可以生成创作 Brief、打开稿件，并进入 RedClaw 创作流程。</div>
         </section>
       )}
     </section>
@@ -3581,28 +3796,28 @@ export default function App() {
       <section className="split-grid">
         <section className="atelier-card">
           <div className="section-tag">RedClaw</div>
-          <h3>AI connection settings</h3>
+          <h3>AI 连接设置</h3>
           <div className="settings-grid">
             <label>
-              <span>Provider</span>
+              <span>接口类型</span>
               <input
                 value={settings.aiProvider}
                 onChange={(event) => setSettings((current) => ({ ...current, aiProvider: event.target.value }))}
               />
             </label>
             <label>
-              <span>Model</span>
+              <span>模型名称</span>
               <input
                 value={settings.aiModel}
-                placeholder="For example: gpt-4.1-mini"
+                placeholder="例如：gpt-4.1-mini"
                 onChange={(event) => setSettings((current) => ({ ...current, aiModel: event.target.value }))}
               />
             </label>
             <label>
-              <span>Endpoint</span>
+              <span>接口地址</span>
               <input
                 value={settings.aiEndpoint}
-                placeholder="https://api.example.com/v1 or /v1/responses"
+                placeholder="例如：https://api.example.com/v1 或 /v1/responses"
                 onChange={(event) => setSettings((current) => ({ ...current, aiEndpoint: event.target.value }))}
               />
             </label>
@@ -3615,7 +3830,7 @@ export default function App() {
               />
             </label>
             <label>
-              <span>Export Directory</span>
+              <span>导出目录</span>
               <input
                 value={settings.exportDirectory}
                 onChange={(event) => setSettings((current) => ({ ...current, exportDirectory: event.target.value }))}
@@ -3623,19 +3838,19 @@ export default function App() {
             </label>
           </div>
 
-          <div className="import-report-note">The desktop app accepts an OpenAI-compatible base URL, a full `/chat/completions` URL, or a full `/responses` URL. `Provider` is kept mainly as a record field.</div>
+          <div className="import-report-note">桌面端支持填写 OpenAI 兼容的基础地址，也支持完整的 `/chat/completions` 或 `/responses` 地址。上面的“接口类型”主要用于记录与区分当前配置。</div>
           <div className="info-grid">
             <div className="info-item">
-              <span>Config</span>
-              <strong>{redClawReady ? 'Ready for direct generation' : 'Setup required'}</strong>
+              <span>当前状态</span>
+              <strong>{redClawReady ? '已可直接生成' : '仍需补全设置'}</strong>
             </div>
             <div className="info-item">
-              <span>Issues</span>
-              <strong>{settingsSaveIssues.length || runnerStatus.configurationIssues?.length ? `${settingsSaveIssues.length || runnerStatus.configurationIssues?.length} items` : 'No blockers'}</strong>
+              <span>阻塞项</span>
+              <strong>{settingsSaveIssues.length || runnerStatus.configurationIssues?.length ? `${settingsSaveIssues.length || runnerStatus.configurationIssues?.length} 项` : '暂无阻塞'}</strong>
             </div>
             <div className="info-item">
-              <span>Last Test</span>
-              <strong>{settingsConnectionStatus ? timeAgo(new Date(settingsConnectionStatus.checkedAt).toISOString()) : 'Not tested yet'}</strong>
+              <span>最近测试</span>
+              <strong>{settingsConnectionStatus ? timeAgo(new Date(settingsConnectionStatus.checkedAt).toISOString()) : '尚未测试'}</strong>
             </div>
           </div>
 
@@ -3655,29 +3870,29 @@ export default function App() {
           <div className="settings-actions">
             <button type="button" className="primary-action" onClick={() => void handleSaveSettings()}>
               <Settings2 size={16} />
-              Save settings
+              保存设置
             </button>
             <button type="button" className="secondary-action" onClick={() => void handleTestRedClawConnection()}>
               {busy === 'settings-test' ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
-              Test connection
+              测试连接
             </button>
             <button type="button" className="secondary-action" onClick={() => void handleOpenExportDirectory()}>
               {busy === 'open-export-directory' ? <Loader2 className="spin" size={16} /> : <FolderOpen size={16} />}
-              Open export folder
+              打开导出目录
             </button>
             <button
               type="button"
               className="secondary-action"
               onClick={() => startTransition(() => setView('library'))}
             >
-              Open library
+              前往资料库
             </button>
           </div>
         </section>
 
         <section className="atelier-card">
-          <div className="section-tag">Release</div>
-          <h3>GitHub Actions readiness</h3>
+          <div className="section-tag">发布</div>
+          <h3>GitHub Actions 发布准备</h3>
           <div className="build-rail">
             {BUILD_STEPS.map((step, index) => (
               <div key={step} className="build-step">
@@ -3689,16 +3904,16 @@ export default function App() {
 
           <div className="info-grid">
             <div className="info-item">
-              <span>Bridge</span>
-              <strong>{pluginStatus.bridgeDirectory || 'Bridge not prepared'}</strong>
+              <span>桥接目录</span>
+              <strong>{pluginStatus.bridgeDirectory || '尚未准备桥接目录'}</strong>
             </div>
             <div className="info-item">
-              <span>Pending</span>
+              <span>待处理项</span>
               <strong>{pluginStatus.pendingItems || 0}</strong>
             </div>
             <div className="info-item">
-              <span>Last Sync</span>
-              <strong>{pluginStatus.lastSyncAt ? timeAgo(pluginStatus.lastSyncAt) : 'Not synced yet'}</strong>
+              <span>最近同步</span>
+              <strong>{pluginStatus.lastSyncAt ? timeAgo(pluginStatus.lastSyncAt) : '尚未同步'}</strong>
             </div>
           </div>
 
@@ -3709,7 +3924,7 @@ export default function App() {
               onClick={() => void handleOpenGitHubReleases()}
             >
               {busy === 'open-releases' ? <Loader2 className="spin" size={15} /> : <ExternalLink size={15} />}
-              Open GitHub Releases
+              打开 GitHub Releases
             </button>
             <button
               type="button"
@@ -3717,7 +3932,7 @@ export default function App() {
               onClick={() => void handleOpenReleaseFlow()}
             >
               {busy === 'open-release-flow' ? <Loader2 className="spin" size={15} /> : <FileText size={15} />}
-              Open release flow
+              打开发布流程
             </button>
             <button
               type="button"
@@ -3726,23 +3941,23 @@ export default function App() {
                 void runAction('open-bridge', async () => {
                   const result = await window.ipcRenderer.browserPlugin.openDir();
                   if (!result.success) {
-                    throw new Error(result.error || 'Failed to open the bridge folder.');
+                    throw new Error(result.error || '打开桥接目录失败。');
                   }
                 })
               }
             >
               <FolderOpen size={15} />
-              Open bridge folder
+              打开桥接目录
             </button>
           </div>
         </section>
       </section>
 
       <section className="atelier-card">
-        <div className="section-tag">Backup</div>
-        <h3>Workspace snapshot</h3>
+        <div className="section-tag">备份</div>
+        <h3>工作区快照</h3>
         <div className="import-report-note">
-          Create a JSON snapshot before major imports, machine changes, or release testing. The snapshot includes app state, automation, archive history, and local manuscript/session links. The RedClaw API key and raw manuscript or media files are excluded on purpose.
+          在大规模导入、换机迁移或发布测试前，建议先创建一份 JSON 快照。快照会保存应用状态、自动化配置、归档历史，以及本地稿件和会话的关联关系；RedClaw API Key 与原始稿件/媒体文件不会被包含进去。
         </div>
         <div className="info-grid launch-info-grid">
           <div className="info-item">
@@ -3765,19 +3980,19 @@ export default function App() {
         <div className="settings-actions">
           <button type="button" className="primary-action compact" onClick={() => void handleExportWorkspaceBackup()}>
             {busy === 'workspace-backup-export' ? <Loader2 className="spin" size={15} /> : <FileDown size={15} />}
-            Create backup snapshot
+            创建备份快照
           </button>
           <button type="button" className="secondary-action compact" onClick={() => backupFileRef.current?.click()}>
             {busy === 'workspace-backup-import' ? <Loader2 className="spin" size={15} /> : <Upload size={15} />}
-            Restore snapshot
+            恢复快照
           </button>
           <button type="button" className="secondary-action compact" onClick={() => void handleOpenWorkspaceDirectory()}>
             {busy === 'open-workspace-directory' ? <Loader2 className="spin" size={15} /> : <FolderOpen size={15} />}
-            Open workspace folder
+            打开工作区目录
           </button>
         </div>
         <div className="import-report-note">
-          Restore replaces the current desktop state. For full migration, keep a copy of the workspace folder and the export folder alongside this JSON snapshot.
+          恢复快照会覆盖当前桌面端状态。若要完整迁移，请同时保留工作区目录和导出目录，再配合这份 JSON 快照一起转移。
         </div>
         <input
           ref={backupFileRef}
@@ -3789,9 +4004,9 @@ export default function App() {
       </section>
 
       <section className="atelier-card">
-        <div className="section-tag">Launch readiness</div>
-        <h3>Pre-release checklist</h3>
-        <div className="import-report-note">This panel only tracks blockers and launch warnings. When blockers reach zero, tag `desktop-v*` to publish installers through GitHub Actions.</div>
+        <div className="section-tag">上线准备</div>
+        <h3>发布前检查清单</h3>
+        <div className="import-report-note">这个面板只追踪真正会阻塞发布的问题和需要人工确认的风险项。当阻塞项归零后，就可以通过 `desktop-v*` 标签触发 GitHub Actions 生成安装包。</div>
         <div className="settings-actions">
           <button
             type="button"
@@ -3799,7 +4014,7 @@ export default function App() {
             onClick={() => void handleOpenLaunchChecklist()}
           >
             {busy === 'open-launch-checklist' ? <Loader2 className="spin" size={15} /> : <FileText size={15} />}
-            View checklist
+            查看清单
           </button>
           <button
             type="button"
@@ -3807,26 +4022,26 @@ export default function App() {
             onClick={() => void handleOpenIssueTracker()}
           >
             {busy === 'open-issues' ? <Loader2 className="spin" size={15} /> : <ExternalLink size={15} />}
-            Report blocker
+            提交阻塞问题
           </button>
         </div>
 
         <div className="info-grid launch-info-grid">
           <div className="info-item">
-            <span>Status</span>
-            <strong>{!launchBlockers.length ? 'Release candidate ready' : `${launchBlockers.length} blockers remaining`}</strong>
+            <span>当前状态</span>
+            <strong>{!launchBlockers.length ? '已具备发布候选条件' : `还有 ${launchBlockers.length} 项阻塞`}</strong>
           </div>
           <div className="info-item">
-            <span>Warnings</span>
-            <strong>{launchWarnings.length ? `${launchWarnings.length} warnings to confirm` : 'No extra warnings'}</strong>
+            <span>提醒项</span>
+            <strong>{launchWarnings.length ? `还有 ${launchWarnings.length} 项待确认` : '暂无额外提醒'}</strong>
           </div>
           <div className="info-item">
-            <span>Bridge</span>
-            <strong>{pluginStatus.bridgeDirectory ? 'Prepared' : 'Optional, not prepared'}</strong>
+            <span>桥接状态</span>
+            <strong>{pluginStatus.bridgeDirectory ? '已准备' : '可选，尚未准备'}</strong>
           </div>
           <div className="info-item">
-            <span>Release</span>
-            <strong>GitHub Actions Only</strong>
+            <span>发布方式</span>
+            <strong>仅通过 GitHub Actions</strong>
           </div>
         </div>
 
@@ -3855,7 +4070,7 @@ export default function App() {
           <div className="launch-issue-list is-success">
             <div className="launch-issue-item">
               <CheckCircle2 size={15} />
-              <span>All current blockers are cleared. The desktop app is ready for GitHub tag-based release prep.</span>
+              <span>当前阻塞项已全部清零，桌面端已进入可准备打标签发布的状态。</span>
             </div>
           </div>
         )}
@@ -3873,25 +4088,25 @@ export default function App() {
       </section>
 
       <section className="atelier-card">
-        <div className="section-tag">Support</div>
-        <h3>Docs and community channels</h3>
-        <div className="import-report-note">Use repository docs for setup and release details. Use GitHub issue forms for bugs or feature requests. Review the security policy before posting any sensitive finding publicly.</div>
+        <div className="section-tag">支持</div>
+        <h3>文档与社区入口</h3>
+        <div className="import-report-note">安装、配置和发布说明统一以仓库文档为准。Bug 和功能请求统一走 GitHub Issue 表单；如果涉及敏感问题，请先阅读安全策略后再公开反馈。</div>
         <div className="info-grid launch-info-grid">
           <div className="info-item">
-            <span>Repository</span>
-            <strong>Open source workspace</strong>
+            <span>仓库</span>
+            <strong>开源主仓库</strong>
           </div>
           <div className="info-item">
-            <span>Contributing</span>
-            <strong>PR checklist and scope</strong>
+            <span>贡献</span>
+            <strong>PR 规范与范围说明</strong>
           </div>
           <div className="info-item">
-            <span>Security</span>
-            <strong>Private-first reporting</strong>
+            <span>安全</span>
+            <strong>优先私下披露</strong>
           </div>
           <div className="info-item">
-            <span>Issue intake</span>
-            <strong>GitHub forms enabled</strong>
+            <span>问题入口</span>
+            <strong>已启用 GitHub 表单</strong>
           </div>
         </div>
         <div className="settings-actions">
@@ -3901,7 +4116,7 @@ export default function App() {
             onClick={() => void handleOpenRepository()}
           >
             {busy === 'open-repository' ? <Loader2 className="spin" size={15} /> : <ExternalLink size={15} />}
-            Open repository
+            打开仓库
           </button>
           <button
             type="button"
@@ -3909,7 +4124,7 @@ export default function App() {
             onClick={() => void handleOpenContributingGuide()}
           >
             {busy === 'open-contributing' ? <Loader2 className="spin" size={15} /> : <FileText size={15} />}
-            Open contribution guide
+            打开贡献指南
           </button>
           <button
             type="button"
@@ -3917,7 +4132,7 @@ export default function App() {
             onClick={() => void handleOpenSecurityPolicy()}
           >
             {busy === 'open-security' ? <Loader2 className="spin" size={15} /> : <FileText size={15} />}
-            Open security policy
+            打开安全策略
           </button>
           <button
             type="button"
@@ -3925,45 +4140,46 @@ export default function App() {
             onClick={() => void handleOpenIssueTracker()}
           >
             {busy === 'open-issues' ? <Loader2 className="spin" size={15} /> : <ExternalLink size={15} />}
-            Open issue forms
+            打开 Issue 表单
           </button>
         </div>
       </section>
 
       <section className="split-grid">
         <section className="atelier-card">
-          <div className="section-tag">Automation control</div>
-          <h3>RedClaw automation runner</h3>
+          <div className="section-tag">自动化控制</div>
+          <h3>RedClaw 自动化运行器</h3>
           <div className="info-grid">
             <div className="info-item">
-              <span>Runner</span>
-              <strong>{runnerStatus.isTicking ? 'Runner active' : 'Runner stopped'}</strong>
+              <span>运行器</span>
+              <strong>{runnerStatus.isTicking ? '运行中' : '已停止'}</strong>
             </div>
             <div className="info-item">
-              <span>Next Tick</span>
-              <strong>{runnerStatus.nextTickAt ? timeUntil(runnerStatus.nextTickAt) : 'Not scheduled'}</strong>
+              <span>下次轮询</span>
+              <strong>{runnerStatus.nextTickAt ? timeUntil(runnerStatus.nextTickAt) : '尚未安排'}</strong>
             </div>
             <div className="info-item">
-              <span>Heartbeat</span>
-              <strong>{runnerStatus.heartbeat?.enabled ? 'Enabled' : 'Disabled'}</strong>
+              <span>心跳上报</span>
+              <strong>{runnerStatus.heartbeat?.enabled ? '已开启' : '已关闭'}</strong>
             </div>
             <div className="info-item">
-              <span>Next Automation</span>
-              <strong>{runnerStatus.nextAutomationFireAt ? timeUntil(runnerStatus.nextAutomationFireAt) : 'No upcoming automation'}</strong>
+              <span>下次自动化</span>
+              <strong>{runnerStatus.nextAutomationFireAt ? timeUntil(runnerStatus.nextAutomationFireAt) : '暂无待执行任务'}</strong>
             </div>
             <div className="info-item">
-              <span>Last Tick</span>
-              <strong>{runnerStatus.lastTickAt ? timeAgo(runnerStatus.lastTickAt) : 'No recent tick'}</strong>
+              <span>最近轮询</span>
+              <strong>{runnerStatus.lastTickAt ? timeAgo(runnerStatus.lastTickAt) : '暂无最近记录'}</strong>
             </div>
           </div>
 
           <div className="import-report-note">
-            The Rust runner owns timing, queueing, and background execution. Review cadence, heartbeat, and project-level automation here.          </div>
+            Rust 运行器负责调度、排队和后台执行。这里集中管理轮询频率、心跳上报以及主题级自动化配置。
+          </div>
 
           <div className="subject-form">
             <div className="subject-form-grid">
               <label>
-                <span>Tick interval minutes</span>
+                <span>轮询间隔（分钟）</span>
                 <input
                   type="number"
                   min="1"
@@ -3972,7 +4188,7 @@ export default function App() {
                 />
               </label>
               <label>
-                <span>Max subjects per tick</span>
+                <span>每轮最多处理主题数</span>
                 <input
                   type="number"
                   min="1"
@@ -3981,7 +4197,7 @@ export default function App() {
                 />
               </label>
               <label>
-                <span>Max automation jobs per tick</span>
+                <span>每轮最多处理自动化任务数</span>
                 <input
                   type="number"
                   min="1"
@@ -3995,7 +4211,7 @@ export default function App() {
 
             <div className="subject-form-grid">
               <label>
-                <span>Keep runner alive without window</span>
+                <span>无窗口时保持运行</span>
                 <select
                   value={runnerConfigForm.keepAliveWhenNoWindow ? 'true' : 'false'}
                   onChange={(event) =>
@@ -4005,12 +4221,12 @@ export default function App() {
                     }))
                   }
                 >
-                  <option value="false">No</option>
-                  <option value="true">Yes</option>
+                  <option value="false">否</option>
+                  <option value="true">是</option>
                 </select>
               </label>
               <label>
-                <span>Heartbeat</span>
+                <span>启用心跳</span>
                 <select
                   value={runnerConfigForm.heartbeatEnabled ? 'true' : 'false'}
                   onChange={(event) =>
@@ -4020,12 +4236,12 @@ export default function App() {
                     }))
                   }
                 >
-                  <option value="false">No</option>
-                  <option value="true">Yes</option>
+                  <option value="false">否</option>
+                  <option value="true">是</option>
                 </select>
               </label>
               <label>
-                <span>Heartbeat interval minutes</span>
+                <span>心跳间隔（分钟）</span>
                 <input
                   type="number"
                   min="1"
@@ -4042,7 +4258,7 @@ export default function App() {
 
             <div className="subject-form-grid">
               <label>
-                <span>Suppress empty heartbeat</span>
+                <span>无内容时不发送心跳</span>
                 <select
                   value={runnerConfigForm.heartbeatSuppressEmptyReport ? 'true' : 'false'}
                   onChange={(event) =>
@@ -4052,12 +4268,12 @@ export default function App() {
                     }))
                   }
                 >
-                  <option value="true">Yes</option>
-                  <option value="false">No</option>
+                  <option value="true">是</option>
+                  <option value="false">否</option>
                 </select>
               </label>
               <label>
-                <span>Report to main session</span>
+                <span>同步到主会话</span>
                 <select
                   value={runnerConfigForm.heartbeatReportToMainSession ? 'true' : 'false'}
                   onChange={(event) =>
@@ -4067,25 +4283,25 @@ export default function App() {
                     }))
                   }
                 >
-                  <option value="false">No</option>
-                  <option value="true">Yes</option>
+                  <option value="false">否</option>
+                  <option value="true">是</option>
                 </select>
               </label>
               <label>
-                <span>Next heartbeat</span>
+                <span>下次心跳</span>
                 <input
                   readOnly
-                  value={runnerStatus.heartbeat?.nextRunAt ? timeUntil(runnerStatus.heartbeat.nextRunAt) : 'Not scheduled'}
+                  value={runnerStatus.heartbeat?.nextRunAt ? timeUntil(runnerStatus.heartbeat.nextRunAt) : '尚未安排'}
                 />
               </label>
             </div>
 
             <label>
-              <span>Heartbeat Prompt</span>
+              <span>心跳提示词</span>
               <textarea
                 value={runnerConfigForm.heartbeatPrompt}
                 onChange={(event) => setRunnerConfigForm((current) => ({ ...current, heartbeatPrompt: event.target.value }))}
-                placeholder="Optional: describe what the heartbeat report should summarize."
+                placeholder="可选：说明心跳报告需要总结哪些内容。"
               />
             </label>
           </div>
@@ -4095,7 +4311,7 @@ export default function App() {
           <div className="settings-actions">
             <button type="button" className="primary-action compact" onClick={() => void handleSaveRunnerConfig()}>
               {busy === 'runner-config' ? <Loader2 className="spin" size={16} /> : <Settings2 size={16} />}
-              Save runner settings
+              保存运行器设置
             </button>
             <button
               type="button"
@@ -4104,7 +4320,7 @@ export default function App() {
               disabled={Boolean(runnerStatus.isTicking)}
             >
               {busy === 'runner-start' ? <Loader2 className="spin" size={16} /> : <RefreshCw size={16} />}
-              {runnerStatus.isTicking ? 'Runner active' : 'Start runner'}
+              {runnerStatus.isTicking ? '运行器运行中' : '启动运行器'}
             </button>
             <button
               type="button"
@@ -4113,14 +4329,14 @@ export default function App() {
               disabled={!runnerStatus.isTicking}
             >
               {busy === 'runner-stop' ? <Loader2 className="spin" size={16} /> : <CircleDashed size={16} />}
-              Stop runner
+              停止运行器
             </button>
           </div>
         </section>
 
         <section className="atelier-card">
-          <div className="section-tag">Project automation</div>
-          <h3>Project automation</h3>
+          <div className="section-tag">主题自动化</div>
+          <h3>主题级自动化</h3>
           <div className="automation-stack">
             {subjects.length ? (
               subjects.map((subject) => {
@@ -4132,45 +4348,45 @@ export default function App() {
                       <div>
                         <strong>{subject.name}</strong>
                         <div className="automation-meta">
-                          <span>{categoryNameMap.get(subject.categoryId || '') || 'Uncategorized'}</span>
-                          <span>{projectState?.lastRunAt ? `Last run ${timeAgo(projectState.lastRunAt)}` : 'Not run yet'}</span>
-                          <span>{projectState?.lastResult ? `Last result: ${projectState.lastResult}` : 'No run result yet'}</span>
+                          <span>{categoryNameMap.get(subject.categoryId || '') || '未分类'}</span>
+                          <span>{projectState?.lastRunAt ? `最近运行 ${timeAgo(projectState.lastRunAt)}` : '尚未运行'}</span>
+                          <span>{projectState?.lastResult ? `最近结果：${describeRunResult(projectState.lastResult)}` : '暂无运行结果'}</span>
                         </div>
                       </div>
                       <span className={`journey-state ${draft.enabled ? 'is-complete' : 'is-pending'}`}>
-                        {draft.enabled ? 'Enabled' : 'Disabled'}
+                        {draft.enabled ? '已启用' : '已停用'}
                       </span>
                     </div>
 
                     <div className="subject-form">
                       <div className="subject-form-grid">
                         <label>
-                          <span>Automation state</span>
+                          <span>自动化状态</span>
                           <select
                             value={draft.enabled ? 'enabled' : 'disabled'}
                             onChange={(event) =>
                               patchProjectAutomationDraft(subject.id, { enabled: event.target.value === 'enabled' })
                             }
                           >
-                            <option value="enabled">Enable</option>
-                            <option value="disabled">Disable</option>
+                            <option value="enabled">启用</option>
+                            <option value="disabled">停用</option>
                           </select>
                         </label>
                         <label>
-                          <span>Current source</span>
+                          <span>当前来源</span>
                           <input
                             readOnly
-                            value={manuscriptLinks[subject.id] ? 'Manuscript + subject brief' : 'Subject brief only'}
+                            value={manuscriptLinks[subject.id] ? '稿件 + 主题 Brief' : '仅主题 Brief'}
                           />
                         </label>
                       </div>
 
                       <label>
-                        <span>Project prompt</span>
+                        <span>主题提示词</span>
                         <textarea
                           value={draft.prompt}
                           onChange={(event) => patchProjectAutomationDraft(subject.id, { prompt: event.target.value })}
-                          placeholder="Optional: add a long-running prompt for this subject, including direction, rhythm, constraints, or references."
+                          placeholder="可选：为这个主题补充长期自动化提示词，例如方向、节奏、约束和参考依据。"
                         />
                       </label>
                     </div>
@@ -4184,18 +4400,19 @@ export default function App() {
                         onClick={() => void handleSaveProjectAutomation(subject.id)}
                       >
                         {busy === `project-automation:${subject.id}` ? <Loader2 className="spin" size={16} /> : <Settings2 size={16} />}
-                        Save settings
+                        保存设置
                       </button>
                       {subject.id === activeSubject?.id ? (
                         <button type="button" className="secondary-action compact" onClick={() => startTransition(() => setView('library'))}>
-                          Open subject                        </button>
+                          打开主题
+                        </button>
                       ) : null}
                     </div>
                   </article>
                 );
               })
             ) : (
-              <div className="import-report-note">Create at least one subject before configuring project automation.</div>
+              <div className="import-report-note">请先创建至少一个主题，再配置主题级自动化。</div>
             )}
           </div>
         </section>
@@ -4203,34 +4420,34 @@ export default function App() {
 
       <section className="split-grid">
         <section className="atelier-card">
-          <div className="section-tag">Diagnostics</div>
-          <h3>Diagnostics overview</h3>
+          <div className="section-tag">诊断</div>
+          <h3>诊断总览</h3>
           <div className="info-grid">
             <div className="info-item">
-              <span>Activity count</span>
+              <span>活动数</span>
               <strong>{automationActivities.length}</strong>
             </div>
             <div className="info-item">
-              <span>Warnings</span>
-              <strong>{automationWarnings.length ? `${automationWarnings.length} items` : 'None'}</strong>
+              <span>告警数</span>
+              <strong>{automationWarnings.length ? `${automationWarnings.length} 项` : '无'}</strong>
             </div>
             <div className="info-item">
-              <span>Debug logging</span>
-              <strong>{debugStatus.enabled ? 'Enabled' : 'Off'}</strong>
+              <span>调试日志</span>
+              <strong>{debugStatus.enabled ? '已开启' : '已关闭'}</strong>
             </div>
             <div className="info-item">
-              <span>Latest activity</span>
-              <strong>{latestAutomationActivity ? timeAgo(latestAutomationActivity.createdAt) : 'No records yet'}</strong>
+              <span>最近活动</span>
+              <strong>{latestAutomationActivity ? timeAgo(latestAutomationActivity.createdAt) : '暂时没有记录'}</strong>
             </div>
           </div>
 
           <label>
-            <span>Debug log directory</span>
-            <input readOnly value={debugStatus.logDirectory || 'No log directory'} />
+            <span>调试日志目录</span>
+            <input readOnly value={debugStatus.logDirectory || '暂无日志目录'} />
           </label>
 
           <div className="import-report-note">
-            Use the recovery queue to jump directly from a failure into the right fix path instead of hunting through logs and forms.
+            出现故障时，优先使用下面的恢复队列直接跳到对应处理入口，而不是自己去翻日志和表单。
           </div>
 
           {diagnosticsRecoveryCount ? (
@@ -4239,24 +4456,24 @@ export default function App() {
                 <article className="automation-item">
                   <div className="automation-head">
                     <div>
-                      <strong>RedClaw setup or connection needs attention</strong>
+                      <strong>RedClaw 设置或连接需要处理</strong>
                       <div className="automation-meta">
-                        <span>{runnerConfigurationIssues.length ? `${runnerConfigurationIssues.length} config issues` : 'Connection check missing'}</span>
-                        <span>{settingsConnectionStatus?.checkedAt ? `Last checked ${timeAgo(settingsConnectionStatus.checkedAt)}` : 'No successful test yet'}</span>
+                        <span>{runnerConfigurationIssues.length ? `${runnerConfigurationIssues.length} 项配置问题` : '还没有连接测试结果'}</span>
+                        <span>{settingsConnectionStatus?.checkedAt ? `最近检测 ${timeAgo(settingsConnectionStatus.checkedAt)}` : '尚未通过测试'}</span>
                       </div>
                     </div>
-                    <span className="journey-state is-pending">Action needed</span>
+                    <span className="journey-state is-pending">需要处理</span>
                   </div>
                   <p>
                     {runnerConfigurationIssues[0]
                       || (settingsConnectionStatus?.tone === 'warning'
                         ? settingsConnectionStatus.detail
-                        : 'Run one real RedClaw connection test before relying on manual or automated generation.')}
+                        : '在依赖手动生成或自动化生成之前，请先做一次真实的 RedClaw 连接测试。')}
                   </p>
                   <div className="automation-actions">
                     <button type="button" className="primary-action compact" onClick={openSettingsView}>
                       <Settings2 size={16} />
-                      Open settings
+                      打开设置
                     </button>
                     {redClawReady ? (
                       <button
@@ -4265,17 +4482,17 @@ export default function App() {
                         onClick={() => void handleTestRedClawConnection()}
                       >
                         {busy === 'settings-test' ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
-                        {settingsConnectionStatus ? 'Retest connection' : 'Test connection'}
+                        {settingsConnectionStatus ? '重新测试连接' : '测试连接'}
                       </button>
                     ) : null}
                     {runnerConfigurationIssues.length ? (
                       <button
                         type="button"
                         className="secondary-action compact"
-                        onClick={() => void copyTextToClipboard(runnerConfigurationIssues.join('\n'), 'Configuration issues copied.')}
+                        onClick={() => void copyTextToClipboard(runnerConfigurationIssues.join('\n'), '配置问题已复制。')}
                       >
                         <Copy size={16} />
-                        Copy issues
+                        复制问题
                       </button>
                     ) : null}
                   </div>
@@ -4286,31 +4503,31 @@ export default function App() {
                 <article className="automation-item">
                   <div className="automation-head">
                     <div>
-                      <strong>Automation runner reported an error</strong>
+                      <strong>自动化运行器出现错误</strong>
                       <div className="automation-meta">
-                        <span>{runnerStatus.isTicking ? 'Runner active' : 'Runner stopped'}</span>
-                        <span>{runnerStatus.lastTickAt ? `Last tick ${timeAgo(runnerStatus.lastTickAt)}` : 'No recent tick'}</span>
+                        <span>{runnerStatus.isTicking ? '运行器运行中' : '运行器已停止'}</span>
+                        <span>{runnerStatus.lastTickAt ? `最近轮询 ${timeAgo(runnerStatus.lastTickAt)}` : '暂无最近轮询'}</span>
                       </div>
                     </div>
-                    <span className="journey-state is-pending">Runner issue</span>
+                    <span className="journey-state is-pending">运行器异常</span>
                   </div>
                   <p>{runnerStatus.lastError}</p>
                   <div className="automation-actions">
                     <button type="button" className="primary-action compact" onClick={() => void handleRefreshDiagnostics()}>
                       {busy === 'refresh-diagnostics' ? <Loader2 className="spin" size={16} /> : <RefreshCw size={16} />}
-                      Refresh diagnostics
+                      刷新诊断
                     </button>
                     <button type="button" className="secondary-action compact" onClick={openSettingsView}>
                       <Settings2 size={16} />
-                      Open settings
+                      打开设置
                     </button>
                     <button
                       type="button"
                       className="secondary-action compact"
-                      onClick={() => void copyTextToClipboard(runnerStatus.lastError || '', 'Runner error copied.')}
+                      onClick={() => void copyTextToClipboard(runnerStatus.lastError || '', '运行器错误已复制。')}
                     >
                       <Copy size={16} />
-                      Copy error
+                      复制错误
                     </button>
                   </div>
                 </article>
@@ -4322,14 +4539,14 @@ export default function App() {
                     <div>
                       <strong>{subject.name}</strong>
                       <div className="automation-meta">
-                        <span>Project automation</span>
-                        <span>{state?.lastRunAt ? `Last run ${timeAgo(state.lastRunAt)}` : 'No successful run yet'}</span>
-                        <span>{state?.lastResult ? `Result: ${state.lastResult}` : 'No result recorded'}</span>
+                        <span>主题自动化</span>
+                        <span>{state?.lastRunAt ? `最近运行 ${timeAgo(state.lastRunAt)}` : '还没有成功运行过'}</span>
+                        <span>{state?.lastResult ? `结果：${describeRunResult(state.lastResult)}` : '暂无结果记录'}</span>
                       </div>
                     </div>
-                    <span className="journey-state is-pending">Subject issue</span>
+                    <span className="journey-state is-pending">主题异常</span>
                   </div>
-                  <p>{state?.lastError || 'Project automation reported an error without extra detail.'}</p>
+                  <p>{state?.lastError || '主题自动化报告了错误，但没有额外细节。'}</p>
                   <div className="automation-actions">
                     <button
                       type="button"
@@ -4337,20 +4554,20 @@ export default function App() {
                       onClick={() => openSubjectInLibrary(subject.id)}
                     >
                       <LibraryBig size={16} />
-                      Open subject
+                      打开主题
                     </button>
                     <button type="button" className="secondary-action compact" onClick={openSettingsView}>
                       <Settings2 size={16} />
-                      Open settings
+                      打开设置
                     </button>
                     {state?.lastError ? (
                       <button
                         type="button"
                         className="secondary-action compact"
-                        onClick={() => void copyTextToClipboard(state.lastError || '', 'Project automation error copied.')}
+                        onClick={() => void copyTextToClipboard(state.lastError || '', '主题自动化错误已复制。')}
                       >
                         <Copy size={16} />
-                        Copy error
+                        复制错误
                       </button>
                     ) : null}
                   </div>
@@ -4365,15 +4582,15 @@ export default function App() {
                       <div>
                         <strong>{task.name}</strong>
                         <div className="automation-meta">
-                          <span>Scheduled task</span>
+                          <span>定时任务</span>
                           <span>{scheduledModeLabel(task.mode)}</span>
-                          <span>{task.lastRunAt ? `Last run ${timeAgo(task.lastRunAt)}` : 'Not run yet'}</span>
-                          <span>{task.projectId ? subjectNameMap.get(task.projectId) || task.projectId : 'Unlinked subject'}</span>
+                          <span>{task.lastRunAt ? `最近运行 ${timeAgo(task.lastRunAt)}` : '尚未运行'}</span>
+                          <span>{task.projectId ? subjectNameMap.get(task.projectId) || task.projectId : '未关联主题'}</span>
                         </div>
                       </div>
-                      <span className="journey-state is-pending">Retry recommended</span>
+                      <span className="journey-state is-pending">建议重试</span>
                     </div>
-                    <p>{task.lastError || 'This scheduled task ended with an error state.'}</p>
+                    <p>{task.lastError || '这条定时任务以上次执行报错结束。'}</p>
                     <div className="automation-actions">
                       <button
                         type="button"
@@ -4381,7 +4598,7 @@ export default function App() {
                         onClick={() => void handleRunScheduledTask(task.id)}
                       >
                         {busy === `scheduled-run:${task.id}` ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                        Run now
+                        立即执行
                       </button>
                       <button
                         type="button"
@@ -4389,7 +4606,7 @@ export default function App() {
                         onClick={() => openScheduledTaskInSettings(task)}
                       >
                         <Settings2 size={16} />
-                        Edit task
+                        编辑任务
                       </button>
                       {output && canOpenOutputInStudio(output) ? (
                         <button
@@ -4398,7 +4615,7 @@ export default function App() {
                           onClick={() => void handleOpenAutomationOutputInStudio(output)}
                         >
                           {busy === `output-open:${output.id}` ? <Loader2 className="spin" size={16} /> : <FolderOpen size={16} />}
-                          Open manuscript
+                          打开稿件
                         </button>
                       ) : null}
                       {output && canReconnectOutputSession(output) ? (
@@ -4408,17 +4625,17 @@ export default function App() {
                           onClick={() => void handleResumeAutomationOutputSession(output)}
                         >
                           {busy === `output-resume:${output.id}` ? <Loader2 className="spin" size={16} /> : <Wand2 size={16} />}
-                          Resume session
+                          恢复会话
                         </button>
                       ) : null}
                       {task.lastError ? (
                         <button
                           type="button"
                           className="secondary-action compact"
-                          onClick={() => void copyTextToClipboard(task.lastError || '', 'Scheduled task error copied.')}
+                          onClick={() => void copyTextToClipboard(task.lastError || '', '定时任务错误已复制。')}
                         >
                           <Copy size={16} />
-                          Copy error
+                          复制错误
                         </button>
                       ) : null}
                     </div>
@@ -4434,15 +4651,15 @@ export default function App() {
                       <div>
                         <strong>{task.name}</strong>
                         <div className="automation-meta">
-                          <span>Long-cycle task</span>
+                          <span>长周期任务</span>
                           <span>{task.completedRounds} / {task.totalRounds}</span>
-                          <span>{task.lastRunAt ? `Last run ${timeAgo(task.lastRunAt)}` : 'Not run yet'}</span>
-                          <span>{task.projectId ? subjectNameMap.get(task.projectId) || task.projectId : 'Unlinked subject'}</span>
+                          <span>{task.lastRunAt ? `最近运行 ${timeAgo(task.lastRunAt)}` : '尚未运行'}</span>
+                          <span>{task.projectId ? subjectNameMap.get(task.projectId) || task.projectId : '未关联主题'}</span>
                         </div>
                       </div>
-                      <span className="journey-state is-pending">Retry recommended</span>
+                      <span className="journey-state is-pending">建议重试</span>
                     </div>
-                    <p>{task.lastError || 'This long-cycle task ended with an error state.'}</p>
+                    <p>{task.lastError || '这条长周期任务以上次执行报错结束。'}</p>
                     <div className="automation-actions">
                       <button
                         type="button"
@@ -4450,7 +4667,7 @@ export default function App() {
                         onClick={() => void handleRunLongCycleTask(task.id)}
                       >
                         {busy === `long-cycle-run:${task.id}` ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                        Advance one round
+                        推进一轮
                       </button>
                       <button
                         type="button"
@@ -4458,7 +4675,7 @@ export default function App() {
                         onClick={() => openLongCycleTaskInSettings(task)}
                       >
                         <Settings2 size={16} />
-                        Edit task
+                        编辑任务
                       </button>
                       {output && canOpenOutputInStudio(output) ? (
                         <button
@@ -4467,7 +4684,7 @@ export default function App() {
                           onClick={() => void handleOpenAutomationOutputInStudio(output)}
                         >
                           {busy === `output-open:${output.id}` ? <Loader2 className="spin" size={16} /> : <FolderOpen size={16} />}
-                          Open manuscript
+                          打开稿件
                         </button>
                       ) : null}
                       {output && canReconnectOutputSession(output) ? (
@@ -4477,17 +4694,17 @@ export default function App() {
                           onClick={() => void handleResumeAutomationOutputSession(output)}
                         >
                           {busy === `output-resume:${output.id}` ? <Loader2 className="spin" size={16} /> : <Wand2 size={16} />}
-                          Resume session
+                          恢复会话
                         </button>
                       ) : null}
                       {task.lastError ? (
                         <button
                           type="button"
                           className="secondary-action compact"
-                          onClick={() => void copyTextToClipboard(task.lastError || '', 'Long-cycle task error copied.')}
+                          onClick={() => void copyTextToClipboard(task.lastError || '', '长周期任务错误已复制。')}
                         >
                           <Copy size={16} />
-                          Copy error
+                          复制错误
                         </button>
                       ) : null}
                     </div>
@@ -4496,7 +4713,7 @@ export default function App() {
               })}
             </div>
           ) : (
-            <div className="import-report-note">No recovery actions are waiting. Automation diagnostics are currently in a stable state.</div>
+            <div className="import-report-note">当前没有待处理的恢复动作，自动化诊断处于稳定状态。</div>
           )}
 
           {automationWarnings.length ? (
@@ -4509,20 +4726,20 @@ export default function App() {
                       <strong>{item.title}</strong>
                       <span>{timeAgo(item.createdAt)}</span>
                     </div>
-                    <div className="activity-kind">{item.kind || 'warning'}</div>
-                    <p>{item.detail || 'No additional detail.'}</p>
+                    <div className="activity-kind">{describeActivityKind(item.kind || 'warning')}</div>
+                    <p>{item.detail || '暂无更多细节。'}</p>
                   </div>
                 </article>
               ))}
             </div>
           ) : (
-            <div className="import-report-note">No runner warnings or heartbeat issues are currently reported.</div>
+            <div className="import-report-note">当前没有新的运行器告警或心跳异常。</div>
           )}
 
           <div className="settings-actions">
             <button type="button" className="primary-action compact" onClick={() => void handleRefreshDiagnostics()}>
               {busy === 'refresh-diagnostics' ? <Loader2 className="spin" size={16} /> : <RefreshCw size={16} />}
-              Refresh diagnostics
+              刷新诊断
             </button>
             <button
               type="button"
@@ -4531,17 +4748,18 @@ export default function App() {
               disabled={!debugStatus.logDirectory}
             >
               <Copy size={16} />
-              Copy log directory
+              复制日志目录
             </button>
           </div>
         </section>
 
         <section className="atelier-card">
-          <div className="section-tag">Trace</div>
-          <h3>Automation trace</h3>
+          <div className="section-tag">追踪</div>
+          <h3>自动化轨迹</h3>
           {latestAutomationActivity ? (
             <div className="import-report-note">
-              {`Latest event: ${latestAutomationActivity.kind || 'activity'} ${timeAgo(latestAutomationActivity.createdAt)}`}            </div>
+              {`最近事件：${describeActivityKind(latestAutomationActivity.kind)}，发生于 ${timeAgo(latestAutomationActivity.createdAt)}`}
+            </div>
           ) : null}
 
           <div className="activity-list">
@@ -4556,35 +4774,35 @@ export default function App() {
                       <strong>{item.title}</strong>
                       <span>{timeAgo(item.createdAt)}</span>
                     </div>
-                    <div className="activity-kind">{item.kind || 'activity'}</div>
-                    <p>{item.detail || 'No additional detail.'}</p>
+                    <div className="activity-kind">{describeActivityKind(item.kind || 'activity')}</div>
+                    <p>{item.detail || '暂无更多细节。'}</p>
                   </div>
                 </article>
               ))
             ) : (
-              <div className="import-report-note">No automation activity has been recorded yet.</div>
+              <div className="import-report-note">暂时还没有记录到自动化活动。</div>
             )}
           </div>
 
           <div className="subject-form">
-            <span>Debug log preview</span>
+            <span>日志预览</span>
             <div className="log-preview">
-              {debugLines.length ? debugLines.join('\n') : 'No debug log entries yet.'}
+              {debugLines.length ? debugLines.join('\n') : '暂时还没有调试日志。'}
             </div>
           </div>
         </section>
       </section>
 
       <section className="atelier-card">
-        <div className="section-tag">Outputs</div>
-        <h3>Recent outputs</h3>
+        <div className="section-tag">输出</div>
+        <h3>最近输出</h3>
         <div className="import-report-note">
-          Recent automation manuscripts appear here so you can jump back into the library, continue writing, or open files directly.
+          最近自动化生成的稿件会汇总在这里，方便你快速回到资料库继续编辑，或者直接打开文件。
         </div>
-        <div className="import-report-note">Continue will overwrite the current manuscript, while rewrite will keep the source draft and create a new output branch.</div>
+        <div className="import-report-note">“续写”会覆盖当前稿件内容，“改写为新草稿”则会保留原稿，并生成一个新的分支版本。</div>
         <div className="archive-chip-row">
-          <span className="archive-chip-label">View strategy</span>
-          <div className="archive-chip-group" role="group" aria-label="Recent output strategy filters">
+          <span className="archive-chip-label">查看策略</span>
+          <div className="archive-chip-group" role="group" aria-label="最近输出策略筛选">
             {DRAFT_STRATEGY_FILTER_OPTIONS.map((item) => (
               <button
                 key={item.value}
@@ -4601,8 +4819,8 @@ export default function App() {
         </div>
         <div className="import-report-note">
           {recentAutomationOutputs.length === recentAutomationOutputMatches.length
-            ? `Showing ${recentAutomationOutputs.length} automation outputs.`
-            : `Showing the latest ${recentAutomationOutputs.length} / ${recentAutomationOutputMatches.length} matching automation outputs.`}
+            ? `当前展示 ${recentAutomationOutputs.length} 份自动化输出。`
+            : `当前展示最近 ${recentAutomationOutputs.length} / ${recentAutomationOutputMatches.length} 份匹配的自动化输出。`}
         </div>
 
         <div className="automation-stack">
@@ -4613,14 +4831,14 @@ export default function App() {
                   <div>
                     <strong>{output.taskName}</strong>
                     <div className="automation-meta">
-                      <span>{output.taskKind === 'scheduled' ? 'Scheduled' : 'Long-cycle'}</span>
-                      <span>{output.projectName || 'Unlinked subject'}</span>
-                      <span>{output.lastRunAt ? `Last run ${timeAgo(output.lastRunAt)}` : `Updated ${timeAgo(output.updatedAt)}`}</span>
+                      <span>{output.taskKind === 'scheduled' ? '定时任务' : '长周期任务'}</span>
+                      <span>{output.projectName || '未关联主题'}</span>
+                      <span>{output.lastRunAt ? `最近运行 ${timeAgo(output.lastRunAt)}` : `最近更新 ${timeAgo(output.updatedAt)}`}</span>
                       <span>{describeDraftStrategy(output.draftStrategy)}</span>
                     </div>
                   </div>
                   <span className={`journey-state ${output.lastResult === 'success' ? 'is-complete' : 'is-pending'}`}>
-                    {output.lastResult === 'error' ? 'Error' : output.lastResult === 'skipped' ? 'Skipped' : 'Success'}
+                    {output.lastResult === 'error' ? '失败' : output.lastResult === 'skipped' ? '已跳过' : '成功'}
                   </span>
                 </div>
 
@@ -4628,7 +4846,8 @@ export default function App() {
                 <div className="import-report-note">{describeDraftStrategyDetail(output)}</div>
                 {!canOpenOutputInStudio(output) ? (
                   <div className="import-report-note">
-                    This output is not linked to an existing subject yet, so it can only be opened externally for now.                  </div>
+                    这份输出暂时还没有关联到已有主题，因此目前只能从外部应用中打开。
+                  </div>
                 ) : null}
 
                 <div className="automation-actions">
@@ -4639,7 +4858,7 @@ export default function App() {
                       onClick={() => void handleOpenAutomationOutputInStudio(output)}
                     >
                       {busy === `output-open:${output.id}` ? <Loader2 className="spin" size={16} /> : <FolderOpen size={16} />}
-                      Open manuscript
+                      打开稿件
                     </button>
                   ) : null}
                   {canOpenOutputInStudio(output) ? (
@@ -4649,7 +4868,7 @@ export default function App() {
                       onClick={() => void handleGenerateOutputWithRedClaw(output, 'continue')}
                     >
                       {busy === `output-redclaw-continue:${output.id}` ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
-                      Continue in RedClaw
+                      在 RedClaw 中续写
                     </button>
                   ) : null}
                   {canOpenOutputInStudio(output) ? (
@@ -4659,7 +4878,7 @@ export default function App() {
                       onClick={() => void handleGenerateOutputWithRedClaw(output, 'rewrite')}
                     >
                       {busy === `output-redclaw-rewrite:${output.id}` ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                      Rewrite as new draft
+                      改写为新草稿
                     </button>
                   ) : null}
                   {canReconnectOutputSession(output) ? (
@@ -4669,7 +4888,7 @@ export default function App() {
                       onClick={() => void handleResumeAutomationOutputSession(output)}
                     >
                       {busy === `output-resume:${output.id}` ? <Loader2 className="spin" size={16} /> : <Wand2 size={16} />}
-                      Resume session
+                      恢复会话
                     </button>
                   ) : null}
                   <button
@@ -4682,79 +4901,80 @@ export default function App() {
                     ) : (
                       <ExternalLink size={16} />
                     )}
-                    Open externally
+                    外部打开
                   </button>
                   <button
                     type="button"
                     className="secondary-action compact"
-                    onClick={() => void copyTextToClipboard(output.manuscriptPath, 'Manuscript path copied.')}
+                    onClick={() => void copyTextToClipboard(output.manuscriptPath, '稿件路径已复制。')}
                   >
                     <Copy size={16} />
-                    Copy path
+                    复制路径
                   </button>
                 </div>
               </article>
             ))
           ) : (
-            <div className="import-report-note">No recent automation outputs yet.</div>
+            <div className="import-report-note">暂时还没有最近的自动化输出。</div>
           )}
         </div>
       </section>
 
       <section className="ops-grid">
         <section className="ops-card">
-          <div className="section-tag">Current desk</div>
-          <h3>Current desk snapshot</h3>
+          <div className="section-tag">当前工作台</div>
+          <h3>当前工作台概览</h3>
           <ul>
-            <li>Space: {spaceName}</li>
-            <li>Subjects: {subjects.length}</li>
-            <li>Inbox items: {captures.length}</li>
-            <li>RedClaw setup: {redClawReady ? 'Ready' : 'Needs setup'}</li>
+            <li>空间：{spaceName}</li>
+            <li>主题数：{subjects.length}</li>
+            <li>收件箱数量：{captures.length}</li>
+            <li>RedClaw 配置：{redClawReady ? '已就绪' : '仍需设置'}</li>
           </ul>
         </section>
 
         <section className="ops-card">
-          <div className="section-tag">Bridge note</div>
-          <h3>Bridge note</h3>
-          <p>{pluginStatus.message || 'Export JSON / JSONL from the browser side into the desktop inbox, or drag files here directly.'}</p>
+          <div className="section-tag">桥接说明</div>
+          <h3>桥接说明</h3>
+          <p>{pluginStatus.message || '可以把浏览器端导出的 JSON / JSONL 投递到桌面收件箱，也可以直接把文件拖到这里。'}</p>
           <div className="settings-actions">
             <button
               type="button"
               className="primary-action compact"
               onClick={() => startTransition(() => setView('capture'))}
             >
-              Open capture            </button>
+              打开采集页
+            </button>
           </div>
         </section>
 
         <section className="ops-card">
-          <div className="section-tag">Content pack</div>
-          <h3>XHSSpec pack inside RedClaw</h3>
+          <div className="section-tag">内容包</div>
+          <h3>RedClaw 内置 XHSSpec 内容包</h3>
           <ul>
-            <li>Embedded pack: {runnerStatus.contentPackName || 'embedded-xhsspec'}</li>
-            <li>Sections: {runnerStatus.contentPackSections || 0}</li>
-            <li>Direct generation: {runnerStatus.directGenerationEnabled ? 'Enabled' : 'Finish AI setup first'}</li>
-            <li>The pack bundles brand, audience, tone, offer, and taboo guidance for direct generation.</li>
-            <li>Templates include note, creation spec, quick brief, and quick draft contract assets.</li>
-            <li>Releases stay GitHub-first so validation, bundling, and installers are produced remotely.</li>
+            <li>内置包名称：{runnerStatus.contentPackName || 'embedded-xhsspec'}</li>
+            <li>内容区块数：{runnerStatus.contentPackSections || 0}</li>
+            <li>直接生成：{runnerStatus.directGenerationEnabled ? '已启用' : '请先完成 AI 设置'}</li>
+            <li>这个内容包内置了品牌、人群、语气、卖点和禁忌等直接生成所需约束。</li>
+            <li>模板资产包含笔记模板、创作规范、快速 Brief 和快速草稿契约。</li>
+            <li>发布仍坚持 GitHub 优先，校验、打包和安装包产出都在远端工作流完成。</li>
           </ul>
         </section>
       </section>
 
       <section className="split-grid">
         <section className="atelier-card">
-          <div className="section-tag">Automation</div>
-          <h3>Scheduled tasks</h3>
+          <div className="section-tag">自动化</div>
+          <h3>定时任务</h3>
           <div className="subject-form">
             {editingScheduledTaskId ? (
-              <div className="import-report-note">You are editing an existing scheduled task. Saving will overwrite its current configuration.</div>
+              <div className="import-report-note">你正在编辑一条已有的定时任务，保存后会覆盖当前配置。</div>
             ) : null}
             {editingScheduledTask || scheduledTaskForm.projectId || activeSubject || !subjects.length ? (
               <div className="task-editor-context">
                 <div className="task-editor-head">
                   <div>
-                    <span className="subject-workspace-label">Editor context</span>
-                    <strong>{editingScheduledTask ? editingScheduledTask.name : 'New scheduled task'}</strong>
+                    <span className="subject-workspace-label">编辑上下文</span>
+                    <strong>{editingScheduledTask ? editingScheduledTask.name : '新建定时任务'}</strong>
                   </div>
                   <span
                     className={`journey-state ${
@@ -4766,70 +4986,70 @@ export default function App() {
                             ? 'is-complete'
                             : 'is-pending'
                     }`}
-                  >
-                    {editingScheduledTask?.lastResult === 'error'
-                      ? 'Needs recovery'
+                    >
+                      {editingScheduledTask?.lastResult === 'error'
+                      ? '待恢复'
                       : editingScheduledTask
-                        ? 'Existing task'
+                        ? '现有任务'
                         : scheduledEditorSubject
-                          ? 'Linked subject ready'
-                          : 'Choose a subject'}
-                  </span>
+                          ? '已关联主题'
+                          : '请选择主题'}
+                    </span>
                 </div>
                 <div className="task-editor-meta-grid">
                   <div className="task-editor-meta">
-                    <span>Linked subject</span>
-                    <strong>{scheduledEditorSubject?.name || 'No linked subject'}</strong>
+                    <span>关联主题</span>
+                    <strong>{scheduledEditorSubject?.name || '未关联主题'}</strong>
                   </div>
                   <div className="task-editor-meta">
-                    <span>Mode</span>
+                    <span>执行模式</span>
                     <strong>{scheduledModeLabel(scheduledTaskForm.mode)}</strong>
                   </div>
                   <div className="task-editor-meta">
-                    <span>Schedule</span>
+                    <span>执行计划</span>
                     <strong>{scheduledTaskFormSummary}</strong>
                   </div>
                   <div className="task-editor-meta">
-                    <span>Last run</span>
-                    <strong>{editingScheduledTask?.lastRunAt ? timeAgo(editingScheduledTask.lastRunAt) : 'Not run yet'}</strong>
+                    <span>最近运行</span>
+                    <strong>{editingScheduledTask?.lastRunAt ? timeAgo(editingScheduledTask.lastRunAt) : '尚未运行'}</strong>
                   </div>
                   <div className="task-editor-meta">
-                    <span>Next run</span>
-                    <strong>{editingScheduledTask?.nextRunAt ? timeUntil(editingScheduledTask.nextRunAt) : 'Not scheduled yet'}</strong>
+                    <span>下次运行</span>
+                    <strong>{editingScheduledTask?.nextRunAt ? timeUntil(editingScheduledTask.nextRunAt) : '尚未安排'}</strong>
                   </div>
                   <div className="task-editor-meta">
-                    <span>Latest output</span>
-                    <strong>{editingScheduledOutput?.manuscriptPath || 'No output yet'}</strong>
+                    <span>最近输出</span>
+                    <strong>{editingScheduledOutput?.manuscriptPath || '暂无输出'}</strong>
                   </div>
                   <div className="task-editor-meta">
-                    <span>Retry policy</span>
+                    <span>重试策略</span>
                     <strong>
                       {scheduledTaskForm.maxRetries && Number(scheduledTaskForm.maxRetries) > 0
-                        ? `${scheduledTaskForm.maxRetries} retries / ${scheduledTaskForm.retryDelayMinutes || '30'} min`
-                        : 'No automatic retries'}
+                        ? `${scheduledTaskForm.maxRetries} 次重试 / 间隔 ${scheduledTaskForm.retryDelayMinutes || '30'} 分钟`
+                        : '不自动重试'}
                     </strong>
                   </div>
                 </div>
                 {editingScheduledTask?.lastError ? (
                   <div className="import-report-note is-warning">{editingScheduledTask.lastError}</div>
                 ) : !scheduledEditorSubject && activeSubject ? (
-                  <div className="import-report-note">Use the current subject to keep this scheduled task tied to the manuscript you are already editing.</div>
+                  <div className="import-report-note">可以直接使用当前主题，这样定时任务会继续挂在你正在编辑的稿件工作区上。</div>
                 ) : !scheduledEditorSubject && !subjects.length ? (
-                  <div className="import-report-note">Create a subject in Library first if this automation should stay connected to a manuscript workspace.</div>
+                  <div className="import-report-note">如果希望自动化始终关联稿件工作区，请先去资料库创建主题。</div>
                 ) : !scheduledEditorSubject ? (
-                  <div className="import-report-note">You can save this task without a subject, but linking one keeps the output inside the library workflow.</div>
+                  <div className="import-report-note">这条任务可以不关联主题直接保存，但关联主题后输出会自动沉淀到资料库工作流里。</div>
                 ) : null}
                 <div className="automation-actions">
                   {activeSubject && scheduledTaskForm.projectId !== activeSubject.id ? (
                     <button type="button" className="secondary-action compact" onClick={assignActiveSubjectToScheduledTask}>
                       <LibraryBig size={16} />
-                      Use current subject
+                      使用当前主题
                     </button>
                   ) : null}
                   {!subjects.length ? (
                     <button type="button" className="secondary-action compact" onClick={startNewSubjectInLibrary}>
                       <Plus size={16} />
-                      Create subject
+                      创建主题
                     </button>
                   ) : null}
                   {scheduledEditorSubject ? (
@@ -4839,7 +5059,7 @@ export default function App() {
                       onClick={() => openSubjectInLibrary(scheduledEditorSubject.id)}
                     >
                       <FolderOpen size={16} />
-                      Open subject
+                      打开主题
                     </button>
                   ) : null}
                   {editingScheduledTask ? (
@@ -4849,7 +5069,7 @@ export default function App() {
                       onClick={() => void handleRunScheduledTask(editingScheduledTask.id)}
                     >
                       {busy === `scheduled-run:${editingScheduledTask.id}` ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                      Run now
+                      立即执行
                     </button>
                   ) : null}
                   {editingScheduledOutput && canOpenOutputInStudio(editingScheduledOutput) ? (
@@ -4859,7 +5079,7 @@ export default function App() {
                       onClick={() => void handleOpenAutomationOutputInStudio(editingScheduledOutput)}
                     >
                       {busy === `output-open:${editingScheduledOutput.id}` ? <Loader2 className="spin" size={16} /> : <FolderOpen size={16} />}
-                      Open latest output
+                      打开最近输出
                     </button>
                   ) : null}
                   {editingScheduledOutput && canReconnectOutputSession(editingScheduledOutput) ? (
@@ -4869,17 +5089,17 @@ export default function App() {
                       onClick={() => void handleResumeAutomationOutputSession(editingScheduledOutput)}
                     >
                       {busy === `output-resume:${editingScheduledOutput.id}` ? <Loader2 className="spin" size={16} /> : <Wand2 size={16} />}
-                      Resume session
+                      恢复会话
                     </button>
                   ) : null}
                   {editingScheduledTask?.lastError ? (
                     <button
                       type="button"
                       className="secondary-action compact"
-                      onClick={() => void copyTextToClipboard(editingScheduledTask.lastError || '', 'Scheduled task error copied.')}
+                      onClick={() => void copyTextToClipboard(editingScheduledTask.lastError || '', '定时任务错误已复制。')}
                     >
                       <Copy size={16} />
-                      Copy error
+                      复制错误
                     </button>
                   ) : null}
                 </div>
@@ -4887,19 +5107,19 @@ export default function App() {
             ) : null}
             <div className="subject-form-grid">
               <label>
-                <span>Task name</span>
+                <span>任务名称</span>
                 <input
                   value={scheduledTaskForm.name}
                   onChange={(event) => setScheduledTaskForm((current) => ({ ...current, name: event.target.value }))}
                 />
               </label>
               <label>
-                <span>Target subject</span>
+                <span>目标主题</span>
                 <select
                   value={scheduledTaskForm.projectId}
                   onChange={(event) => setScheduledTaskForm((current) => ({ ...current, projectId: event.target.value }))}
                 >
-                  <option value="">No linked subject</option>
+                  <option value="">不关联主题</option>
                   {subjects.map((item) => (
                     <option key={item.id} value={item.id}>
                       {item.name}
@@ -4911,7 +5131,7 @@ export default function App() {
 
             <div className="subject-form-grid">
               <label>
-                <span>Mode</span>
+                <span>执行模式</span>
                 <select
                   value={scheduledTaskForm.mode}
                   onChange={(event) =>
@@ -4921,15 +5141,15 @@ export default function App() {
                     }))
                   }
                 >
-                  <option value="interval">Interval</option>
-                  <option value="daily">Daily</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="once">Once</option>
+                  <option value="interval">间隔执行</option>
+                  <option value="daily">每日</option>
+                  <option value="weekly">每周</option>
+                  <option value="once">一次性</option>
                 </select>
               </label>
               {scheduledTaskForm.mode === 'interval' ? (
                 <label>
-                  <span>Interval minutes</span>
+                  <span>间隔分钟数</span>
                   <input
                     type="number"
                     min="1"
@@ -4942,7 +5162,7 @@ export default function App() {
               ) : null}
               {scheduledTaskForm.mode === 'daily' || scheduledTaskForm.mode === 'weekly' ? (
                 <label>
-                  <span>Run time</span>
+                  <span>执行时间</span>
                   <input
                     type="time"
                     value={scheduledTaskForm.time}
@@ -4952,7 +5172,7 @@ export default function App() {
               ) : null}
               {scheduledTaskForm.mode === 'once' ? (
                 <label>
-                  <span>Run at</span>
+                  <span>执行日期时间</span>
                   <input
                     type="datetime-local"
                     value={scheduledTaskForm.runAt}
@@ -4964,7 +5184,7 @@ export default function App() {
 
             {scheduledTaskForm.mode === 'weekly' ? (
               <div className="subject-form">
-                <span>Weekdays</span>
+                <span>执行星期</span>
                 <div className="weekday-selector">
                   {WEEKDAY_OPTIONS.map((item) => {
                     const active = scheduledTaskForm.weekdays.includes(item.value);
@@ -4985,7 +5205,7 @@ export default function App() {
 
             <div className="subject-form-grid">
               <label>
-                <span>Max retries</span>
+                <span>最大重试次数</span>
                 <input
                   type="number"
                   min="0"
@@ -4994,7 +5214,7 @@ export default function App() {
                 />
               </label>
               <label>
-                <span>Retry delay minutes</span>
+                <span>重试间隔（分钟）</span>
                 <input
                   type="number"
                   min="1"
@@ -5007,7 +5227,7 @@ export default function App() {
             </div>
 
             <label>
-              <span>Task prompt</span>
+              <span>任务提示词</span>
               <textarea
                 value={scheduledTaskForm.prompt}
                 onChange={(event) => setScheduledTaskForm((current) => ({ ...current, prompt: event.target.value }))}
@@ -5015,17 +5235,17 @@ export default function App() {
             </label>
             <div className="import-report-note">
               {scheduledTaskForm.mode === 'interval'
-                ? 'Interval mode repeats after the configured number of minutes, which is useful for steady drafting and review loops.'
+                ? '间隔执行会按设定分钟数反复运行，适合持续写作、补稿和复查。'
                 : scheduledTaskForm.mode === 'daily'
-                  ? 'Daily mode runs at a fixed time, which fits morning planning, evening review, or recurring columns.'
+                  ? '每日模式会在固定时间执行，适合晨间规划、晚间复盘或日更栏目。'
                   : scheduledTaskForm.mode === 'weekly'
-                    ? 'Weekly mode runs on selected weekdays, which fits series content and weekly publishing plans.'
-                    : 'One-time mode runs only once at the specified time, which fits launch prep and deadline-driven work.'}
+                    ? '每周模式会在指定星期执行，适合系列内容与周更计划。'
+                    : '一次性模式只会在指定时刻运行一次，适合发版前准备和截止期任务。'}
             </div>
             <div className={`import-report-note${canSubmitScheduledTask ? '' : ' is-warning'}`}>
               {canSubmitScheduledTask
-                ? `Ready to save. ${scheduledTaskFormSummary}. ${scheduledTaskSubjectHint || 'The current task configuration is complete.'}`
-                : `Complete these items before saving: ${scheduledTaskFormIssues.join(' ')}`}
+                ? `可以保存。${scheduledTaskFormSummary}。${scheduledTaskSubjectHint || '当前任务配置已经完整。'}`
+                : `保存前请先补全这些内容：${scheduledTaskFormIssues.join(' ')}`}
             </div>
 
             <div className="settings-actions">
@@ -5036,11 +5256,11 @@ export default function App() {
                 onClick={() => void handleSubmitScheduledTask()}
               >
                 {busy === scheduledSubmitBusyKey ? <Loader2 className="spin" size={16} /> : <Plus size={16} />}
-                {editingScheduledTaskId ? 'Save scheduled task' : 'New scheduled task'}
+                {editingScheduledTaskId ? '保存定时任务' : '新建定时任务'}
               </button>
               {editingScheduledTaskId ? (
                 <button type="button" className="secondary-action compact" onClick={resetScheduledTaskEditor}>
-                  Cancel edit
+                  取消编辑
                 </button>
               ) : null}
             </div>
@@ -5059,30 +5279,30 @@ export default function App() {
                         <div className="automation-meta">
                           <span>{scheduledModeLabel(task.mode)}</span>
                           <span>{scheduledTaskSummary(task)}</span>
-                          <span>{linkedSubject?.name || task.projectId || 'Unlinked subject'}</span>
+                          <span>{linkedSubject?.name || task.projectId || '未关联主题'}</span>
                           <span>
                             {task.maxRetries
-                              ? `Retry ${task.retryCount || 0} / ${task.maxRetries}, delay ${task.retryDelayMinutes || 30} min`
-                              : 'No automatic retries'}
+                              ? `重试 ${task.retryCount || 0} / ${task.maxRetries}，间隔 ${task.retryDelayMinutes || 30} 分钟`
+                              : '不自动重试'}
                           </span>
-                          <span>{task.lastRunAt ? `Last run ${timeAgo(task.lastRunAt)}` : 'Not run yet'}</span>
-                          <span>{task.nextRunAt ? `Next run ${timeUntil(task.nextRunAt)}` : 'No next run scheduled'}</span>
+                          <span>{task.lastRunAt ? `最近运行 ${timeAgo(task.lastRunAt)}` : '尚未运行'}</span>
+                          <span>{task.nextRunAt ? `下次运行 ${timeUntil(task.nextRunAt)}` : '尚未安排下次运行'}</span>
                         </div>
                       </div>
                       <span className={`journey-state ${task.enabled ? 'is-complete' : 'is-pending'}`}>
-                        {task.enabled ? 'Enabled' : 'Disabled'}
+                        {task.enabled ? '已启用' : '已停用'}
                       </span>
                     </div>
                     <p>{task.prompt}</p>
                     {task.lastError ? <div className="import-report-note is-warning">{task.lastError}</div> : null}
                     {task.lastSavedManuscriptPath ? (
-                      <div className="import-report-note">Latest output: {task.lastSavedManuscriptPath}</div>
+                      <div className="import-report-note">最近输出：{task.lastSavedManuscriptPath}</div>
                     ) : null}
                     {output ? <div className="import-report-note">{describeDraftStrategy(output.draftStrategy)} - {describeDraftStrategyDetail(output)}</div> : null}
                     <div className="automation-actions">
                       <button type="button" className="primary-action compact" onClick={() => void handleRunScheduledTask(task.id)}>
                         {busy === `scheduled-run:${task.id}` ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                        Run now
+                        立即执行
                       </button>
                       {linkedSubject ? (
                         <button
@@ -5091,7 +5311,7 @@ export default function App() {
                           onClick={() => openSubjectInLibrary(linkedSubject.id)}
                         >
                           <LibraryBig size={16} />
-                          Open subject
+                          打开主题
                         </button>
                       ) : null}
                       {output && canOpenOutputInStudio(output) ? (
@@ -5101,7 +5321,7 @@ export default function App() {
                           onClick={() => void handleOpenAutomationOutputInStudio(output)}
                         >
                           {busy === `output-open:${output.id}` ? <Loader2 className="spin" size={16} /> : <FolderOpen size={16} />}
-                          Open manuscript
+                          打开稿件
                         </button>
                       ) : null}
                       {output && canOpenOutputInStudio(output) ? (
@@ -5111,7 +5331,7 @@ export default function App() {
                           onClick={() => void handleGenerateOutputWithRedClaw(output, 'continue')}
                         >
                           {busy === `output-redclaw-continue:${output.id}` ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
-                          Continue in RedClaw
+                          在 RedClaw 中续写
                         </button>
                       ) : null}
                       {output && canOpenOutputInStudio(output) ? (
@@ -5121,7 +5341,7 @@ export default function App() {
                           onClick={() => void handleGenerateOutputWithRedClaw(output, 'rewrite')}
                         >
                           {busy === `output-redclaw-rewrite:${output.id}` ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                          Rewrite as new draft
+                          改写为新草稿
                         </button>
                       ) : null}
                       {output && canReconnectOutputSession(output) ? (
@@ -5131,7 +5351,7 @@ export default function App() {
                           onClick={() => void handleResumeAutomationOutputSession(output)}
                         >
                           {busy === `output-resume:${output.id}` ? <Loader2 className="spin" size={16} /> : <Wand2 size={16} />}
-                          Resume session
+                          恢复会话
                         </button>
                       ) : null}
                       {output ? (
@@ -5145,54 +5365,54 @@ export default function App() {
                           ) : (
                             <ExternalLink size={16} />
                           )}
-                          Open in system app
+                          在系统中打开
                         </button>
                       ) : null}
                       {task.lastSavedManuscriptPath ? (
                         <button
                           type="button"
                           className="secondary-action compact"
-                          onClick={() => void copyTextToClipboard(task.lastSavedManuscriptPath || '', 'Manuscript path copied.')}
+                          onClick={() => void copyTextToClipboard(task.lastSavedManuscriptPath || '', '稿件路径已复制。')}
                         >
                           <Copy size={16} />
-                          Copy manuscript path
+                          复制稿件路径
                         </button>
                       ) : null}
                       <button type="button" className="secondary-action compact" onClick={() => startEditingScheduledTask(task)}>
                         <Settings2 size={16} />
-                        {editingScheduledTaskId === task.id ? 'Editing' : 'Edit'}
+                        {editingScheduledTaskId === task.id ? '编辑中' : '编辑'}
                       </button>
                       <button type="button" className="secondary-action compact" onClick={() => void handleToggleScheduledTask(task)}>
                         {busy === `scheduled-toggle:${task.id}` ? <Loader2 className="spin" size={16} /> : <RefreshCw size={16} />}
-                        {task.enabled ? 'Disable' : 'Enable'}
+                        {task.enabled ? '停用' : '启用'}
                       </button>
                       <button type="button" className="secondary-action compact" onClick={() => void handleRemoveScheduledTask(task.id)}>
                         {busy === `scheduled-remove:${task.id}` ? <Loader2 className="spin" size={16} /> : <CircleDashed size={16} />}
-                        Remove
+                        删除
                       </button>
                     </div>
                   </article>
                 );
               })
             ) : (
-              <div className="import-report-note">No scheduled tasks yet.</div>
+              <div className="import-report-note">暂时还没有定时任务。</div>
             )}
           </div>
         </section>
 
         <section className="atelier-card">
-          <div className="section-tag">Automation</div>
-          <h3>Long-cycle tasks</h3>
+          <div className="section-tag">自动化</div>
+          <h3>长周期任务</h3>
           <div className="subject-form">
             {editingLongCycleTaskId ? (
-              <div className="import-report-note">You are editing an existing long-cycle task. Saving will overwrite its current configuration.</div>
+              <div className="import-report-note">你正在编辑一条已有的长周期任务，保存后会覆盖当前配置。</div>
             ) : null}
             {editingLongCycleTask || longCycleForm.projectId || activeSubject || !subjects.length ? (
               <div className="task-editor-context">
                 <div className="task-editor-head">
                   <div>
-                    <span className="subject-workspace-label">Editor context</span>
-                    <strong>{editingLongCycleTask ? editingLongCycleTask.name : 'New long-cycle task'}</strong>
+                    <span className="subject-workspace-label">编辑上下文</span>
+                    <strong>{editingLongCycleTask ? editingLongCycleTask.name : '新建长周期任务'}</strong>
                   </div>
                   <span
                     className={`journey-state ${
@@ -5204,68 +5424,68 @@ export default function App() {
                             ? 'is-complete'
                             : 'is-pending'
                     }`}
-                  >
-                    {editingLongCycleTask?.lastResult === 'error'
-                      ? 'Needs recovery'
+                    >
+                      {editingLongCycleTask?.lastResult === 'error'
+                      ? '待恢复'
                       : editingLongCycleTask
-                        ? 'Existing task'
+                        ? '现有任务'
                         : longCycleEditorSubject
-                          ? 'Linked subject ready'
-                          : 'Choose a subject'}
-                  </span>
+                          ? '已关联主题'
+                          : '请选择主题'}
+                    </span>
                 </div>
                 <div className="task-editor-meta-grid">
                   <div className="task-editor-meta">
-                    <span>Linked subject</span>
-                    <strong>{longCycleEditorSubject?.name || 'No linked subject'}</strong>
+                    <span>关联主题</span>
+                    <strong>{longCycleEditorSubject?.name || '未关联主题'}</strong>
                   </div>
                   <div className="task-editor-meta">
-                    <span>Status</span>
-                    <strong>{editingLongCycleTask?.status || 'Draft'}</strong>
+                    <span>状态</span>
+                    <strong>{describeLongCycleStatus(editingLongCycleTask?.status)}</strong>
                   </div>
                   <div className="task-editor-meta">
-                    <span>Loop plan</span>
+                    <span>循环计划</span>
                     <strong>{longCycleTaskFormSummary}</strong>
                   </div>
                   <div className="task-editor-meta">
-                    <span>Progress</span>
+                    <span>进度</span>
                     <strong>
-                      {editingLongCycleTask ? `${editingLongCycleTask.completedRounds} / ${editingLongCycleTask.totalRounds}` : `${longCycleForm.totalRounds || '7'} rounds planned`}
+                      {editingLongCycleTask ? `${editingLongCycleTask.completedRounds} / ${editingLongCycleTask.totalRounds}` : `计划 ${longCycleForm.totalRounds || '7'} 轮`}
                     </strong>
                   </div>
                   <div className="task-editor-meta">
-                    <span>Last run</span>
-                    <strong>{editingLongCycleTask?.lastRunAt ? timeAgo(editingLongCycleTask.lastRunAt) : 'Not run yet'}</strong>
+                    <span>最近运行</span>
+                    <strong>{editingLongCycleTask?.lastRunAt ? timeAgo(editingLongCycleTask.lastRunAt) : '尚未运行'}</strong>
                   </div>
                   <div className="task-editor-meta">
-                    <span>Next run</span>
-                    <strong>{editingLongCycleTask?.nextRunAt ? timeUntil(editingLongCycleTask.nextRunAt) : 'Not scheduled yet'}</strong>
+                    <span>下次运行</span>
+                    <strong>{editingLongCycleTask?.nextRunAt ? timeUntil(editingLongCycleTask.nextRunAt) : '尚未安排'}</strong>
                   </div>
                   <div className="task-editor-meta">
-                    <span>Latest output</span>
-                    <strong>{editingLongCycleOutput?.manuscriptPath || 'No output yet'}</strong>
+                    <span>最近输出</span>
+                    <strong>{editingLongCycleOutput?.manuscriptPath || '暂无输出'}</strong>
                   </div>
                 </div>
                 {editingLongCycleTask?.lastError ? (
                   <div className="import-report-note is-warning">{editingLongCycleTask.lastError}</div>
                 ) : !longCycleEditorSubject && activeSubject ? (
-                  <div className="import-report-note">Use the current subject to keep this long-cycle loop attached to the manuscript you are actively building.</div>
+                  <div className="import-report-note">可以直接使用当前主题，这样长周期任务会持续关联你正在构建的稿件工作区。</div>
                 ) : !longCycleEditorSubject && !subjects.length ? (
-                  <div className="import-report-note">Create a subject in Library first if this loop should stay attached to the manuscript workspace.</div>
+                  <div className="import-report-note">如果希望这条循环任务始终关联稿件工作区，请先去资料库创建主题。</div>
                 ) : !longCycleEditorSubject ? (
-                  <div className="import-report-note">You can save this loop without a subject, but linking one keeps each round inside the library workflow.</div>
+                  <div className="import-report-note">这条循环任务可以不关联主题直接保存，但关联主题后，每一轮输出都会自动沉淀到资料库里。</div>
                 ) : null}
                 <div className="automation-actions">
                   {activeSubject && longCycleForm.projectId !== activeSubject.id ? (
                     <button type="button" className="secondary-action compact" onClick={assignActiveSubjectToLongCycleTask}>
                       <LibraryBig size={16} />
-                      Use current subject
+                      使用当前主题
                     </button>
                   ) : null}
                   {!subjects.length ? (
                     <button type="button" className="secondary-action compact" onClick={startNewSubjectInLibrary}>
                       <Plus size={16} />
-                      Create subject
+                      创建主题
                     </button>
                   ) : null}
                   {longCycleEditorSubject ? (
@@ -5275,7 +5495,7 @@ export default function App() {
                       onClick={() => openSubjectInLibrary(longCycleEditorSubject.id)}
                     >
                       <FolderOpen size={16} />
-                      Open subject
+                      打开主题
                     </button>
                   ) : null}
                   {editingLongCycleTask ? (
@@ -5285,7 +5505,7 @@ export default function App() {
                       onClick={() => void handleRunLongCycleTask(editingLongCycleTask.id)}
                     >
                       {busy === `long-cycle-run:${editingLongCycleTask.id}` ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                      Advance one round
+                      推进一轮
                     </button>
                   ) : null}
                   {editingLongCycleOutput && canOpenOutputInStudio(editingLongCycleOutput) ? (
@@ -5295,7 +5515,7 @@ export default function App() {
                       onClick={() => void handleOpenAutomationOutputInStudio(editingLongCycleOutput)}
                     >
                       {busy === `output-open:${editingLongCycleOutput.id}` ? <Loader2 className="spin" size={16} /> : <FolderOpen size={16} />}
-                      Open latest output
+                      打开最近输出
                     </button>
                   ) : null}
                   {editingLongCycleOutput && canReconnectOutputSession(editingLongCycleOutput) ? (
@@ -5305,17 +5525,17 @@ export default function App() {
                       onClick={() => void handleResumeAutomationOutputSession(editingLongCycleOutput)}
                     >
                       {busy === `output-resume:${editingLongCycleOutput.id}` ? <Loader2 className="spin" size={16} /> : <Wand2 size={16} />}
-                      Resume session
+                      恢复会话
                     </button>
                   ) : null}
                   {editingLongCycleTask?.lastError ? (
                     <button
                       type="button"
                       className="secondary-action compact"
-                      onClick={() => void copyTextToClipboard(editingLongCycleTask.lastError || '', 'Long-cycle task error copied.')}
+                      onClick={() => void copyTextToClipboard(editingLongCycleTask.lastError || '', '长周期任务错误已复制。')}
                     >
                       <Copy size={16} />
-                      Copy error
+                      复制错误
                     </button>
                   ) : null}
                 </div>
@@ -5323,19 +5543,19 @@ export default function App() {
             ) : null}
             <div className="subject-form-grid">
               <label>
-                <span>Task name</span>
+                <span>任务名称</span>
                 <input
                   value={longCycleForm.name}
                   onChange={(event) => setLongCycleForm((current) => ({ ...current, name: event.target.value }))}
                 />
               </label>
               <label>
-                <span>Target subject</span>
+                <span>目标主题</span>
                 <select
                   value={longCycleForm.projectId}
                   onChange={(event) => setLongCycleForm((current) => ({ ...current, projectId: event.target.value }))}
                 >
-                  <option value="">No linked subject</option>
+                  <option value="">不关联主题</option>
                   {subjects.map((item) => (
                     <option key={item.id} value={item.id}>
                       {item.name}
@@ -5347,7 +5567,7 @@ export default function App() {
 
             <div className="subject-form-grid">
               <label>
-                <span>Interval minutes</span>
+                <span>间隔分钟数</span>
                 <input
                   type="number"
                   min="1"
@@ -5356,7 +5576,7 @@ export default function App() {
                 />
               </label>
               <label>
-                <span>Total rounds</span>
+                <span>总轮数</span>
                 <input
                   type="number"
                   min="1"
@@ -5367,14 +5587,14 @@ export default function App() {
             </div>
 
             <label>
-              <span>Objective</span>
+              <span>目标</span>
               <textarea
                 value={longCycleForm.objective}
                 onChange={(event) => setLongCycleForm((current) => ({ ...current, objective: event.target.value }))}
               />
             </label>
             <label>
-              <span>Step prompt</span>
+              <span>单轮提示词</span>
               <textarea
                 value={longCycleForm.stepPrompt}
                 onChange={(event) => setLongCycleForm((current) => ({ ...current, stepPrompt: event.target.value }))}
@@ -5383,7 +5603,7 @@ export default function App() {
 
             <div className="subject-form-grid">
               <label>
-                <span>Max retries</span>
+                <span>最大重试次数</span>
                 <input
                   type="number"
                   min="0"
@@ -5392,7 +5612,7 @@ export default function App() {
                 />
               </label>
               <label>
-                <span>Retry delay minutes</span>
+                <span>重试间隔（分钟）</span>
                 <input
                   type="number"
                   min="1"
@@ -5406,8 +5626,8 @@ export default function App() {
 
             <div className={`import-report-note${canSubmitLongCycleTask ? '' : ' is-warning'}`}>
               {canSubmitLongCycleTask
-                ? `Ready to save. ${longCycleTaskFormSummary}. ${longCycleTaskSubjectHint || 'The current loop configuration is complete.'}`
-                : `Complete these items before saving: ${longCycleTaskFormIssues.join(' ')}`}
+                ? `可以保存。${longCycleTaskFormSummary}。${longCycleTaskSubjectHint || '当前循环任务配置已经完整。'}`
+                : `保存前请先补全这些内容：${longCycleTaskFormIssues.join(' ')}`}
             </div>
 
             <div className="settings-actions">
@@ -5418,11 +5638,11 @@ export default function App() {
                 onClick={() => void handleSubmitLongCycleTask()}
               >
                 {busy === longCycleSubmitBusyKey ? <Loader2 className="spin" size={16} /> : <Plus size={16} />}
-                {editingLongCycleTaskId ? 'Save long-cycle task' : 'New long-cycle task'}
+                {editingLongCycleTaskId ? '保存长周期任务' : '新建长周期任务'}
               </button>
               {editingLongCycleTaskId ? (
                 <button type="button" className="secondary-action compact" onClick={resetLongCycleEditor}>
-                  Cancel edit
+                  取消编辑
                 </button>
               ) : null}
             </div>
@@ -5440,31 +5660,31 @@ export default function App() {
                         <strong>{task.name}</strong>
                         <div className="automation-meta">
                           <span>{task.completedRounds} / {task.totalRounds}</span>
-                          <span>{task.status}</span>
-                          <span>{linkedSubject?.name || task.projectId || 'Unlinked subject'}</span>
+                          <span>{describeLongCycleStatus(task.status)}</span>
+                          <span>{linkedSubject?.name || task.projectId || '未关联主题'}</span>
                           <span>
                             {task.maxRetries
-                              ? `Retry ${task.retryCount || 0} / ${task.maxRetries}, delay ${task.retryDelayMinutes || 30} min`
-                              : 'No automatic retries'}
+                              ? `重试 ${task.retryCount || 0} / ${task.maxRetries}，间隔 ${task.retryDelayMinutes || 30} 分钟`
+                              : '不自动重试'}
                           </span>
-                          <span>{task.lastRunAt ? `Last run ${timeAgo(task.lastRunAt)}` : 'Not run yet'}</span>
-                          <span>{task.nextRunAt ? `Next run ${timeUntil(task.nextRunAt)}` : 'No next run scheduled'}</span>
+                          <span>{task.lastRunAt ? `最近运行 ${timeAgo(task.lastRunAt)}` : '尚未运行'}</span>
+                          <span>{task.nextRunAt ? `下次运行 ${timeUntil(task.nextRunAt)}` : '尚未安排下次运行'}</span>
                         </div>
                       </div>
                       <span className={`journey-state ${task.enabled ? 'is-complete' : 'is-pending'}`}>
-                        {task.enabled ? 'Enabled' : 'Disabled'}
+                        {task.enabled ? '已启用' : '已停用'}
                       </span>
                     </div>
                     <p>{task.objective}</p>
                     {task.lastError ? <div className="import-report-note is-warning">{task.lastError}</div> : null}
                     {task.lastSavedManuscriptPath ? (
-                      <div className="import-report-note">Latest output: {task.lastSavedManuscriptPath}</div>
+                      <div className="import-report-note">最近输出：{task.lastSavedManuscriptPath}</div>
                     ) : null}
                     {output ? <div className="import-report-note">{describeDraftStrategy(output.draftStrategy)} - {describeDraftStrategyDetail(output)}</div> : null}
                     <div className="automation-actions">
                       <button type="button" className="primary-action compact" onClick={() => void handleRunLongCycleTask(task.id)}>
                         {busy === `long-cycle-run:${task.id}` ? <Loader2 className="spin" size={16} /> : <Send size={16} />}
-                        Advance one round
+                        推进一轮
                       </button>
                       {linkedSubject ? (
                         <button
@@ -5473,7 +5693,7 @@ export default function App() {
                           onClick={() => openSubjectInLibrary(linkedSubject.id)}
                         >
                           <LibraryBig size={16} />
-                          Open subject
+                          打开主题
                         </button>
                       ) : null}
                       {output && canOpenOutputInStudio(output) ? (
@@ -5483,7 +5703,7 @@ export default function App() {
                           onClick={() => void handleOpenAutomationOutputInStudio(output)}
                         >
                           {busy === `output-open:${output.id}` ? <Loader2 className="spin" size={16} /> : <FolderOpen size={16} />}
-                          Open manuscript
+                          打开稿件
                         </button>
                       ) : null}
                       {output && canOpenOutputInStudio(output) ? (
@@ -5493,7 +5713,7 @@ export default function App() {
                           onClick={() => void handleGenerateOutputWithRedClaw(output, 'continue')}
                         >
                           {busy === `output-redclaw-continue:${output.id}` ? <Loader2 className="spin" size={16} /> : <Sparkles size={16} />}
-                          Continue in RedClaw
+                          在 RedClaw 中续写
                         </button>
                       ) : null}
                       {output && canOpenOutputInStudio(output) ? (
@@ -5503,7 +5723,7 @@ export default function App() {
                           onClick={() => void handleGenerateOutputWithRedClaw(output, 'rewrite')}
                         >
                           {busy === `output-redclaw-rewrite:${output.id}` ? <Loader2 className="spin" size={16} /> : <FileText size={16} />}
-                          Rewrite as new draft
+                          改写为新草稿
                         </button>
                       ) : null}
                       {output && canReconnectOutputSession(output) ? (
@@ -5513,7 +5733,7 @@ export default function App() {
                           onClick={() => void handleResumeAutomationOutputSession(output)}
                         >
                           {busy === `output-resume:${output.id}` ? <Loader2 className="spin" size={16} /> : <Wand2 size={16} />}
-                          Resume session
+                          恢复会话
                         </button>
                       ) : null}
                       {output ? (
@@ -5527,37 +5747,37 @@ export default function App() {
                           ) : (
                             <ExternalLink size={16} />
                           )}
-                          Open in system app
+                          在系统中打开
                         </button>
                       ) : null}
                       {task.lastSavedManuscriptPath ? (
                         <button
                           type="button"
                           className="secondary-action compact"
-                          onClick={() => void copyTextToClipboard(task.lastSavedManuscriptPath || '', 'Manuscript path copied.')}
+                          onClick={() => void copyTextToClipboard(task.lastSavedManuscriptPath || '', '稿件路径已复制。')}
                         >
                           <Copy size={16} />
-                          Copy manuscript path
+                          复制稿件路径
                         </button>
                       ) : null}
                       <button type="button" className="secondary-action compact" onClick={() => startEditingLongCycleTask(task)}>
                         <Settings2 size={16} />
-                        {editingLongCycleTaskId === task.id ? 'Editing' : 'Edit'}
+                        {editingLongCycleTaskId === task.id ? '编辑中' : '编辑'}
                       </button>
                       <button type="button" className="secondary-action compact" onClick={() => void handleToggleLongCycleTask(task)}>
                         {busy === `long-cycle-toggle:${task.id}` ? <Loader2 className="spin" size={16} /> : <RefreshCw size={16} />}
-                        {task.enabled ? 'Disable' : 'Enable'}
+                        {task.enabled ? '停用' : '启用'}
                       </button>
                       <button type="button" className="secondary-action compact" onClick={() => void handleRemoveLongCycleTask(task.id)}>
                         {busy === `long-cycle-remove:${task.id}` ? <Loader2 className="spin" size={16} /> : <CircleDashed size={16} />}
-                        Remove
+                        删除
                       </button>
                     </div>
                   </article>
                 );
               })
             ) : (
-              <div className="import-report-note">No long-cycle tasks yet.</div>
+              <div className="import-report-note">暂时还没有长周期任务。</div>
             )}
           </div>
         </section>
@@ -5670,42 +5890,44 @@ export default function App() {
       return;
     }
 
+    if (view !== 'library') {
+      return;
+    }
+
     void refreshSessionInsights(linkedSession, true);
     const timer = window.setInterval(
       () => {
         void refreshSessionInsights(linkedSession, true);
       },
-      runtimeState.isProcessing ? 1400 : 4200,
+      runtimeState.isProcessing ? 3200 : 9000,
     );
 
     return () => window.clearInterval(timer);
-  }, [linkedSession, runtimeState.isProcessing]);
+  }, [linkedSession, runtimeState.isProcessing, view]);
 
   useEffect(() => {
     setRedClawFollowUpPrompt('');
   }, [activeSubject?.id, linkedSession]);
 
   useEffect(() => {
-    if (!runnerStatus.isTicking || view === 'settings') {
+    if (!runnerStatus.isTicking || view === 'library') {
       return;
     }
 
     const timer = window.setInterval(() => {
       void load().catch(() => undefined);
-      if (linkedSession) {
-        void refreshSessionInsights(linkedSession, true);
-      }
-    }, 10000);
+    }, 30000);
 
     return () => window.clearInterval(timer);
-  }, [linkedSession, runnerStatus.isTicking, view]);
+  }, [runnerStatus.isTicking, view]);
 
   if (loading) {
     return (
       <div className="atelier-main">
         <div className="atelier-loading">
           <Loader2 className="spin" size={18} />
-          Loading desktop workspace...        </div>
+          正在加载桌面工作台...
+        </div>
       </div>
     );
   }
@@ -5716,11 +5938,11 @@ export default function App() {
         <div>
           <div className="atelier-brand">
             <div className="atelier-brand-mark">
-              <img src="/Box.png" alt="XHS Atelier" />
+              <img src="/Box.png" alt="小红书创作台" />
             </div>
             <div>
-              <div className="atelier-brand-name">XHS Atelier</div>
-              <div className="atelier-brand-subtitle">A Tauri desktop studio for capture, library, and RedClaw writing</div>
+              <div className="atelier-brand-name">小红书创作台</div>
+              <div className="atelier-brand-subtitle">采集、资料沉淀、稿件整理与 RedClaw 创作的一体化桌面工作台</div>
             </div>
           </div>
 
@@ -5749,7 +5971,7 @@ export default function App() {
             onClick={() => setTheme((current) => (current === 'light' ? 'dark' : 'light'))}
           >
             {theme === 'light' ? <MoonStar size={16} /> : <SunMedium size={16} />}
-            <span>{theme === 'light' ? 'Switch to dark' : 'Switch to light'}</span>
+            <span>{theme === 'light' ? '切换到深色模式' : '切换到浅色模式'}</span>
           </button>
 
           <button
@@ -5758,7 +5980,7 @@ export default function App() {
             onClick={() => void handleOpenGitHubReleases()}
           >
             {busy === 'open-releases' ? <Loader2 className="spin" size={15} /> : <ExternalLink size={15} />}
-            <span>GitHub Releases</span>
+            <span>发布包下载</span>
           </button>
           <button
             type="button"
@@ -5766,7 +5988,7 @@ export default function App() {
             onClick={() => void handleOpenIssueTracker()}
           >
             {busy === 'open-issues' ? <Loader2 className="spin" size={15} /> : <ExternalLink size={15} />}
-            <span>Issue Tracker</span>
+            <span>问题反馈</span>
           </button>
         </div>
       </aside>
@@ -5774,7 +5996,7 @@ export default function App() {
       <main className="atelier-main">
         <header className="atelier-header">
           <div>
-            <div className="atelier-header-eyebrow">Desktop MVP</div>
+            <div className="atelier-header-eyebrow">桌面端</div>
             <div className="atelier-header-title-row">
               <h1>{VIEW_META[view].title}</h1>
             </div>
@@ -5783,16 +6005,16 @@ export default function App() {
 
           <div className="atelier-header-meta">
             <div className="atelier-meta-chip">
-              <span>Space</span>
+              <span>空间</span>
               <strong>{spaceName}</strong>
             </div>
             <div className="atelier-meta-chip">
-              <span>Version</span>
+              <span>版本</span>
               <strong>{appVersion}</strong>
             </div>
             <div className="atelier-meta-chip">
               <span>RedClaw</span>
-              <strong>{redClawReady ? 'Configured' : 'Needs setup'}</strong>
+              <strong>{redClawReady ? '已配置' : '待配置'}</strong>
             </div>
           </div>
         </header>

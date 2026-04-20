@@ -485,6 +485,7 @@ a {
 .fatal-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
   gap: 0.85rem;
 }
 
@@ -500,6 +501,9 @@ a {
   border: 1px solid transparent;
   border-radius: 999px;
   font-weight: 600;
+  line-height: 1.4;
+  white-space: normal;
+  text-align: center;
   transition:
     transform 180ms ease,
     box-shadow 180ms ease,
@@ -668,7 +672,8 @@ a {
 .settings-grid,
 .library-grid {
   display: grid;
-  gap: 1rem;
+  gap: 1.15rem;
+  align-items: start;
 }
 
 .split-grid {
@@ -860,7 +865,7 @@ a {
 }
 
 .activity-list {
-  gap: 0;
+  gap: 0.5rem;
 }
 
 .activity-item {
@@ -953,6 +958,7 @@ a {
 .info-item {
   display: grid;
   gap: 0.28rem;
+  min-width: 0;
   padding: 0.9rem 0.95rem;
   border: 1px solid var(--line);
   border-radius: 1rem;
@@ -1153,6 +1159,7 @@ a {
   background: rgba(255, 255, 255, 0.16);
   color: var(--ink-soft);
   line-height: 1.68;
+  overflow-wrap: anywhere;
 }
 
 .import-report-note.is-warning {
@@ -1390,6 +1397,8 @@ a {
   font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
   font-size: 0.78rem;
   line-height: 1.65;
+  max-height: 21rem;
+  overflow: auto;
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -1890,20 +1899,22 @@ a {
 .subject-workspace-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.9rem;
+  gap: 1.1rem;
+  align-items: start;
 }
 
 .workspace-guide-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-  gap: 0.9rem;
-  margin-bottom: 0.9rem;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .workspace-guide-card {
   display: grid;
-  gap: 0.9rem;
+  gap: 0.95rem;
   min-width: 0;
+  min-height: 100%;
   padding: 1rem;
   border: 1px solid var(--line);
   border-radius: 1.05rem;
@@ -1978,8 +1989,9 @@ a {
 
 .subject-workspace-card {
   display: grid;
-  gap: 0.85rem;
+  gap: 0.95rem;
   min-width: 0;
+  min-height: 100%;
   padding: 1rem;
   border: 1px solid var(--line);
   border-radius: 1.05rem;
@@ -1995,6 +2007,10 @@ a {
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.8rem;
+}
+
+.subject-workspace-head > div {
+  min-width: 0;
 }
 
 .subject-workspace-head strong {
@@ -2017,7 +2033,115 @@ a {
 .subject-workspace-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
   gap: 0.55rem;
+}
+
+.markdown-preview-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.markdown-preview-column {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.markdown-preview-pane {
+  min-height: 18rem;
+  padding: 1rem 1.05rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.18)),
+    rgba(255, 255, 255, 0.18);
+  overflow: auto;
+}
+
+:root.dark .markdown-preview-pane {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03)),
+    rgba(255, 255, 255, 0.03);
+}
+
+.markdown-preview-pane.is-compact {
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.markdown-preview-content {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.markdown-preview-content h1,
+.markdown-preview-content h2,
+.markdown-preview-content h3 {
+  margin: 0;
+  font-family: var(--font-serif);
+  line-height: 1.3;
+}
+
+.markdown-preview-content h1 {
+  font-size: 1.55rem;
+}
+
+.markdown-preview-content h2 {
+  font-size: 1.2rem;
+}
+
+.markdown-preview-content h3 {
+  font-size: 1rem;
+}
+
+.markdown-preview-content p,
+.markdown-preview-content li,
+.markdown-preview-content blockquote {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.72;
+  word-break: break-word;
+}
+
+.markdown-preview-content ul,
+.markdown-preview-content ol {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.markdown-preview-content blockquote {
+  padding-left: 0.85rem;
+  border-left: 3px solid rgba(200, 86, 76, 0.28);
+  color: var(--ink);
+}
+
+.markdown-preview-code {
+  margin: 0;
+  padding: 0.95rem 1rem;
+  border-radius: 0.95rem;
+  background: rgba(32, 25, 18, 0.08);
+  color: var(--ink);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+:root.dark .markdown-preview-code {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.markdown-preview-empty {
+  margin: 0;
+  color: var(--ink-faint);
+  line-height: 1.65;
 }
 
 .subject-workspace-editor {
@@ -2143,6 +2267,7 @@ a {
 .subject-redclaw-log {
   display: grid;
   gap: 0.75rem;
+  align-items: start;
 }
 
 .subject-redclaw-composer {
@@ -2743,17 +2868,18 @@ a {
 
 .automation-stack {
   display: grid;
-  gap: 0.85rem;
+  gap: 1rem;
   margin-top: 1rem;
 }
 
 .automation-item {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.9rem;
   padding: 1rem;
   border: 1px solid var(--line);
   border-radius: 1.05rem;
   background: rgba(255, 255, 255, 0.18);
+  min-height: 100%;
 }
 
 :root.dark .automation-item {
@@ -2765,6 +2891,10 @@ a {
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.8rem;
+}
+
+.automation-head > div {
+  min-width: 0;
 }
 
 .automation-head strong {
@@ -2792,6 +2922,7 @@ a {
 .automation-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
   gap: 0.7rem;
 }
 
@@ -2819,6 +2950,10 @@ a {
   gap: 0.8rem;
 }
 
+.task-editor-head > div {
+  min-width: 0;
+}
+
 .task-editor-head strong {
   display: block;
   margin-top: 0.28rem;
@@ -2836,6 +2971,7 @@ a {
 .task-editor-meta {
   display: grid;
   gap: 0.28rem;
+  min-width: 0;
   padding: 0.82rem 0.9rem;
   border: 1px solid var(--line);
   border-radius: 0.95rem;
@@ -3160,6 +3296,7 @@ a {
   .archive-toolbar,
   .subject-editor-meta-grid,
   .task-editor-meta-grid,
+  .markdown-preview-split,
   .category-create-inline,
   .subject-attribute-row,
   .subject-creation-grid,

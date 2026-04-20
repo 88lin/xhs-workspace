@@ -42,7 +42,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryStat
   }
 
   override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('XHS Atelier render error:', error, errorInfo);
+    console.error('小红书创作台渲染错误:', error, errorInfo);
     this.setState({ errorInfo });
   }
 
@@ -53,11 +53,10 @@ class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryStat
       return (
         <div className="fatal-shell">
           <section className="fatal-panel">
-            <div className="fatal-kicker">Desktop shell error</div>
+            <div className="fatal-kicker">桌面端错误</div>
             <h1>界面启动失败</h1>
             <p>
-              这是前端渲染层的异常，当前不会清空你的本地数据或设置。
-              先尝试重新加载；如果仍然失败，再根据错误详情继续排查。
+              这是前端渲染层出现的异常，当前不会清空你的本地数据或设置。请先尝试重新加载；如果仍然失败，再根据下方错误详情继续排查。
             </p>
 
             <div className="fatal-actions">
@@ -89,7 +88,7 @@ initializeThemeMode();
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {
-  throw new Error('Root container "#root" was not found.');
+  throw new Error('未找到根容器 "#root"。');
 }
 
 const appTree = (

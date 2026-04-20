@@ -38,13 +38,13 @@ interface BuildAuthoringMessageInput {
 }
 
 const PLATFORM_LABEL: Record<AuthoringPlatform, string> = {
-  xiaohongshu: 'Xiaohongshu',
-  wechat_official_account: 'WeChat Official Account',
+  xiaohongshu: '小红书',
+  wechat_official_account: '微信公众号',
 };
 
 const TASK_LABEL: Record<AuthoringTaskType, string> = {
-  direct_write: 'Direct Draft',
-  expand_from_xhs: 'Expand From XHS',
+  direct_write: '直接写作',
+  expand_from_xhs: '基于小红书扩写',
 };
 
 export function buildRedClawAuthoringMessage(input: BuildAuthoringMessageInput) {
@@ -55,26 +55,26 @@ export function buildRedClawAuthoringMessage(input: BuildAuthoringMessageInput) 
   const sourceBlocks: string[] = [];
 
   if (sourceTitle) {
-    sourceBlocks.push(`Source title: ${sourceTitle}`);
+    sourceBlocks.push(`来源标题：${sourceTitle}`);
   }
   if (input.sourceNoteId) {
-    sourceBlocks.push(`Source note ID: ${input.sourceNoteId}`);
+    sourceBlocks.push(`来源笔记 ID：${input.sourceNoteId}`);
   }
   if (input.sourceManuscriptPath) {
-    sourceBlocks.push(`Primary manuscript: ${input.sourceManuscriptPath}`);
+    sourceBlocks.push(`主稿路径：${input.sourceManuscriptPath}`);
   }
   if (input.referenceManuscriptPath && input.referenceManuscriptPath !== input.sourceManuscriptPath) {
-    sourceBlocks.push(`Reference manuscript: ${input.referenceManuscriptPath}`);
+    sourceBlocks.push(`参考稿路径：${input.referenceManuscriptPath}`);
   }
   if (sourceContent) {
-    sourceBlocks.push('Source content:');
+    sourceBlocks.push('来源内容：');
     sourceBlocks.push(sourceContent);
   }
 
   const content = [
-    brief || `Start a new ${PLATFORM_LABEL[input.platform]} authoring task.`,
-    draftDirective ? `Draft directive:\n${draftDirective}` : '',
-    sourceBlocks.length > 0 ? ['Reference material:', ...sourceBlocks].join('\n') : '',
+    brief || `开始一个新的${PLATFORM_LABEL[input.platform]}写作任务。`,
+    draftDirective ? `写作指令：\n${draftDirective}` : '',
+    sourceBlocks.length > 0 ? ['参考资料：', ...sourceBlocks].join('\n') : '',
   ]
     .filter(Boolean)
     .join('\n\n')
